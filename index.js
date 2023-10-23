@@ -3,6 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sharp = require('sharp');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -302,7 +304,7 @@ let dbFus = {
 			method: 'GET',
 			headers: {
 				'cache-control': 'no-cache',
-				'x-apikey': 'X-API-KEY-NUMBER-ONE',
+				'x-apikey': process.env.DBK,
 			},
 		});
 
@@ -319,7 +321,7 @@ let dbFus = {
 			headers: {
 				'Content-Type': 'application/json',
 				'cache-control': 'no-cache',
-				'x-apikey': 'X-API-KEY-NUMBER-ONE',
+				'x-apikey': process.env.DBK,
 			},
 			body: thisUserJson,
 		});
@@ -330,7 +332,7 @@ let dbFus = {
 			headers: {
 				'Content-Type': 'application/json',
 				'cache-control': 'no-cache',
-				'x-apikey': 'X-API-KEY-NUMBER-ONE',
+				'x-apikey': process.env.DBK,
 			},
 			body: JSON.stringify(userDb),
 		});
@@ -343,7 +345,7 @@ async function createForumPost(raw = 'default text', post_number) {
 		headers: {
 			'Content-Type': 'application/json',
 			'Api-Username': 'FarmBot',
-			'Api-Key': 'X-API-KEY-NUMBER-TWO',
+			'Api-Key': process.env.FBK,
 		},
 		body: JSON.stringify({
 			raw: `<!--${Date.now()}-->\r\n${raw}`,
