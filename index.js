@@ -27,9 +27,9 @@ app.post('/wh', (req, res) => {
 
 /* --- START OF WH --- */
 
-const VALID_HEAD_COMMAND_REGEXP = /(mod|takeover|begin|help|view|plant|water|harvest|coins)/i;
+const VALID_HEAD_COMMAND_REGEXP = /(::mod|takeover|begin|help|view|plant|water|harvest|coins|daily)/i;
 const SEED_TYPES_REGEXP = /^(blueberry|pinkTulip|strawberry|sunflower|wheat)$/i;
-const devforced = false;
+let devforced = false;
 
 async function main(req) {
 	let username = req.post.username;
@@ -66,11 +66,18 @@ async function main(req) {
 		return undefined;
 	}
 
+	// devforced (only applies to water & daily)
+	if (commandList[0][commandList[0].length - 1].toLowerCase() == 'devforced') {
+		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
+		devforced = true;
+	} else devforced = false;
+
 	// [mod only] takeover
 	if (commandList[0][0].toLowerCase() == 'takeover') {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
 		username = commandList[0][1];
-		commandList.splice(0, 1);
+		commandList[0].splice(0, 1);
+		commandList[0].splice(0, 1);
 	}
 
 	// check if authenticated
@@ -93,7 +100,7 @@ async function main(req) {
 	userDb = killDeadCrops(userDb);
 
 	// mod or player?
-	if (commandList[0][0].toLowerCase() != 'mod') {
+	if (commandList[0][0].toLowerCase() != '::mod') {
 		// interpret commands
 		let arrayedAnswers = [];
 		for (let i = 0; i < commandList.length; i++) {
@@ -114,9 +121,10 @@ async function main(req) {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
 		const sentence = commandList[0];
 		let answer = null;
+		let tgUserDb = null;
 		switch (sentence[1]) {
 			case 'grant_s':
-				let tgUserDb = searchForAccount(sentence[2], db);
+				tgUserDb = searchForAccount(sentence[2], db);
 				if (tgUserDb == null) {
 					answer = `Unauthenticated user @${sentence[2]}.`;
 				} else {
@@ -129,7 +137,17 @@ async function main(req) {
 				}
 				break;
 			case 'grant_c':
-				answer = `Not devlp yet.`;
+				tgUserDb = searchForAccount(sentence[2], db);
+				if (tgUserDb == null) {
+					answer = `Unauthenticated user @${sentence[2]}.`;
+				} else {
+					for (let i = 3; i < sentence.length; i++) {
+						const types = ['blueberryCrops', 'pinkTulipCrops', 'strawberryCrops', 'sunflowerCrops', 'wheatCrops'];
+						tgUserDb.cropsInventory[types[i - 3]] += Math.round(sentence[i]);
+					}
+					dbFus.put(tgUserDb._id, tgUserDb);
+					answer = `Granted specified crops to @${sentence[2]}.`;
+				}
 				break;
 
 			default:
@@ -170,6 +188,9 @@ async function interpretCommand(sentence, userDb) {
 					break;
 				case 'inventory':
 					answer = `@${userDb.username}'s inventory.\n\n${inventoryContent(userDb)}`;
+					break;
+				case 'coins':
+					answer = `You have **${userDb.coins} coins**.`;
 					break;
 				default:
 					answer = `Unrecognized subcommand \`${sentence[1]}\`.`;
@@ -260,8 +281,21 @@ async function interpretCommand(sentence, userDb) {
 				answer = `Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **60 coins**!\n\n${await generateFarmImg(userDb)}`;
 			}
 			break;
-		case 'coins':
-			answer = `You have **${userDb.coins} coins**.`;
+		case 'daily':
+			let lastDaily = userDb.lastDaily;
+			if (Date.now() > lastDaily + 82800000 || devforced) {
+				const randomGrant = Math.round(Math.random() * 100 + 50);
+				userDb.lastDaily = Date.now();
+				userDb.coins += randomGrant;
+
+				answer = `Granted... 	&#x1f3b2; 	&#x1f3b2; **${randomGrant} coins** to your account! Come back in **23 hours** to request another \`@FarmBot daily\`!`;
+			} else {
+				if (lastDaily + 82800000 - Date.now() < 60000) {
+					answer = `You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / 1000)} seconds**!`;
+				} else {
+					answer = `You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / (1000 * 60 * 60))} hours and ${Math.floor((lastDaily + 82800000 - Date.now()) / (1000 * 60)) % 60} minutes**!`;
+				}
+			}
 			break;
 
 		default:
