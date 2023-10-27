@@ -3,12 +3,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sharp = require('sharp');
-const dotenv = require('dotenv');
 const axios = require('axios');
-dotenv.config();
+const DEV = /^localhost:\d+$/.test(process.env.DETA_SPACE_APP_HOSTNAME);
+require('dotenv').config({ override: DEV });
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
 	res.send('Hello World!');
