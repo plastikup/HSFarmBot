@@ -25,6 +25,12 @@ app.post('/wh', (req, res) => {
 	main(req.body);
 });
 
+app.post('/daily', (req, res) => {
+	res.status(200).send('OK');
+	console.log('received wh (daily)');
+	createForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
+});
+
 /* --- START OF WH --- */
 
 const VALID_HEAD_COMMAND_REGEXP = /(::mod|takeover|begin|help|view|plant|water|harvest|coins|daily)/i;
