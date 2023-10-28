@@ -249,9 +249,6 @@ async function interpretCommand(sentence, userDb) {
 			let farm = userDb.farm;
 			let spot = sentence[3] - 1;
 			let seed = sentence[1].substring(0, sentence[1].search(/(seeds?|)$/i));
-			console.log('first test: ', cropTypes._seed_types_regexp.test(seed));
-			console.log('second test: ', userDb.seedsInventory[seed + 'Seeds'] > 0);
-			console.log('seed name: ', seed);
 			if (cropTypes._seed_types_regexp.test(seed) && userDb.seedsInventory[seed + 'Seeds'] > 0 && spot >= 0 && spot < 9) {
 				if (Math.floor(farm[spot].growthLevel) == 0 || Math.floor(farm[spot].growthLevel) == -1) {
 					farm[spot].growthLevel = 1;
