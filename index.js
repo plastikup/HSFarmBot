@@ -430,7 +430,7 @@ async function createForumPost(raw = 'default text', post_number) {
 			'Api-Key': process.env.FBK,
 		},
 		data: {
-			raw: `<!--${Date.now()}-->[this has been posted through tri's local file]\r\n${raw}`,
+			raw: `<!--${Date.now()}-->\n${raw}`,
 			topic_id: '66178',
 			reply_to_post_number: post_number,
 		},
