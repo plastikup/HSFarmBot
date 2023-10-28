@@ -21,7 +21,7 @@ app.listen(PORT, () => {
 app.use(bodyParser.json());
 
 app.post('/wh', async (req, res) => {
-  console.log('received wh');
+	console.log('received wh');
 	await main(req.body);
 	res.status(200).send('OK');
 });
@@ -32,11 +32,52 @@ app.post('/daily', (req, res) => {
 	createForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
 });
 
-/* --- START OF WH --- */
+/* --- CONSTANTS --- */
 
 const VALID_HEAD_COMMAND_REGEXP = /(::mod|takeover|begin|help|view|plant|water|harvest|coins|daily)/i;
-const SEED_TYPES_REGEXP = /^(blueberry|pinkTulip|strawberry|sunflower|wheat)$/i;
+const cropTypes = {
+	_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat)$/i,
+	wheat: {
+		watersRequired: 3,
+		earnings: 35,
+	},
+	strawberry: {
+		watersRequired: 4,
+		earnings: 40,
+	},
+	poppy: {
+		watersRequired: 3,
+		earnings: 40,
+	},
+	blueberry: {
+		watersRequired: 4,
+		earnings: 50,
+	},
+	purpleTulip: {
+		watersRequired: 4,
+		earnings: 50,
+	},
+	sunflower: {
+		watersRequired: 5,
+		earnings: 70,
+	},
+	goldenSunflower: {
+		watersRequired: 5,
+		earnings: 90,
+	},
+	pinkTulip: {
+		watersRequired: 6,
+		earnings: 100,
+	},
+	goldenWheat: {
+		watersRequired: 8,
+		earnings: 120,
+	},
+};
+
 let devforced = false;
+
+/* --- START OF WH --- */
 
 async function main(req) {
 	let username = req.post.username;
@@ -207,8 +248,11 @@ async function interpretCommand(sentence, userDb) {
 		case 'plant':
 			let farm = userDb.farm;
 			let spot = sentence[3] - 1;
-			let seed = sentence[1].toLowerCase().substring(0, sentence[1].search(/seeds?$/i));
-			if (seed.match(SEED_TYPES_REGEXP) && userDb.seedsInventory[seed + 'Seeds'] > 0 && spot >= 0 && spot < 9) {
+			let seed = sentence[1].substring(0, sentence[1].search(/(seeds?|)$/i));
+			console.log('first test: ', cropTypes._seed_types_regexp.test(seed));
+			console.log('second test: ', userDb.seedsInventory[seed + 'Seeds'] > 0);
+			console.log('seed name: ', seed);
+			if (cropTypes._seed_types_regexp.test(seed) && userDb.seedsInventory[seed + 'Seeds'] > 0 && spot >= 0 && spot < 9) {
 				if (Math.floor(farm[spot].growthLevel) == 0 || Math.floor(farm[spot].growthLevel) == -1) {
 					farm[spot].growthLevel = 1;
 					farm[spot].plantedAt = Date.now();
@@ -222,7 +266,7 @@ async function interpretCommand(sentence, userDb) {
 				} else {
 					answer = `It looks like you have already something planted there.\n\n${await generateFarmImg(userDb)}`;
 				}
-			} else if (!SEED_TYPES_REGEXP.test(seed)) {
+			} else if (!cropTypes._seed_types_regexp.test(seed)) {
 				answer = `Unknown type of seed.`;
 			} else if (spot >= 0 && spot < 9) {
 				answer = `You do not own any ${seed} seeds. Reply with \`@FarmBot shop\` to buy some!`;
@@ -233,33 +277,35 @@ async function interpretCommand(sentence, userDb) {
 		case 'water':
 			let nextWaterTS = userDb.lastWater + 28800000;
 			if (Date.now() > nextWaterTS || devforced) {
-				let grantedCoins = 0;
+				let somethingToWater = false;
 				for (let i = 0; i < userDb.farm.length; i++) {
 					userDb.farm[i].lastWater = Date.now();
 					const seedType = userDb.farm[i].seedType;
 					if (seedType != null && userDb.farm[i].growthLevel != -1) {
-						let increment = 0;
+						let increment = 3 / cropTypes[seedType].watersRequired;
+						/*
 						if (seedType == 'blueberry') increment = 0.375; // 8 waters
 						else if (seedType == 'pinkTulip') increment = 0.3; // 10 waters
 						else if (seedType == 'strawberry') increment = 0.6; // 5 waters
 						else if (seedType == 'sunflower') increment = 0.25; // 12 waters
 						else if (seedType == 'wheat') increment = 0.6; // 5 waters
-						userDb.farm[i].growthLevel = userDb.farm[i].growthLevel + increment;
+						*/
+						userDb.farm[i].growthLevel += increment;
+						/*
 						if (userDb.farm[i].fertilizerCount > 0) {
 							userDb.farm[i].growthLevel = userDb.farm[i].growthLevel + increment;
 							userDb.farm[i].fertilizerCount = userDb.farm[i].fertilizerCount - 1;
 						}
-						grantedCoins += 12;
+						*/
+						somethingToWater = true;
 					}
 				}
 
-				if (grantedCoins == 0) {
+				if (!somethingToWater) {
 					answer = `No crops to water!\n\n${await generateFarmImg(userDb)}`;
 				} else {
 					userDb.lastWater = Date.now();
-					userDb.coins += grantedCoins;
-
-					answer = `@${userDb.username}, you have watered your thirsty plants and earned **${grantedCoins} coins**!\n\n${await generateFarmImg(userDb)}\n\nMake sure to water them again in 8 hours!`;
+					answer = `@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg(userDb)}\n\nMake sure to water them again in 8 hours!`;
 				}
 			} else {
 				if (nextWaterTS - Date.now() < 60000) {
@@ -283,9 +329,9 @@ async function interpretCommand(sentence, userDb) {
 
 				userDb.farm[sentence[2] - 1] = JSON.parse(newUser.newFarmDefault);
 				userDb.cropsInventory[targetCrop + 'Crops']++;
-				userDb.coins += 60;
+				userDb.coins += cropTypes[targetCrop].earnings;
 
-				answer = `Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **60 coins**!\n\n${await generateFarmImg(userDb)}`;
+				answer = `Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **${cropTypes[targetCrop].earnings} coins**!\n\n${await generateFarmImg(userDb)}`;
 			}
 			break;
 		case 'daily':
@@ -347,7 +393,7 @@ let dbFus = {
 				'cache-control': 'no-cache',
 				'x-apikey': process.env.DBK,
 			},
-		}).then(x => x.data);
+		}).then((x) => x.data);
 		return response;
 	},
 	post: async function (username) {
@@ -387,7 +433,7 @@ async function createForumPost(raw = 'default text', post_number) {
 			'Api-Key': process.env.FBK,
 		},
 		data: {
-			raw: `<!--${Date.now()}-->\r\n${raw}`,
+			raw: `<!--${Date.now()}-->[this has been posted through tri's local file]\r\n${raw}`,
 			topic_id: '66178',
 			reply_to_post_number: post_number,
 		},
@@ -433,31 +479,28 @@ async function generateFarmImg(userDb) {
 		.png()
 		.toBuffer();
 
-	return `<img src="data:image/png;base64,${newPicture.toString('base64')}">`;
+	return `<img src="data:image/png;base64,${newPicture.toString('base64')}">\n\n${generateFarmTable(userDb)}`;
 }
 
-function formatTime(nts) {
-	const dt = Math.max(nts - Date.now(), 0); // +28800000
-	console.log(dt);
-	const remByCat = {
-		second: Math.floor(dt / 1000) % 60,
-		minute: Math.floor(dt / (1000 * 60)) % 60,
-		hour: Math.floor(dt / (1000 * 60 * 60)) % 24,
-		day: Math.floor(dt / (1000 * 60 * 60 * 24)),
-	};
-	let returningValue = '';
-	if (remByCat.day != 0) returningValue += `${remByCat.day} day${remByCat.day >= 2 ? 's' : ''}, `;
-	if (remByCat.hour != 0) returningValue += `${remByCat.hour} hour${remByCat.hour >= 2 ? 's' : ''}, `;
-	if (remByCat.minute != 0) returningValue += `${remByCat.minute} day${remByCat.minute >= 2 ? 's' : ''}, `;
-	if (remByCat.second != 0) returningValue += `${remByCat.second} second${remByCat.second >= 2 ? 's' : ''}, `;
+function generateFarmTable(userDb) {
+	let returned = `[details=Table view]\n&ic;|&ic;|&ic;\n:-:|:-:|:-:\n`;
 
-	console.log(returningValue);
-	if (returningValue == '') return null;
-	else {
-		returningValue = returningValue.substring(0, returningValue - 2);
-		if (returningValue.match(',')) return returningValue.replace(/,[^,]*/, ' and ');
-		else return returningValue;
+	for (let i = 0; i < 3; i++) {
+		const row = [userDb.farm[i * 3], userDb.farm[i * 3 + 1], userDb.farm[i * 3 + 2]];
+		for (let j = 0; j < row.length; j++) {
+			const cell = row[j];
+			if (cell.seedType == null) returned += '[*empty*]|';
+			else if (cell.growthLevel == -1) {
+				returned += `[***dead** ${cell.seedType}*]|`;
+			} else {
+				let seedInfo = cropTypes[cell.seedType];
+				returned += `**${cell.seedType}**<br><small>growth level: **${(cell.growthLevel * seedInfo.watersRequired) / 3}/${seedInfo.watersRequired}**</small>|`;
+			}
+		}
+		returned += `\n`;
 	}
+	returned += `[/details]`;
+	return returned;
 }
 
 const HELP_POST_CONTENT = `Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can do. Type \`@FarmBot\` before any of these to get my attention! Words in brackets mean that they need to be changed based on what you want to put there.\r\n[quote=General]\r\n\`@FarmBot help\` — brings up introduction and list of commands\r\n\`@FarmBot begin\` — registers you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!\r\n[/quote]\r\n[quote="Farming"]\r\n\`@FarmBot view farm\` — shows your farm\r\n\`@FarmBot view inventory\` — check items\r\n\`@FarmBot plant [item] spot [number]\` — plant seeds at select location\r\n\`@FarmBot water\` — water your crops (every 8 hours)\r\n\`@FarmBot harvest spot [number]\` — harvests crop at select location\r\n\`@FarmBot fertilize spot [number] with [item]\` — fertilizes desired crop\r\n[/quote]\r\n[details=some other stuff coming soon ;)]\r\n[quote="Gardening"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Gifting"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Moosefarms Shop"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Market"]\r\n*coming soon!*\r\n[/quote]\r\n---\r\n[/details]\r\nHave a bug report? Tag @/Tri-Angle! Have a concern or suggestion regarding the game itself? Tag @/StarlightStudios!\r\n\r\nHave fun, and don’t forget to water your crops!`;
@@ -578,11 +621,3 @@ const newUser = {
 		"fertilizers": 2
 	}`,*/
 };
-
-/*{
-	"post": {
-		"cooked": "<p><a class=\"mention\" href=\"/u/farmbot\">@FarmBot<\/a> begin</p>",
-	    "post_number": 9999,
-		"username": "Tri-Angle"
-	}
-}*/
