@@ -3,11 +3,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sharp = require('sharp');
-const dotenv = require('dotenv');
-dotenv.config();
+const axios = require('axios');
+const DEV = /^localhost:\d+$/.test(process.env.DETA_SPACE_APP_HOSTNAME);
+require('dotenv').config({ override: DEV });
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
 	res.send('Hello World!');
@@ -19,10 +20,10 @@ app.listen(PORT, () => {
 
 app.use(bodyParser.json());
 
-app.post('/wh', (req, res) => {
+app.post('/wh', async (req, res) => {
+  console.log('received wh');
+	await main(req.body);
 	res.status(200).send('OK');
-	console.log('received wh');
-	main(req.body);
 });
 
 app.post('/daily', (req, res) => {
@@ -68,7 +69,7 @@ async function main(req) {
 		else if (!commandList[i][0].match(VALID_HEAD_COMMAND_REGEXP)) invalidCommand = commandList[i][0];
 	}
 	if (invalidCommand != null) {
-		createForumPost(`Unknown command \`${invalidCommand}\`.`, post_number);
+		await createForumPost(`Unknown command \`${invalidCommand}\`.`, post_number);
 		return undefined;
 	}
 
@@ -92,13 +93,13 @@ async function main(req) {
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
-			createForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number);
+			await createForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number);
 		} else {
-			createForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number);
+			await createForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number);
 		}
 		return undefined;
 	} else if (userDb == null) {
-		createForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number);
+		await createForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number);
 		return undefined;
 	}
 
@@ -116,7 +117,7 @@ async function main(req) {
 
 		// reply user
 		let textualAnswer = arrayedAnswers.join('\n___\n');
-		createForumPost(textualAnswer, post_number);
+		await createForumPost(textualAnswer, post_number);
 
 		// update database
 		dbFus.put(userDb._id, userDb);
@@ -160,7 +161,7 @@ async function main(req) {
 				answer = `Unrecognized mod command \`${sentence[1]}\`.`;
 				break;
 		}
-		createForumPost('[MOD ACTION] ' + answer, post_number);
+		await createForumPost('[MOD ACTION] ' + answer, post_number);
 		console.log('--- MOD END ---');
 	}
 }
@@ -340,61 +341,59 @@ function inventoryContent(userDb) {
 
 let dbFus = {
 	get: async function () {
-		const response = await fetch('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
+		const response = await axios('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
 			method: 'GET',
 			headers: {
 				'cache-control': 'no-cache',
 				'x-apikey': process.env.DBK,
 			},
-		});
-
-		const result = await response.json();
-		return result;
+		}).then(x => x.data);
+		return response;
 	},
 	post: async function (username) {
 		let thisUserJson = { ...NEW_USER_JSON };
 		thisUserJson.username = username;
-		thisUserJson = JSON.stringify(thisUserJson);
+		thisUserJson = thisUserJson;
 
-		await fetch('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
+		await axios('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'cache-control': 'no-cache',
 				'x-apikey': process.env.DBK,
 			},
-			body: thisUserJson,
+			data: thisUserJson,
 		});
 	},
 	put: async function (usernameId, userDb) {
-		await fetch(`https://hsfarmbot-40ef.restdb.io/rest/v-v1/${usernameId}`, {
+		await axios(`https://hsfarmbot-40ef.restdb.io/rest/v-v1/${usernameId}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'cache-control': 'no-cache',
 				'x-apikey': process.env.DBK,
 			},
-			body: JSON.stringify(userDb),
+			data: userDb,
 		});
 	},
 };
 
 async function createForumPost(raw = 'default text', post_number) {
-	fetch(`https://forum.gethopscotch.com/posts.json`, {
+	await axios(`https://forum.gethopscotch.com/posts.json`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			'Api-Username': 'FarmBot',
 			'Api-Key': process.env.FBK,
 		},
-		body: JSON.stringify({
+		data: {
 			raw: `<!--${Date.now()}-->\r\n${raw}`,
 			topic_id: '66178',
 			reply_to_post_number: post_number,
-		}),
+		},
 		redirect: 'follow',
 	})
-		.then((response) => response.text())
+		.then((response) => response.data)
 		.then((result) => console.log(result))
 		.catch((error) => console.log('error', error));
 }
