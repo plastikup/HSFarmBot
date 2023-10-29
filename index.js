@@ -24,7 +24,7 @@ app.post('/wh', async (req, res) => {
 app.post('/daily', (req, res) => {
 	res.status(200).send('OK');
 	console.log('received wh (daily)');
-	createForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
+	newForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
 });
 
 /* --- MODULES --- */
@@ -49,6 +49,9 @@ const cml = {
 		return await require('./commands/daily.js').cm(userDb, devforced);
 	},
 };
+
+const dbFus = require('./dyna/dbFus.js').dbFus();
+const newForumPost = (raw = 'default text', post_number) => require('./dyna/newForumPost').newForumPost(raw, post_number);
 
 /* --- CONSTANTS --- */
 
@@ -90,7 +93,7 @@ async function main(req) {
 		else if (!commandList[i][0].match(VALID_HEAD_COMMAND_REGEXP)) invalidCommand = commandList[i][0];
 	}
 	if (invalidCommand != null) {
-		await createForumPost(`Unknown command \`${invalidCommand}\`.`, post_number);
+		await newForumPost(`Unknown command \`${invalidCommand}\`.`, post_number);
 		return undefined;
 	}
 
@@ -114,13 +117,13 @@ async function main(req) {
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
-			await createForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number);
+			await newForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number);
 		} else {
-			await createForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number);
+			await newForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number);
 		}
 		return undefined;
 	} else if (userDb == null) {
-		await createForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number);
+		await newForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number);
 		return undefined;
 	}
 
@@ -138,7 +141,7 @@ async function main(req) {
 
 		// reply user
 		let textualAnswer = arrayedAnswers.join('\n___\n');
-		await createForumPost(textualAnswer, post_number);
+		await newForumPost(textualAnswer, post_number);
 
 		// update database
 		dbFus.put(userDb._id, userDb);
@@ -182,7 +185,7 @@ async function main(req) {
 				answer = `Unrecognized mod command \`${sentence[1]}\`.`;
 				break;
 		}
-		await createForumPost('[MOD ACTION] ' + answer, post_number);
+		await newForumPost('[MOD ACTION] ' + answer, post_number);
 		console.log('--- MOD END ---');
 	}
 }
@@ -217,63 +220,4 @@ async function interpretCommand(sentence, userDb) {
 			break;
 	}
 	return [answer, userDb];
-}
-
-let dbFus = {
-	get: async function () {
-		const response = await axios('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
-			method: 'GET',
-			headers: {
-				'cache-control': 'no-cache',
-				'x-apikey': process.env.DBK,
-			},
-		}).then((x) => x.data);
-		return response;
-	},
-	post: async function (username) {
-		let thisUserJson = { ...NEW_USER_JSON };
-		thisUserJson.username = username;
-		thisUserJson = thisUserJson;
-
-		await axios('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'cache-control': 'no-cache',
-				'x-apikey': process.env.DBK,
-			},
-			data: thisUserJson,
-		});
-	},
-	put: async function (usernameId, userDb) {
-		await axios(`https://hsfarmbot-40ef.restdb.io/rest/v-v1/${usernameId}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'cache-control': 'no-cache',
-				'x-apikey': process.env.DBK,
-			},
-			data: userDb,
-		});
-	},
-};
-
-async function createForumPost(raw = 'default text', post_number) {
-	await axios(`https://forum.gethopscotch.com/posts.json`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Api-Username': 'FarmBot',
-			'Api-Key': process.env.FBK,
-		},
-		data: {
-			raw: `<!--${Date.now()}-->\n${raw}`,
-			topic_id: '66178',
-			reply_to_post_number: post_number,
-		},
-		redirect: 'follow',
-	})
-		.then((response) => response.data)
-		.then((result) => console.log(result))
-		.catch((error) => console.log('error', error));
 }

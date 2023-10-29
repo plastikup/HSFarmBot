@@ -1,5 +1,5 @@
 (async function () {
-	const generateFarmImg = require('../script/generateFarmImg.js');
+	const generateFarmImg = require('../scripts/generateFarmImg.js');
 	const cropTypes = require('../constants.js').cts().cropTypes;
 
 	let killDeadCrops = async (userDb) => {
