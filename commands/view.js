@@ -28,8 +28,8 @@
         return table;
     }
 
-    var cm = async (input, userDb) => {
-        switch (input) {
+    var cm = async (subcommand, userDb) => {
+        switch (subcommand) {
             case 'farm':
                 return(`@${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`);
                 break;
@@ -40,12 +40,12 @@
                 return(`You have **${userDb.coins} coins**.`);
                 break;
             default:
-                return(`Unrecognized subcommand \`${input}\`.`);
+                return(`Unrecognized subcommand \`${subcommand}\`.`);
                 break;
         }
     };
 
-    module.exports.cm_view = async function(stuff, userDb) {
-        return await cm(stuff, userDb);
+    module.exports.cm = async function(subcommand, userDb) {
+        return await cm(subcommand, userDb);
     }
 }());
