@@ -1,8 +1,8 @@
-(function () {
+(async function () {
 	const generateFarmImg = require('../script/generateFarmImg.js');
 	const cropTypes = require('../constants.js').cts().cropTypes;
 
-	var cm = async (userDb, devforced) => {
+	let cm = async (userDb, devforced) => {
 		let nextWaterTS = userDb.lastWater + 28800000;
 		if (Date.now() > nextWaterTS || devforced) {
 			let somethingToWater = false;

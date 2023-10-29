@@ -1,8 +1,8 @@
-(function () {
+(async function () {
 	const generateFarmImg = require('../script/generateFarmImg.js');
 	const cropTypes = require('../constants.js').cts().cropTypes;
 
-	var cm = async (sentence, userDb) => {
+	let cm = async (sentence, userDb) => {
 		let farm = userDb.farm;
 		let spot = sentence[3] - 1;
 		let seed = sentence[1].substring(0, sentence[1].search(/(seeds?|)$/i));

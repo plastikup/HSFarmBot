@@ -1,5 +1,5 @@
-(function () {
-	var cm = async (userDb, devforced) => {
+(async function () {
+	let cm = async (userDb, devforced) => {
 		let lastDaily = userDb.lastDaily;
 		if (Date.now() > lastDaily + 82800000 || devforced) {
 			const randomGrant = Math.round(Math.random() * 100 + 50);

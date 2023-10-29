@@ -12,19 +12,15 @@ const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
-
 app.listen(PORT, () => {
 	console.log(`Example app listening at http://localhost:${PORT}`);
 });
-
 app.use(bodyParser.json());
-
 app.post('/wh', async (req, res) => {
 	console.log('received wh');
 	await main(req.body);
 	res.status(200).send('OK');
 });
-
 app.post('/daily', (req, res) => {
 	res.status(200).send('OK');
 	console.log('received wh (daily)');
@@ -32,6 +28,7 @@ app.post('/daily', (req, res) => {
 });
 
 /* --- MODULES --- */
+
 const cml = {
 	help: () => {
 		return require('./commands/help.js').cm();
@@ -50,17 +47,14 @@ const cml = {
 	},
 	daily: async (userDb, devforced) => {
 		return await require('./commands/daily.js').cm(userDb, devforced);
-	}
+	},
 };
-const generateFarmImg = require('./script/generateFarmImg.js');
 
 /* --- CONSTANTS --- */
 
 const cts = require('./constants.js').cts();
 const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
-const cropTypes = cts.cropTypes;
 const NEW_USER_JSON = cts.NEW_USER_JSON;
-const newFarmDefault = cts.newFarmDefault;
 let devforced = false;
 
 /* --- START OF WH --- */
@@ -131,7 +125,7 @@ async function main(req) {
 	}
 
 	// kill dead crops
-	userDb = killDeadCrops(userDb);
+	userDb = await require('./script/killDeadCrops').killDeadCrops(userDb);
 
 	// mod or player?
 	if (commandList[0][0].toLowerCase() != '::mod') {
@@ -193,15 +187,6 @@ async function main(req) {
 	}
 }
 
-function killDeadCrops(userDb) {
-	for (let i = 0; i < 9; i++) {
-		if (userDb.farm[i].seedType != null && Date.now() > userDb.farm[i].lastWater + 216000000) {
-			userDb.farm[i].growthLevel = -1;
-		}
-	}
-	return userDb;
-}
-
 function searchForAccount(username, db) {
 	for (let i = 0; i < db.length; i++) {
 		if (db[i].username == username) return db[i];
@@ -231,6 +216,7 @@ async function interpretCommand(sentence, userDb) {
 			[answer, userDb] = await cml.daily(userDb, devforced);
 			break;
 		case 'shop':
+			answer = 'Shop in progress.';
 			break;
 
 		default:

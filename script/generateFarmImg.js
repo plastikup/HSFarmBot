@@ -1,11 +1,12 @@
-(function () {
+(async function () {
 	const sharp = require('sharp');
 	const cropTypes = require('../constants.js').cts().cropTypes;
 
-	var cm = async (userDb) => {
+	let cm = async (userDb) => {
         // GRID
 		let grid = [];
 		for (let i = 0; i < 9; i++) {
+			console.log(userDb)
 			const listRaw = userDb.farm[i];
 			const growthLevelFloored = Math.floor(listRaw.growthLevel);
 			if (growthLevelFloored == -1) grid.push('seeddead');

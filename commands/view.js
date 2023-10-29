@@ -1,4 +1,4 @@
-(function() {
+(async function() {
     const generateFarmImg = require('../script/generateFarmImg.js');
 
     function inventoryContent(userDb) {
@@ -28,7 +28,8 @@
         return table;
     }
 
-    var cm = async (subcommand, userDb) => {
+    let cm = async (subcommand, userDb) => {
+        console.log(userDb)
         switch (subcommand) {
             case 'farm':
                 return(`@${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`);

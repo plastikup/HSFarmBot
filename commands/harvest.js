@@ -1,10 +1,10 @@
-(function () {
+(async function () {
 	const generateFarmImg = require('../script/generateFarmImg.js');
     const cts = require('../constants.js').cts()
 	const cropTypes = cts.cropTypes;
     const newFarmDefault = cts.newFarmDefault;
 
-	var cm = async (sentence, userDb) => {
+	let cm = async (sentence, userDb) => {
         if ((sentence[2] < 1 || sentence[2] > 9) && typeof sentence[2] == typeof 9) {
             return([`Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`, userDb]);
         } else if (userDb.farm[sentence[2] - 1].seedType == null) {
