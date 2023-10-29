@@ -1,10 +1,14 @@
 (async function () {
 	const searchForAccount = (username, db) => require('./searchForAccount').searchForAccount(username, db);
-    const dbFus = require('../dyna/dbFus.js').dbFus();
+	const dbFus = require('../dyna/dbFus.js').dbFus();
+	const test = require('../constants.js').cts().test;
 
 	let cm = async (sentence, userDb, db) => {
 		let tgUserDb = null;
 		switch (sentence[1]) {
+			case 'test':
+				return await require('./interpretCommand.js').cm(test, userDb, false)
+				break;
 			case 'grant_s':
 				tgUserDb = searchForAccount(sentence[2], db);
 				if (tgUserDb == null) {

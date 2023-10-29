@@ -110,16 +110,9 @@ async function main(req) {
 
 	// mod or player?
 	if (commandList[0][0].toLowerCase() != '::mod') {
-		// interpret commands
-		let arrayedAnswers = [];
-		for (let i = 0; i < commandList.length; i++) {
-			const sentence = commandList[i];
-			[arrayedAnswers[i], userDb] = await require('./scripts/interpretCommand.js').cm(sentence, userDb, devforced);
-		}
-
-		// reply user
-		let textualAnswer = arrayedAnswers.join('\n___\n');
-		await newForumPost(textualAnswer, post_number);
+		let answer = '';
+		[answer, userDb] = await require('./scripts/interpretCommand.js').cm(commandList, userDb, devforced);
+		await newForumPost(answer, post_number);
 
 		// update database
 		dbFus.put(userDb._id, userDb);

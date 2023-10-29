@@ -19,38 +19,49 @@ const cml = {
 	},
 };
 
-let cm = async (sentence, userDb, devforced) => {
-	let answer = null;
-	switch (sentence[0].toLowerCase()) {
-		case 'help':
-			answer = cml.help();
-			break;
-		case 'view':
-			answer = await cml.view(sentence[1].toLowerCase(), userDb);
-			break;
-		case 'plant':
-			[answer, userDb] = await cml.plant(sentence, userDb);
-			break;
-		case 'water':
-			[answer, userDb] = await cml.water(userDb, devforced);
-			break;
-		case 'harvest':
-			[answer, userDb] = await cml.harvest(sentence, userDb);
-			break;
-		case 'daily':
-			[answer, userDb] = await cml.daily(userDb, devforced);
-			break;
-		case 'shop':
-			answer = 'Shop in progress.';
-			break;
-
-		default:
-			answer = `Unrecognized command \`${sentence[0]}\`.`;
-			break;
+let cm = async (commandList, userDb, devforced = false) => {
+	// interpret commands
+	let arrayedAnswers = [];
+	for (let i = 0; i < commandList.length; i++) {
+		const sentence = commandList[i];
+		arrayedAnswers[i] = await interpret(sentence);
 	}
-	return [answer, userDb];
+
+	async function interpret(sentence){
+		let answer = null;
+		switch (sentence[0].toLowerCase()) {
+			case 'help':
+				answer = cml.help();
+				break;
+			case 'view':
+				answer = await cml.view(sentence[1].toLowerCase(), userDb);
+				break;
+			case 'plant':
+				[answer, userDb] = await cml.plant(sentence, userDb);
+				break;
+			case 'water':
+				[answer, userDb] = await cml.water(userDb, devforced);
+				break;
+			case 'harvest':
+				[answer, userDb] = await cml.harvest(sentence, userDb);
+				break;
+			case 'daily':
+				[answer, userDb] = await cml.daily(userDb, devforced);
+				break;
+			case 'shop':
+				answer = 'Shop in progress.';
+				break;
+	
+			default:
+				answer = `Unrecognized command \`${sentence[0]}\`.`;
+				break;
+		}
+		return answer;
+	}
+
+	return([arrayedAnswers.join('\n___\n'), userDb])
 };
 
-module.exports.cm = async function (sentence, userDb, devforced) {
-	return await cm(sentence, userDb, devforced);
+module.exports.cm = async function (commandList, userDb, devforced) {
+	return await cm(commandList, userDb, devforced);
 };
