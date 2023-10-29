@@ -36,7 +36,7 @@ app.post('/daily', (req, res) => {
 
 const VALID_HEAD_COMMAND_REGEXP = /(::mod|takeover|begin|help|view|plant|water|harvest|coins|daily)/i;
 const cropTypes = {
-	_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat)$/i,
+	_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley)$/i,
 	wheat: {
 		watersRequired: 3,
 		earnings: 35,
@@ -72,6 +72,10 @@ const cropTypes = {
 	goldenWheat: {
 		watersRequired: 8,
 		earnings: 120,
+	},
+	lilyValley: {
+		watersRequired: 12,
+		earnings: 90,
 	},
 };
 
@@ -232,10 +236,10 @@ async function interpretCommand(sentence, userDb) {
 		case 'view':
 			switch (sentence[1].toLowerCase()) {
 				case 'farm':
-					answer = `@${userDb.username}'s farm.\n\n${await generateFarmImg(userDb)}`;
+					answer = `@${userDb.username}'s **farm**.\n\n${await generateFarmImg(userDb)}`;
 					break;
 				case 'inventory':
-					answer = `@${userDb.username}'s inventory.\n\n${inventoryContent(userDb)}`;
+					answer = `@${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
 					break;
 				case 'coins':
 					answer = `You have **${userDb.coins} coins**.`;
@@ -259,16 +263,16 @@ async function interpretCommand(sentence, userDb) {
 
 					userDb.seedsInventory[seed + 'Seeds']--;
 
-					answer = `Planted one cute **${seed.toLowerCase()} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg(userDb)}\n\nRemember to frequently water your farm (at least every 8 hours)!`;
+					answer = `Planted one cute **${seed.toLowerCase()} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`;
 				} else {
-					answer = `It looks like you have already something planted there.\n\n${await generateFarmImg(userDb)}`;
+					answer = `It looks like you have **already something planted there**.\n\n${await generateFarmImg(userDb)}`;
 				}
 			} else if (!cropTypes._seed_types_regexp.test(seed)) {
 				answer = `Unknown type of seed.`;
 			} else if (spot >= 0 && spot < 9) {
-				answer = `You do not own any ${seed} seeds. Reply with \`@FarmBot shop\` to buy some!`;
+				answer = `**You do not own any ${seed} seeds**. Reply with \`@FarmBot shop\` to buy some!`;
 			} else {
-				answer = `Invalid spot ID. Top left starts at 1 and goes from left to right until 9.`;
+				answer = `Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`;
 			}
 			break;
 		case 'water':
@@ -302,25 +306,25 @@ async function interpretCommand(sentence, userDb) {
 					answer = `No crops to water!\n\n${await generateFarmImg(userDb)}`;
 				} else {
 					userDb.lastWater = Date.now();
-					answer = `@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg(userDb)}\n\nMake sure to water them again in 8 hours!`;
+					answer = `@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`;
 				}
 			} else {
 				if (nextWaterTS - Date.now() < 60000) {
-					answer = `Your plants are not thirsty. Try again in ${Math.floor((nextWaterTS - Date.now()) / 1000)} seconds!`;
+					answer = `Your plants are not thirsty. Try again in **${Math.floor((nextWaterTS - Date.now()) / 1000)} seconds**!`;
 				} else {
-					answer = `Your plants are not thirsty. Try again in ${Math.floor((nextWaterTS - Date.now()) / (1000 * 60 * 60))} hour(s) and ${Math.floor((nextWaterTS - Date.now()) / (1000 * 60)) % 60} minute(s)!`;
+					answer = `Your plants are not thirsty. Try again in **${Math.floor((nextWaterTS - Date.now()) / (1000 * 60 * 60))} hour(s) and ${Math.floor((nextWaterTS - Date.now()) / (1000 * 60)) % 60} minute(s)**!`;
 				}
 			}
 			break;
 		case 'harvest':
 			if ((sentence[2] < 1 || sentence[2] > 9) && typeof sentence[2] == typeof 9) {
-				answer = `Invalid spot ID. Top left starts at 1 and goes from left to right until 9.`;
+				answer = `Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`;
 			} else if (userDb.farm[sentence[2] - 1].seedType == null) {
-				answer = `There is no crop at spot ${sentence[2]}!\n\n${await generateFarmImg(userDb)}`;
+				answer = `There is **no crop at spot ${sentence[2]}**!\n\n${await generateFarmImg(userDb)}`;
 			} else if (userDb.farm[sentence[2] - 1].growthLevel == -1) {
-				answer = `Your crop at spot ${sentence[2]} is dead.\n\n${await generateFarmImg(userDb)}\n\nRemember to water your farm frequently.`;
+				answer = `Your crop at spot ${sentence[2]} is **dead**.\n\n${await generateFarmImg(userDb)}\n\nRemember to **water your farm** frequently.`;
 			} else if (Math.floor(userDb.farm[sentence[2] - 1].growthLevel) < 4) {
-				answer = `Your crop at spot ${sentence[2]} is not ready to be harvested yet!\n\n${await generateFarmImg(userDb)}`;
+				answer = `Your crop at spot ${sentence[2]} is **not ready to be harvested yet**!\n\n${await generateFarmImg(userDb)}`;
 			} else {
 				const targetCrop = userDb.farm[sentence[2] - 1].seedType;
 
@@ -338,7 +342,7 @@ async function interpretCommand(sentence, userDb) {
 				userDb.lastDaily = Date.now();
 				userDb.coins += randomGrant;
 
-				answer = `Granted... 	&#x1f3b2; 	&#x1f3b2; **${randomGrant} coins** to your account! Come back in **23 hours** to request another \`@FarmBot daily\`!`;
+				answer = `Granted... &#x1f3b2; &#x1f3b2; **${randomGrant} coins** to your account! Come back in **23 hours** to request another \`@FarmBot daily\`!`;
 			} else {
 				if (lastDaily + 82800000 - Date.now() < 60000) {
 					answer = `You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / 1000)} seconds**!`;
