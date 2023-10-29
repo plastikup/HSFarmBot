@@ -44,6 +44,9 @@ const cml = {
 	},
 	water: async (userDb, devforced) => {
 		return await require('./commands/water.js').cm(userDb, devforced);
+	},
+	harvest: async (sentence, userDb) => {
+		return await require('./commands/harvest.js').cm(sentence, userDb);
 	}
 };
 const generateFarmImg = require('./script/generateFarmImg.js');
@@ -219,23 +222,7 @@ async function interpretCommand(sentence, userDb) {
 			[answer, userDb] = await cml.water(userDb, devforced);
 			break;
 		case 'harvest':
-			if ((sentence[2] < 1 || sentence[2] > 9) && typeof sentence[2] == typeof 9) {
-				answer = `Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`;
-			} else if (userDb.farm[sentence[2] - 1].seedType == null) {
-				answer = `There is **no crop at spot ${sentence[2]}**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
-			} else if (userDb.farm[sentence[2] - 1].growthLevel == -1) {
-				answer = `Your crop at spot ${sentence[2]} is **dead**.\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to **water your farm** frequently.`;
-			} else if (Math.floor(userDb.farm[sentence[2] - 1].growthLevel) < 4) {
-				answer = `Your crop at spot ${sentence[2]} is **not ready to be harvested yet**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
-			} else {
-				const targetCrop = userDb.farm[sentence[2] - 1].seedType;
-
-				userDb.farm[sentence[2] - 1] = JSON.parse(newFarmDefault);
-				userDb.cropsInventory[targetCrop + 'Crops']++;
-				userDb.coins += cropTypes[targetCrop].earnings;
-
-				answer = `Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **${cropTypes[targetCrop].earnings} coins**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
-			}
+			[answer, userDb] = await cml.harvest(sentence, userDb);
 			break;
 		case 'daily':
 			let lastDaily = userDb.lastDaily;
