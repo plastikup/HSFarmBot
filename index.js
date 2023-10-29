@@ -110,7 +110,7 @@ async function main(req) {
 
 	// check if authenticated
 	let db = await dbFus.get();
-	let userDb = searchForAccount(username, db);
+	let userDb = require('./script/searchForAccount').searchForAccount(username, db);
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
@@ -185,13 +185,6 @@ async function main(req) {
 		await createForumPost('[MOD ACTION] ' + answer, post_number);
 		console.log('--- MOD END ---');
 	}
-}
-
-function searchForAccount(username, db) {
-	for (let i = 0; i < db.length; i++) {
-		if (db[i].username == username) return db[i];
-	}
-	return null;
 }
 
 async function interpretCommand(sentence, userDb) {

@@ -1,4 +1,4 @@
-(function () {
+(async function () {
 	const generateFarmImg = require('../script/generateFarmImg.js');
 	const cropTypes = require('../constants.js').cts().cropTypes;
 
