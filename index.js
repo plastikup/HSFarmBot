@@ -47,6 +47,8 @@ const generateFarmImg = require('./script/generateFarmImg.js');
 const cts = require('./constants.js').cts();
 const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
 const cropTypes = cts.cropTypes;
+const NEW_USER_JSON = cts.NEW_USER_JSON;
+const newFarmDefault = cts.newFarmDefault;
 let devforced = false;
 
 /* --- START OF WH --- */
@@ -283,7 +285,7 @@ async function interpretCommand(sentence, userDb) {
 			} else {
 				const targetCrop = userDb.farm[sentence[2] - 1].seedType;
 
-				userDb.farm[sentence[2] - 1] = JSON.parse(newUser.newFarmDefault);
+				userDb.farm[sentence[2] - 1] = JSON.parse(newFarmDefault);
 				userDb.cropsInventory[targetCrop + 'Crops']++;
 				userDb.coins += cropTypes[targetCrop].earnings;
 
@@ -374,122 +376,3 @@ async function createForumPost(raw = 'default text', post_number) {
 		.then((result) => console.log(result))
 		.catch((error) => console.log('error', error));
 }
-
-const HELP_POST_CONTENT = `Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can do. Type \`@FarmBot\` before any of these to get my attention! Words in brackets mean that they need to be changed based on what you want to put there.\r\n[quote=General]\r\n\`@FarmBot help\` — brings up introduction and list of commands\r\n\`@FarmBot begin\` — registers you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!\r\n[/quote]\r\n[quote="Farming"]\r\n\`@FarmBot view farm\` — shows your farm\r\n\`@FarmBot view inventory\` — check items\r\n\`@FarmBot plant [item] spot [number]\` — plant seeds at select location\r\n\`@FarmBot water\` — water your crops (every 8 hours)\r\n\`@FarmBot harvest spot [number]\` — harvests crop at select location\r\n\`@FarmBot fertilize spot [number] with [item]\` — fertilizes desired crop\r\n[/quote]\r\n[details=some other stuff coming soon ;)]\r\n[quote="Gardening"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Gifting"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Moosefarms Shop"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Market"]\r\n*coming soon!*\r\n[/quote]\r\n---\r\n[/details]\r\nHave a bug report? Tag @/Tri-Angle! Have a concern or suggestion regarding the game itself? Tag @/StarlightStudios!\r\n\r\nHave fun, and don’t forget to water your crops!`;
-
-const NEW_USER_JSON = {
-	farm: [
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-		{
-			fertilizerCount: 0,
-			growthLevel: 0,
-			lastWater: 0,
-			plantedAt: null,
-			secret: false,
-			seedType: null,
-		},
-	],
-	lastWater: 0,
-	coins: 0,
-	lastDaily: 0,
-	seedsInventory: {
-		blueberrySeeds: 0,
-		pinkTulipSeeds: 0,
-		strawberrySeeds: 0,
-		sunflowerSeeds: 0,
-		wheatSeeds: 5,
-	},
-	cropsInventory: {
-		blueberryCrops: 0,
-		pinkTulipCrops: 0,
-		strawberryCrops: 0,
-		sunflowerCrops: 0,
-		wheatCrops: 0,
-	},
-	username: 'ZZZ-DU',
-};
-
-const newUser = {
-	newFarmDefault: `{"growthLevel":0,"plantedAt":null,"seedType":null,"secret":false,"lastWater":0,"fertilizerCount":0}`,
-	/* used in previous version, now unused.
-	newSeedsInventoryDefault: `{
-		"wheatSeeds": 5,
-		"strawberrySeeds": 0,
-		"blueberrySeeds": 0,
-		"pinkTulipSeeds": 0,
-		"sunflowerSeeds": 0
-	}`,
-	newCropsInventoryDefault: `{
-		"wheatCrops": 0,
-		"strawberryCrops": 0,
-		"blueberryCrops": 0,
-		"pinkTulipCrops": 0,
-		"sunflowerCrops": 0
-	}`,
-	newSpecialItemsDefault: `{
-		"fertilizers": 2
-	}`,*/
-};
