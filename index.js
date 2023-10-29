@@ -110,7 +110,7 @@ async function main(req) {
 
 	// check if authenticated
 	let db = await dbFus.get();
-	let userDb = require('./script/searchForAccount').searchForAccount(username, db);
+	let userDb = require('./scripts/searchForAccount').searchForAccount(username, db);
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
@@ -125,7 +125,7 @@ async function main(req) {
 	}
 
 	// kill dead crops
-	userDb = await require('./script/killDeadCrops').killDeadCrops(userDb);
+	userDb = await require('./scripts/killDeadCrops').killDeadCrops(userDb);
 
 	// mod or player?
 	if (commandList[0][0].toLowerCase() != '::mod') {

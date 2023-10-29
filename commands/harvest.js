@@ -1,5 +1,5 @@
 (async function () {
-	const generateFarmImg = require('../script/generateFarmImg.js');
+	const generateFarmImg = require('../scripts/generateFarmImg.js');
     const cts = require('../constants.js').cts()
 	const cropTypes = cts.cropTypes;
     const newFarmDefault = cts.newFarmDefault;

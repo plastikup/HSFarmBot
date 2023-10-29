@@ -1,5 +1,5 @@
 (async function() {
-    const generateFarmImg = require('../script/generateFarmImg.js');
+    const generateFarmImg = require('../scripts/generateFarmImg.js');
 
     function inventoryContent(userDb) {
         let inventoryContent = userDb.seedsInventory;
