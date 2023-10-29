@@ -47,6 +47,9 @@ const cml = {
 	},
 	harvest: async (sentence, userDb) => {
 		return await require('./commands/harvest.js').cm(sentence, userDb);
+	},
+	daily: async (userDb, devforced) => {
+		return await require('./commands/daily.js').cm(userDb, devforced);
 	}
 };
 const generateFarmImg = require('./script/generateFarmImg.js');
@@ -225,20 +228,7 @@ async function interpretCommand(sentence, userDb) {
 			[answer, userDb] = await cml.harvest(sentence, userDb);
 			break;
 		case 'daily':
-			let lastDaily = userDb.lastDaily;
-			if (Date.now() > lastDaily + 82800000 || devforced) {
-				const randomGrant = Math.round(Math.random() * 100 + 50);
-				userDb.lastDaily = Date.now();
-				userDb.coins += randomGrant;
-
-				answer = `Granted... &#x1f3b2; &#x1f3b2; **${randomGrant} coins** to your account! Come back in **23 hours** to request another \`@FarmBot daily\`!`;
-			} else {
-				if (lastDaily + 82800000 - Date.now() < 60000) {
-					answer = `You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / 1000)} seconds**!`;
-				} else {
-					answer = `You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / (1000 * 60 * 60))} hours and ${Math.floor((lastDaily + 82800000 - Date.now()) / (1000 * 60)) % 60} minutes**!`;
-				}
-			}
+			[answer, userDb] = await cml.daily(userDb, devforced);
 			break;
 		case 'shop':
 			break;
