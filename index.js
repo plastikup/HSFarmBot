@@ -41,6 +41,9 @@ const cml = {
 	},
 	plant: async (sentence, userDb) => {
 		return await require('./commands/plant.js').cm(sentence, userDb);
+	},
+	water: async (userDb, devforced) => {
+		return await require('./commands/water.js').cm(userDb, devforced);
 	}
 };
 const generateFarmImg = require('./script/generateFarmImg.js');
@@ -213,45 +216,7 @@ async function interpretCommand(sentence, userDb) {
 			[answer, userDb] = await cml.plant(sentence, userDb);
 			break;
 		case 'water':
-			let nextWaterTS = userDb.lastWater + 28800000;
-			if (Date.now() > nextWaterTS || devforced) {
-				let somethingToWater = false;
-				for (let i = 0; i < userDb.farm.length; i++) {
-					userDb.farm[i].lastWater = Date.now();
-					const seedType = userDb.farm[i].seedType;
-					if (seedType != null && userDb.farm[i].growthLevel != -1) {
-						let increment = 3 / cropTypes[seedType].watersRequired;
-						/*
-						if (seedType == 'blueberry') increment = 0.375; // 8 waters
-						else if (seedType == 'pinkTulip') increment = 0.3; // 10 waters
-						else if (seedType == 'strawberry') increment = 0.6; // 5 waters
-						else if (seedType == 'sunflower') increment = 0.25; // 12 waters
-						else if (seedType == 'wheat') increment = 0.6; // 5 waters
-						*/
-						userDb.farm[i].growthLevel += increment;
-						/*
-						if (userDb.farm[i].fertilizerCount > 0) {
-							userDb.farm[i].growthLevel = userDb.farm[i].growthLevel + increment;
-							userDb.farm[i].fertilizerCount = userDb.farm[i].fertilizerCount - 1;
-						}
-						*/
-						somethingToWater = true;
-					}
-				}
-
-				if (!somethingToWater) {
-					answer = `No crops to water!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
-				} else {
-					userDb.lastWater = Date.now();
-					answer = `@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`;
-				}
-			} else {
-				if (nextWaterTS - Date.now() < 60000) {
-					answer = `Your plants are not thirsty. Try again in **${Math.floor((nextWaterTS - Date.now()) / 1000)} seconds**!`;
-				} else {
-					answer = `Your plants are not thirsty. Try again in **${Math.floor((nextWaterTS - Date.now()) / (1000 * 60 * 60))} hour(s) and ${Math.floor((nextWaterTS - Date.now()) / (1000 * 60)) % 60} minute(s)**!`;
-				}
-			}
+			[answer, userDb] = await cml.water(userDb, devforced);
 			break;
 		case 'harvest':
 			if ((sentence[2] < 1 || sentence[2] > 9) && typeof sentence[2] == typeof 9) {
