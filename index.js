@@ -2,7 +2,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios');
 const DEV = /^localhost:\d+$/.test(process.env.DETA_SPACE_APP_HOSTNAME);
 require('dotenv').config({ override: DEV });
 
@@ -28,27 +27,6 @@ app.post('/daily', (req, res) => {
 });
 
 /* --- MODULES --- */
-
-const cml = {
-	help: () => {
-		return require('./commands/help.js').cm();
-	},
-	view: async (word, userDb) => {
-		return await require('./commands/view.js').cm(word, userDb);
-	},
-	plant: async (sentence, userDb) => {
-		return await require('./commands/plant.js').cm(sentence, userDb);
-	},
-	water: async (userDb, devforced) => {
-		return await require('./commands/water.js').cm(userDb, devforced);
-	},
-	harvest: async (sentence, userDb) => {
-		return await require('./commands/harvest.js').cm(sentence, userDb);
-	},
-	daily: async (userDb, devforced) => {
-		return await require('./commands/daily.js').cm(userDb, devforced);
-	},
-};
 
 const dbFus = require('./dyna/dbFus.js').dbFus();
 const newForumPost = (raw = 'default text', post_number) => require('./dyna/newForumPost').newForumPost(raw, post_number);
@@ -136,7 +114,7 @@ async function main(req) {
 		let arrayedAnswers = [];
 		for (let i = 0; i < commandList.length; i++) {
 			const sentence = commandList[i];
-			[arrayedAnswers[i], userDb] = await interpretCommand(sentence, userDb);
+			[arrayedAnswers[i], userDb] = await require('./scripts/interpretCommand.js').cm(sentence, userDb, devforced);
 		}
 
 		// reply user
@@ -145,79 +123,8 @@ async function main(req) {
 
 		// update database
 		dbFus.put(userDb._id, userDb);
-
-		// end
-		console.log('--- end ---');
 	} else {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
-		const sentence = commandList[0];
-		let answer = null;
-		let tgUserDb = null;
-		switch (sentence[1]) {
-			case 'grant_s':
-				tgUserDb = searchForAccount(sentence[2], db);
-				if (tgUserDb == null) {
-					answer = `Unauthenticated user @${sentence[2]}.`;
-				} else {
-					for (let i = 3; i < sentence.length; i++) {
-						const types = ['blueberrySeeds', 'pinkTulipSeeds', 'strawberrySeeds', 'sunflowerSeeds', 'wheatSeeds'];
-						tgUserDb.seedsInventory[types[i - 3]] += Math.round(sentence[i]);
-					}
-					dbFus.put(tgUserDb._id, tgUserDb);
-					answer = `Granted specified seeds to @${sentence[2]}.`;
-				}
-				break;
-			case 'grant_c':
-				tgUserDb = searchForAccount(sentence[2], db);
-				if (tgUserDb == null) {
-					answer = `Unauthenticated user @${sentence[2]}.`;
-				} else {
-					for (let i = 3; i < sentence.length; i++) {
-						const types = ['blueberryCrops', 'pinkTulipCrops', 'strawberryCrops', 'sunflowerCrops', 'wheatCrops'];
-						tgUserDb.cropsInventory[types[i - 3]] += Math.round(sentence[i]);
-					}
-					dbFus.put(tgUserDb._id, tgUserDb);
-					answer = `Granted specified crops to @${sentence[2]}.`;
-				}
-				break;
-
-			default:
-				answer = `Unrecognized mod command \`${sentence[1]}\`.`;
-				break;
-		}
-		await newForumPost('[MOD ACTION] ' + answer, post_number);
-		console.log('--- MOD END ---');
+		await newForumPost('[MOD ACTION] ' + await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db), post_number);
 	}
-}
-
-async function interpretCommand(sentence, userDb) {
-	let answer = null;
-	switch (sentence[0].toLowerCase()) {
-		case 'help':
-			answer = cml.help();
-			break;
-		case 'view':
-			answer = await cml.view(sentence[1].toLowerCase(), userDb);
-			break;
-		case 'plant':
-			[answer, userDb] = await cml.plant(sentence, userDb);
-			break;
-		case 'water':
-			[answer, userDb] = await cml.water(userDb, devforced);
-			break;
-		case 'harvest':
-			[answer, userDb] = await cml.harvest(sentence, userDb);
-			break;
-		case 'daily':
-			[answer, userDb] = await cml.daily(userDb, devforced);
-			break;
-		case 'shop':
-			answer = 'Shop in progress.';
-			break;
-
-		default:
-			answer = `Unrecognized command \`${sentence[0]}\`.`;
-			break;
-	}
-	return [answer, userDb];
 }
