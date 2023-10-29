@@ -2,7 +2,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const sharp = require('sharp');
 const axios = require('axios');
 const DEV = /^localhost:\d+$/.test(process.env.DETA_SPACE_APP_HOSTNAME);
 require('dotenv').config({ override: DEV });
@@ -32,53 +31,22 @@ app.post('/daily', (req, res) => {
 	createForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
 });
 
-/* --- CONSTANTS --- */
-
-const VALID_HEAD_COMMAND_REGEXP = /(::mod|takeover|begin|help|view|plant|water|harvest|coins|daily)/i;
-const cropTypes = {
-	_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley)$/i,
-	wheat: {
-		watersRequired: 3,
-		earnings: 35,
+/* --- MODULES --- */
+const cml = {
+	help: () => {
+		return require('./commands/help.js').cm_help();
 	},
-	strawberry: {
-		watersRequired: 4,
-		earnings: 40,
-	},
-	poppy: {
-		watersRequired: 3,
-		earnings: 40,
-	},
-	blueberry: {
-		watersRequired: 4,
-		earnings: 50,
-	},
-	purpleTulip: {
-		watersRequired: 4,
-		earnings: 50,
-	},
-	sunflower: {
-		watersRequired: 5,
-		earnings: 70,
-	},
-	goldenSunflower: {
-		watersRequired: 5,
-		earnings: 90,
-	},
-	pinkTulip: {
-		watersRequired: 6,
-		earnings: 100,
-	},
-	goldenWheat: {
-		watersRequired: 8,
-		earnings: 120,
-	},
-	lilyValley: {
-		watersRequired: 12,
-		earnings: 90,
+	view: async (word, userDb) => {
+		return await require('./commands/view.js').cm_view(word, userDb);
 	},
 };
+const generateFarmImg = require('./script/generateFarmImg.js');
 
+/* --- CONSTANTS --- */
+
+const cts = require('./constants.js').cts();
+const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
+const cropTypes = cts.cropTypes;
 let devforced = false;
 
 /* --- START OF WH --- */
@@ -231,23 +199,10 @@ async function interpretCommand(sentence, userDb) {
 	let answer = null;
 	switch (sentence[0].toLowerCase()) {
 		case 'help':
-			answer = HELP_POST_CONTENT;
+			answer = cml.help();
 			break;
 		case 'view':
-			switch (sentence[1].toLowerCase()) {
-				case 'farm':
-					answer = `@${userDb.username}'s **farm**.\n\n${await generateFarmImg(userDb)}`;
-					break;
-				case 'inventory':
-					answer = `@${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
-					break;
-				case 'coins':
-					answer = `You have **${userDb.coins} coins**.`;
-					break;
-				default:
-					answer = `Unrecognized subcommand \`${sentence[1]}\`.`;
-					break;
-			}
+			answer = await cml.view(sentence[1].toLowerCase(), userDb);
 			break;
 		case 'plant':
 			let farm = userDb.farm;
@@ -263,9 +218,9 @@ async function interpretCommand(sentence, userDb) {
 
 					userDb.seedsInventory[seed + 'Seeds']--;
 
-					answer = `Planted one cute **${seed.toLowerCase()} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`;
+					answer = `Planted one cute **${seed.toLowerCase()} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`;
 				} else {
-					answer = `It looks like you have **already something planted there**.\n\n${await generateFarmImg(userDb)}`;
+					answer = `It looks like you have **already something planted there**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 				}
 			} else if (!cropTypes._seed_types_regexp.test(seed)) {
 				answer = `Unknown type of seed.`;
@@ -303,10 +258,10 @@ async function interpretCommand(sentence, userDb) {
 				}
 
 				if (!somethingToWater) {
-					answer = `No crops to water!\n\n${await generateFarmImg(userDb)}`;
+					answer = `No crops to water!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 				} else {
 					userDb.lastWater = Date.now();
-					answer = `@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`;
+					answer = `@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`;
 				}
 			} else {
 				if (nextWaterTS - Date.now() < 60000) {
@@ -320,11 +275,11 @@ async function interpretCommand(sentence, userDb) {
 			if ((sentence[2] < 1 || sentence[2] > 9) && typeof sentence[2] == typeof 9) {
 				answer = `Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`;
 			} else if (userDb.farm[sentence[2] - 1].seedType == null) {
-				answer = `There is **no crop at spot ${sentence[2]}**!\n\n${await generateFarmImg(userDb)}`;
+				answer = `There is **no crop at spot ${sentence[2]}**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 			} else if (userDb.farm[sentence[2] - 1].growthLevel == -1) {
-				answer = `Your crop at spot ${sentence[2]} is **dead**.\n\n${await generateFarmImg(userDb)}\n\nRemember to **water your farm** frequently.`;
+				answer = `Your crop at spot ${sentence[2]} is **dead**.\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to **water your farm** frequently.`;
 			} else if (Math.floor(userDb.farm[sentence[2] - 1].growthLevel) < 4) {
-				answer = `Your crop at spot ${sentence[2]} is **not ready to be harvested yet**!\n\n${await generateFarmImg(userDb)}`;
+				answer = `Your crop at spot ${sentence[2]} is **not ready to be harvested yet**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 			} else {
 				const targetCrop = userDb.farm[sentence[2] - 1].seedType;
 
@@ -332,7 +287,7 @@ async function interpretCommand(sentence, userDb) {
 				userDb.cropsInventory[targetCrop + 'Crops']++;
 				userDb.coins += cropTypes[targetCrop].earnings;
 
-				answer = `Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **${cropTypes[targetCrop].earnings} coins**!\n\n${await generateFarmImg(userDb)}`;
+				answer = `Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **${cropTypes[targetCrop].earnings} coins**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 			}
 			break;
 		case 'daily':
@@ -351,39 +306,14 @@ async function interpretCommand(sentence, userDb) {
 				}
 			}
 			break;
+		case 'shop':
+			break;
 
 		default:
 			answer = `Unrecognized command \`${sentence[0]}\`.`;
 			break;
 	}
 	return [answer, userDb];
-}
-
-function inventoryContent(userDb) {
-	let inventoryContent = userDb.seedsInventory;
-	inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
-	let returned = 'Seeds|Quantity\n-|-\n';
-	for (let item in inventoryContent) {
-		returned = returned + `${item.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}|${inventoryContent[item]}\n`;
-	}
-
-	inventoryContent = userDb.cropsInventory;
-	inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
-	returned = returned + '\nCrops|Quantity\n-|-\n';
-	for (let item in inventoryContent) {
-		returned = returned + `${item.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}|${inventoryContent[item]}\n`;
-	}
-
-	/* not devlp yet
-	inventoryContent = userDb.specialItems;
-	inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
-	returned = returned + '\nSpecial Items|Quantity\n-|-\n';
-	for (let item in inventoryContent) {
-		returned = returned + `${item.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}|${inventoryContent[item]}\n`;
-	}
-	*/
-
-	return returned;
 }
 
 let dbFus = {
@@ -443,65 +373,6 @@ async function createForumPost(raw = 'default text', post_number) {
 		.then((response) => response.data)
 		.then((result) => console.log(result))
 		.catch((error) => console.log('error', error));
-}
-
-async function generateFarmImg(userDb) {
-	let grid = [];
-	for (let i = 0; i < 9; i++) {
-		const listRaw = userDb.farm[i];
-		const growthLevelFloored = Math.floor(listRaw.growthLevel);
-		if (growthLevelFloored == -1) grid.push('seeddead');
-		else if (growthLevelFloored == 0) grid.push('base');
-		else if (growthLevelFloored == 1) grid.push('seed1');
-		else if (growthLevelFloored == 2) grid.push('seed2');
-		else if (growthLevelFloored == 3) grid.push('seed3');
-		else if (plantTypesRegex.test(listRaw.seedType)) grid.push(listRaw.seedType);
-		else grid.push('base');
-	}
-	const newPicture = await sharp({
-		create: {
-			width: 308,
-			height: 308,
-			channels: 4,
-			background: { r: 0, g: 0, b: 0 },
-		},
-	})
-		.composite([
-			{ input: `./imgs/${grid[0]}.png`, gravity: 'northwest' },
-			{ input: `./imgs/${grid[1]}.png`, gravity: 'north' },
-			{ input: `./imgs/${grid[2]}.png`, gravity: 'northeast' },
-			{ input: `./imgs/${grid[3]}.png`, gravity: 'west' },
-			{ input: `./imgs/${grid[4]}.png`, gravity: 'centre' },
-			{ input: `./imgs/${grid[5]}.png`, gravity: 'east' },
-			{ input: `./imgs/${grid[6]}.png`, gravity: 'southwest' },
-			{ input: `./imgs/${grid[7]}.png`, gravity: 'south' },
-			{ input: `./imgs/${grid[8]}.png`, gravity: 'southeast' },
-		])
-		.png()
-		.toBuffer();
-
-	return `<img src="data:image/png;base64,${newPicture.toString('base64')}">\n\n${generateFarmTable(userDb)}`;
-}
-
-function generateFarmTable(userDb) {
-	let returned = `[details=Table view]\n&ic;|&ic;|&ic;\n:-:|:-:|:-:\n`;
-
-	for (let i = 0; i < 3; i++) {
-		const row = [userDb.farm[i * 3], userDb.farm[i * 3 + 1], userDb.farm[i * 3 + 2]];
-		for (let j = 0; j < row.length; j++) {
-			const cell = row[j];
-			if (cell.seedType == null) returned += '[*empty*]|';
-			else if (cell.growthLevel == -1) {
-				returned += `[***dead** ${cell.seedType}*]|`;
-			} else {
-				let seedInfo = cropTypes[cell.seedType];
-				returned += `**${cell.seedType}**<br><small>growth level: **${(cell.growthLevel * seedInfo.watersRequired) / 3}/${seedInfo.watersRequired}**</small>|`;
-			}
-		}
-		returned += `\n`;
-	}
-	returned += `[/details]`;
-	return returned;
 }
 
 const HELP_POST_CONTENT = `Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can do. Type \`@FarmBot\` before any of these to get my attention! Words in brackets mean that they need to be changed based on what you want to put there.\r\n[quote=General]\r\n\`@FarmBot help\` — brings up introduction and list of commands\r\n\`@FarmBot begin\` — registers you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!\r\n[/quote]\r\n[quote="Farming"]\r\n\`@FarmBot view farm\` — shows your farm\r\n\`@FarmBot view inventory\` — check items\r\n\`@FarmBot plant [item] spot [number]\` — plant seeds at select location\r\n\`@FarmBot water\` — water your crops (every 8 hours)\r\n\`@FarmBot harvest spot [number]\` — harvests crop at select location\r\n\`@FarmBot fertilize spot [number] with [item]\` — fertilizes desired crop\r\n[/quote]\r\n[details=some other stuff coming soon ;)]\r\n[quote="Gardening"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Gifting"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Moosefarms Shop"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Market"]\r\n*coming soon!*\r\n[/quote]\r\n---\r\n[/details]\r\nHave a bug report? Tag @/Tri-Angle! Have a concern or suggestion regarding the game itself? Tag @/StarlightStudios!\r\n\r\nHave fun, and don’t forget to water your crops!`;
