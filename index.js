@@ -15,8 +15,8 @@ app.listen(PORT, () => {
 	console.log(`Example app listening at http://localhost:${PORT}`);
 });
 app.use(bodyParser.json());
-app.post('/wh', async (req, res) => {
-	console.log('received wh');
+app.post('/post-action', async (req, res) => {
+	console.log('received webhook');
 	try {
 		await main(req.body);
 	} catch (error) {

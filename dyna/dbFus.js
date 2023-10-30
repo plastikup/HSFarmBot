@@ -1,5 +1,8 @@
 const axios = require('axios');
 
+const cts = require('../constants.js').cts();
+const NEW_USER_JSON = cts.NEW_USER_JSON;
+
 let dbFus = {
 	get: async function () {
 		const response = await axios('https://hsfarmbot-40ef.restdb.io/rest/v-v1', {
