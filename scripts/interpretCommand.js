@@ -34,7 +34,7 @@ let cm = async (commandList, userDb, devforced = false) => {
 				answer = cml.help();
 				break;
 			case 'view':
-				answer = await cml.view(sentence[1].toLowerCase(), userDb);
+				answer = await cml.view(sentence, userDb);
 				break;
 			case 'plant':
 				[answer, userDb] = await cml.plant(sentence, userDb);

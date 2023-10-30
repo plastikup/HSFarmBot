@@ -17,25 +17,28 @@ app.listen(PORT, () => {
 app.use(bodyParser.json());
 app.post('/wh', async (req, res) => {
 	console.log('received wh');
-	await main(req.body);
+	try {
+		await main(req.body);
+	} catch (error) {
+		await newForumPost(`An error has occured: \`${error}\`.`, null);
+	}
 	res.status(200).send('OK');
 });
-app.post('/daily', (req, res) => {
+app.post('/daily', async (req, res) => {
+	await newForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
 	res.status(200).send('OK');
-	console.log('received wh (daily)');
-	newForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
 });
 
 /* --- MODULES --- */
 
 const dbFus = require('./dyna/dbFus.js').dbFus();
-const newForumPost = (raw = 'default text', post_number) => require('./dyna/newForumPost').newForumPost(raw, post_number);
 
-/* --- CONSTANTS --- */
+const newForumPost = (raw = 'default text', post_number) => require('./dyna/newForumPost').newForumPost(raw, post_number);
 
 const cts = require('./constants.js').cts();
 const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
 const NEW_USER_JSON = cts.NEW_USER_JSON;
+
 let devforced = false;
 
 /* --- START OF WH --- */
@@ -118,6 +121,6 @@ async function main(req) {
 		dbFus.put(userDb._id, userDb);
 	} else {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
-		await newForumPost('[MOD ACTION] ' + await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db), post_number);
+		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number);
 	}
 }
