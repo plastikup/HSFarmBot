@@ -17,6 +17,10 @@ const cml = {
 	daily: async (userDb, devforced) => {
 		return await require('../commands/daily.js').cm(userDb, devforced);
 	},
+	shop: null,
+	auction: async (sentence, userDb) => {
+		return await require('../commands/auction.js').cm(sentence, userDb);
+	},
 };
 
 let cm = async (commandList, userDb, devforced = false) => {
@@ -27,7 +31,7 @@ let cm = async (commandList, userDb, devforced = false) => {
 		arrayedAnswers[i] = await interpret(sentence);
 	}
 
-	async function interpret(sentence){
+	async function interpret(sentence) {
 		let answer = null;
 		switch (sentence[0].toLowerCase()) {
 			case 'help':
@@ -51,7 +55,10 @@ let cm = async (commandList, userDb, devforced = false) => {
 			case 'shop':
 				answer = 'Shop in progress.';
 				break;
-	
+			case 'auction':
+				[answer, userDb] = await cml.auction(sentence, userDb);
+				break;
+
 			default:
 				answer = `Unrecognized command \`${sentence[0]}\`.`;
 				break;
@@ -59,7 +66,7 @@ let cm = async (commandList, userDb, devforced = false) => {
 		return answer;
 	}
 
-	return([arrayedAnswers.join('\n___\n'), userDb])
+	return [arrayedAnswers.join('\n___\n'), userDb];
 };
 
 module.exports.cm = async function (commandList, userDb, devforced) {

@@ -28,21 +28,22 @@ function inventoryContent(userDb) {
 }
 
 let cm = async (sentence, userDb) => {
-	if (sentence[1] == undefined) return `Valid subcommands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have.`
-	else switch (sentence[1].toLowerCase) {
-		case 'farm':
-			return `@${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
-			break;
-		case 'inventory':
-			return `@${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
-			break;
-		case 'coins':
-			return `You have **${userDb.coins} coins**.`;
-			break;
-		default:
-			return `Unrecognized subcommand \`${sentence[1]}\`.`;
-			break;
-	}
+	if (sentence[1] == undefined) return `Valid subcommands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have.`;
+	else
+		switch (sentence[1].toLowerCase()) {
+			case 'farm':
+				return `@${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
+				break;
+			case 'inventory':
+				return `@${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
+				break;
+			case 'coins':
+				return `You have **${userDb.coins} coins**.`;
+				break;
+			default:
+				return `Unrecognized subcommand \`${sentence[1]}\`.`;
+				break;
+		}
 };
 
 module.exports.cm = async function (sentence, userDb) {

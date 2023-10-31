@@ -13,7 +13,7 @@ let cm = async (userDb) => {
 		else if (growthLevelFloored == 1) grid.push('seed1');
 		else if (growthLevelFloored == 2) grid.push('seed2');
 		else if (growthLevelFloored == 3) grid.push('seed3');
-		else if (plantTypesRegex.test(listRaw.seedType)) grid.push(listRaw.seedType);
+		else if (cropTypes._seed_types_regexp.test(listRaw.seedType)) grid.push(listRaw.seedType);
 		else grid.push('base');
 	}
 	const newPicture = await sharp({
@@ -51,7 +51,7 @@ let cm = async (userDb) => {
 				table += `[***dead** ${cell.seedType}*]|`;
 			} else {
 				let seedInfo = cropTypes[cell.seedType];
-				table += `**${cell.seedType}**<br><small>growth level: **${(cell.growthLevel * seedInfo.watersRequired) / 3}/${seedInfo.watersRequired}**</small>|`;
+				table += `**${cell.seedType}**<br><small>growth level: **${(cell.growthLevel * seedInfo.watersRequired) / 3}/${seedInfo.watersRequired + 1}**</small>|`;
 			}
 		}
 		table += `\n`;
