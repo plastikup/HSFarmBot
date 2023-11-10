@@ -28,7 +28,7 @@ function inventoryContent(userDb) {
 }
 
 let cm = async (sentence, userDb) => {
-	if (sentence[1] == undefined) return `Valid subcommands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have.`;
+	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have.`;
 	else
 		switch (sentence[1].toLowerCase()) {
 			case 'farm':
