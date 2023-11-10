@@ -1,18 +1,19 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
+const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 function inventoryContent(userDb) {
 	let inventoryContent = userDb.seedsInventory;
 	inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
 	let table = 'Seeds|Quantity\n-|-\n';
 	for (let item in inventoryContent) {
-		table = table + `${item.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}|${inventoryContent[item]}\n`;
+		table = table + `${undoCamelCase.cm(item)}|${inventoryContent[item]}\n`;
 	}
 
 	inventoryContent = userDb.cropsInventory;
 	inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
 	table = table + '\nCrops|Quantity\n-|-\n';
 	for (let item in inventoryContent) {
-		table = table + `${item.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}|${inventoryContent[item]}\n`;
+		table = table + `${undoCamelCase.cm(item)}|${inventoryContent[item]}\n`;
 	}
 
 	/* not devlp yet
@@ -20,7 +21,7 @@ function inventoryContent(userDb) {
         inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
         table = table + '\nSpecial Items|Quantity\n-|-\n';
         for (let item in inventoryContent) {
-            table = table + `${item.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}|${inventoryContent[item]}\n`;
+            table = table + `${undoCamelCase.cm(item)}|${inventoryContent[item]}\n`;
         }
         */
 

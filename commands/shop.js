@@ -1,4 +1,5 @@
 const dbMs = require('../dyna/dbMs.js').dbMs();
+const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 let cm = async (sentence, userDb) => {
 	let mooseFarms = await dbMs.get();
@@ -11,9 +12,8 @@ let cm = async (sentence, userDb) => {
 				for (const item of mooseFarms) {
                     console.log(item);
 					table += `${item.packName}|`;
-
                     for (const seed of item.packContent) {
-                        table += `${seed.seedName.replace(/([a-z])([A-Z])/g, (m0, m1, m2) => m1 + ' ' + m2).replace(/^[a-z]/, (m) => m.toUpperCase())}: **${seed.luck}%**<br>`;
+                        table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
                     }
                     table += `|${item.packPrice}\n`;
 				}
