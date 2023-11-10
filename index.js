@@ -17,11 +17,11 @@ app.listen(PORT, () => {
 app.use(bodyParser.json());
 app.post('/post-action', async (req, res) => {
 	console.log('received webhook');
-	try {
-		await main(req.body);
-	} catch (error) {
-		await newForumPost(`An error has occured: \`${error}\`.`, null);
-	}
+	//try {
+	await main(req.body);
+	//} catch (error) {
+	//	await newForumPost(`An error has occured: \`${error}\`.`, null);
+	//}
 	res.status(200).send('OK');
 });
 app.post('/daily', async (req, res) => {
