@@ -44,7 +44,7 @@ let cm = async (sentence, userDb) => {
 						userDb.coins -= targetPack.packPrice;
 						userDb.seedsInventory[randomSeed.seedName + 'Seeds'] += isDouble + 1;
 
-						if (isDouble || true) {
+						if (isDouble) {
 							return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomSeed.seedName} seeds[/spoiler]**, both with a **${randomSeed.luck}% drop chance**!! The duplicate has a **10% chance** of happening. Wow, congrats!`, userDb];
 						} else {
 							return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.luck}% drop chance**!!`, userDb];

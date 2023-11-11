@@ -78,6 +78,12 @@ async function main(req) {
 		return undefined;
 	}
 
+	// avoid spam
+	if (commandList.length > 5) {
+		await newForumPost(`I don't accept to execute more than 5 commands at once. #minimumwage /j`, post_number);
+		return;
+	}
+
 	// devforced (only applies to water & daily)
 	if (commandList[0][commandList[0].length - 1].toLowerCase() == 'devforced') {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
