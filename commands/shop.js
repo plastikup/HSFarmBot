@@ -32,11 +32,17 @@ let cm = async (sentence, userDb) => {
 					if (userDb.coins >= targetPack.packPrice) {
 						const randomSeedHT = Math.floor(Math.random() * targetPack.packContent.length);
 						const randomSeed = targetPack.packContent[randomSeedHT];
-						
-						userDb.coins -= targetPack.packPrice;
-						userDb.seedsInventory[randomSeed.seedName + 'Seeds']++;
 
-						return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.luck}% drop chance**!!`, userDb];
+						const isDouble = Math.floor(Math.random() * 10) == 0 && randomSeed.luck >= 15;
+
+						userDb.coins -= targetPack.packPrice;
+						userDb.seedsInventory[randomSeed.seedName + 'Seeds'] += isDouble + 1;
+
+						if (isDouble || true){
+							return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomSeed.seedName} seeds[/spoiler]**, both with a **${randomSeed.luck}% drop chance**!! The duplicate has a **10% chance** of happening. Wow, congrats!`, userDb];
+						} else {
+							return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.luck}% drop chance**!!`, userDb];
+						}
 					} else {
 						return [`You **don't have enough coins** to buy this pack (**${targetPack.packPrice} coins**). You currently have **${userDb.coins} coins** in your account.`, userDb];
 					}
