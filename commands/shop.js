@@ -10,20 +10,37 @@ let cm = async (sentence, userDb) => {
 			case 'list':
 				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
 				for (const item of mooseFarms) {
-                    console.log(item);
-					table += `${item.packName}|`;
-                    for (const seed of item.packContent) {
-                        table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
-                    }
-                    table += `|${item.packPrice}\n`;
+					console.log(item);
+					table += `${undoCamelCase.cm(item.packName)}|`;
+					for (const seed of item.packContent) {
+						table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
+					}
+					table += `|${item.packPrice}\n`;
 				}
 				return [`### MooseFarms Co.'s products\n\n${table}`, userDb];
 				break;
 			case 'buy':
-				return [`buying items in progress`, userDb];
-				break;
-			case 'coins':
-				return [`You have **${userDb.coins} coins**.`, userDb];
+				let existingPacks = [];
+				for (const item of mooseFarms) {
+					existingPacks.push(item.packName);
+				}
+				console.log(existingPacks);
+				if (!existingPacks.includes(sentence[2])) {
+					return [`Invalid pack name \`${sentence[2]}\`. Reply with \`@FarmBot shop list\` for a detailed list of available products.`, userDb];
+				} else {
+					const targetPack = mooseFarms[existingPacks.indexOf(sentence[2])];
+					if (userDb.coins >= targetPack.packPrice) {
+						const randomSeedHT = Math.floor(Math.random() * targetPack.packContent.length);
+						const randomSeed = targetPack.packContent[randomSeedHT];
+						
+						userDb.coins -= targetPack.packPrice;
+						userDb.seedsInventory[randomSeed.seedName + 'Seeds']++;
+
+						return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.luck}% drop chance**!!`, userDb];
+					} else {
+						return [`You **don't have enough coins** to buy this pack (**${targetPack.packPrice} coins**). You currently have **${userDb.coins} coins** in your account.`, userDb];
+					}
+				}
 				break;
 			default:
 				return [`Unrecognized subcommand \`${sentence[1]}\`.`, userDb];
