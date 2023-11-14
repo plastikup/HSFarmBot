@@ -2,10 +2,10 @@ const dbMs = require('../dyna/dbMs.js').dbMs();
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 let cm = async (sentence, userDb) => {
-	let mooseFarms = await dbMs.get();
 	if (sentence[1] == undefined) {
 		return [`Valid **sub**commands for \`@FarmBot shop\`:\n- \`list\`: display your shopping list (what you can buy at MooseFarms Co.);\n- \`buy [item]\`: buy an item from your shopping list.`, userDb];
 	} else {
+		let mooseFarms = await dbMs.get();
 		switch (sentence[1].toLowerCase()) {
 			case 'list':
 				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
