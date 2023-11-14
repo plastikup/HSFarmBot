@@ -13,6 +13,16 @@ let cm = async (sentence, userDb) => {
 		if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
 		let baseAcc = auction[baseAccID].bidSettings;
 
+		let stats = {username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5};
+		for (let i = 0; i < auction.length; i++) {
+			if (i == baseAccID) continue;
+			const raw = auction[i];
+			if (raw.bidAmount > stats.bidAmount) {
+				stats.username = raw.username;
+				stats.bidAmount = raw.bidAmount;
+			}
+		}
+
 		let userAccID = auction.findIndex((e) => e.username == userDb.username);
 		let userAcc = auction[userAccID];
 
@@ -25,21 +35,26 @@ let cm = async (sentence, userDb) => {
 
 				let yourBidText = 'You have not bidden anything yet.';
 				if (userAccID != -1) {
-					if (baseAcc.highestBid.username == userDb.username) yourBidText = 'You are in the lead!';
+					if (stats.username == userDb.username) yourBidText = 'You are in the lead!';
 					else yourBidText = `You have bidden ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
 				}
 
-				return [`### Status of current ongoing auction\n> \uD83D\uDD0D **Bidding subject**: ${undoCamelCase.cm(baseAcc.bidSubject.subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${baseAcc.highestBid.amount} coins (by ${baseAcc.highestBid.username})\n> \u23F3 **Ends in**: ${formatCountdown.cm(baseAcc.endsAt + 82800000)}\n\n${yourBidText}`, userDb];
+				return [`### Status of current ongoing auction\n> \uD83D\uDD0D **Bidding subject**: ${undoCamelCase.cm(baseAcc.bidSubject.subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${stats.bidAmount} coins (by ${stats.username})\n> \u23F3 **Ends in**: ${formatCountdown.cm(baseAcc.endsAt + 82800000)}\n\n${yourBidText}`, userDb];
 				break;
 			case 'bid':
 				const bidAmount = Number(sentence[2]);
+				//console.log(bidAmount)
+				//console.log(stats.bidAmount + 5)
+				//console.log(bidAmount < stats.bidAmount + 5)
+				//stopit++
+
 				if (isNaN(bidAmount)) return ['Please enter a **digit** to bid.', userDb];
-				else if (sentence[2] < baseAcc.highestBid.amount + 5) return [`You must bid **at least 5 coins higher than the leading bid** (which is currently **${baseAcc.highestBid.amount} coins** - you will have to bid *at least* 5 more than that amount).`, userDb];
+				else if (bidAmount < stats.bidAmount + 5) return [`You must bid **at least 5 coins higher than the leading bid** (which is currently **${stats.bidAmount} coins** - you will have to bid *at least* 5 more than that amount).`, userDb];
 				else {
 					if (userAccID == -1) {
 						await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now() });
 						userDb.coins -= bidAmount;
-						return [`You have bidden **${bidAmount} coins**, and have **overtaken** @${baseAcc.highestBid.username}'s lead!`, userDb];
+						return [`You have bidden **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!`, userDb];
 					} else {
 						return [`updating a bid in progress`, userDb];
 					}
