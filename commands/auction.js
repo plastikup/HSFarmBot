@@ -13,7 +13,7 @@ let cm = async (sentence, userDb) => {
 		if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
 		let baseAcc = auction[baseAccID].bidSettings;
 
-		const userAccID = auction.findIndex((e) => e.username == userDb.username);
+		let userAccID = auction.findIndex((e) => e.username == userDb.username);
 		let userAcc = auction[userAccID];
 
 		switch (sentence[1].toLowerCase()) {
@@ -32,7 +32,18 @@ let cm = async (sentence, userDb) => {
 				return [`### Status of current ongoing auction\n> \uD83D\uDD0D **Bidding subject**: ${undoCamelCase.cm(baseAcc.bidSubject.subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${baseAcc.highestBid.amount} coins (by ${baseAcc.highestBid.username})\n> \u23F3 **Ends in**: ${formatCountdown.cm(baseAcc.endsAt + 82800000)}\n\n${yourBidText}`, userDb];
 				break;
 			case 'bid':
-				return [`[bidding coming soon]`, userDb];
+				const bidAmount = Number(sentence[2]);
+				if (isNaN(bidAmount)) return ['Please enter a **digit** to bid.', userDb];
+				else if (sentence[2] < baseAcc.highestBid.amount + 5) return [`You must bid **at least 5 coins higher than the leading bid** (which is currently **${baseAcc.highestBid.amount} coins** - you will have to bid *at least* 5 more than that amount).`, userDb];
+				else {
+					if (userAccID == -1) {
+						await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now() });
+						userDb.coins -= bidAmount;
+						return [`You have bidden **${bidAmount} coins**, and have **overtaken** @${baseAcc.highestBid.username}'s lead!`, userDb];
+					} else {
+						return [`updating a bid in progress`, userDb];
+					}
+				}
 				break;
 
 			default:
