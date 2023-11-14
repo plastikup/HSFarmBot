@@ -1,3 +1,5 @@
+const formatCountdown = require('../scripts/formatCountdown.js');
+
 let cm = async (userDb, devforced) => {
 	let lastDaily = userDb.lastDaily;
 	if (Date.now() > lastDaily + 82800000 || devforced) {
@@ -7,11 +9,7 @@ let cm = async (userDb, devforced) => {
 
 		return [`Granted... &#x1f3b2; &#x1f3b2; **${randomGrant} coins** to your account! Come back in **23 hours** to request another \`@FarmBot daily\`!`, userDb];
 	} else {
-		if (lastDaily + 82800000 - Date.now() < 60000) {
-			return [`You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / 1000)} seconds**!`, userDb];
-		} else {
-			return [`You have recently requested a **daily**. Try again in **${Math.floor((lastDaily + 82800000 - Date.now()) / (1000 * 60 * 60))} hours and ${Math.floor((lastDaily + 82800000 - Date.now()) / (1000 * 60)) % 60} minutes**!`, userDb];
-		}
+		return [`You have recently requested a **daily**. Try again in **${formatCountdown.cm(lastDaily + 82800000)}**!`, userDb];
 	}
 };
 
