@@ -9,10 +9,12 @@ let cm = async (sentence, userDb) => {
 	else {
 		let auction = await dbAu.get();
 
-		const i = auction.findIndex((e) => e.username === 'ZZZ-DU');
-		if (i == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
-		let baseAcc = auction[i].bidSettings;
-		console.log(baseAcc);
+		const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');
+		if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
+		let baseAcc = auction[baseAccID].bidSettings;
+
+		const userAccID = auction.findIndex((e) => e.username == userDb.username);
+		let userAcc = auction[userAccID];
 
 		switch (sentence[1].toLowerCase()) {
 			case 'help':
@@ -22,9 +24,9 @@ let cm = async (sentence, userDb) => {
 				if (!baseAcc._active) return [`There is no ongoing auction right now. Check it again in a day or two!`, userDb];
 
 				let yourBidText = 'You have not bidden anything yet.';
-				if (auction.findIndex((e) => e.username == userDb.username) != -1) {
+				if (userAccID != -1) {
 					if (baseAcc.highestBid.username == userDb.username) yourBidText = 'You are in the lead!';
-					else yourBidText = `You have bidden ${auction[auction.findIndex((e) => e.username == userDb.username)].bidAmount} coins. It's not enough to win the auction!`;
+					else yourBidText = `You have bidden ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
 				}
 
 				return [`### Status of current ongoing auction\n> \uD83D\uDD0D **Bidding subject**: ${undoCamelCase.cm(baseAcc.bidSubject.subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${baseAcc.highestBid.amount} coins (by ${baseAcc.highestBid.username})\n> \u23F3 **Ends in**: ${formatCountdown.cm(baseAcc.endsAt + 82800000)}\n\n${yourBidText}`, userDb];
