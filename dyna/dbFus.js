@@ -31,7 +31,7 @@ let dbFus = {
 	},
 	put: async function (username, userDb) {
 		await axios(`https://hsfarmbot-40ef.restdb.io/rest/v-v1/${username}`, {
-			method: 'POST',
+			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 				'cache-control': 'no-cache',
