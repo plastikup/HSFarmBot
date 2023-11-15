@@ -13,7 +13,7 @@ let cm = async (sentence, userDb) => {
 		if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
 		let baseAcc = auction[baseAccID].bidSettings;
 
-		let stats = {username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5};
+		let stats = { username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5 };
 		for (let i = 0; i < auction.length; i++) {
 			if (i == baseAccID) continue;
 			const raw = auction[i];
@@ -24,7 +24,7 @@ let cm = async (sentence, userDb) => {
 		}
 
 		let userAccID = auction.findIndex((e) => e.username == userDb.username);
-		let userAcc = auction[userAccID];
+		let userAcc = auction[userAccID] || { username: 'ZZZ-DU', bidAmount: 0, lastBidTS: Infinity };
 
 		switch (sentence[1].toLowerCase()) {
 			case 'help':
@@ -43,20 +43,28 @@ let cm = async (sentence, userDb) => {
 				break;
 			case 'bid':
 				const bidAmount = Number(sentence[2]);
-				//console.log(bidAmount)
-				//console.log(stats.bidAmount + 5)
-				//console.log(bidAmount < stats.bidAmount + 5)
-				//stopit++
 
 				if (isNaN(bidAmount)) return ['Please enter a **digit** to bid.', userDb];
 				else if (bidAmount < stats.bidAmount + 5) return [`You must bid **at least 5 coins higher than the leading bid** (which is currently **${stats.bidAmount} coins** - you will have to bid *at least* 5 more than that amount).`, userDb];
 				else {
-					if (userAccID == -1) {
+					if (bidAmount - userAcc.bidAmount > userDb.coins) {
+						return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins}.`, userDb];
+					} else if (userAccID == -1) {
 						await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now() });
 						userDb.coins -= bidAmount;
 						return [`You have bidden **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!`, userDb];
 					} else {
-						return [`updating a bid in progress`, userDb];
+						if (userAcc.lastBidTS + 82800000 > Date.now()) {
+							return [`You cannot bid twice within **23 hours**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 82800000)}**!`, userDb];
+						}
+
+						const oldBidAmount = userAcc.bidAmount;
+						userAcc.bidAmount = bidAmount;
+						userAcc.lastBidTS = Date.now();
+						await dbAu.put(userAcc._id, userAcc);
+
+						userDb.coins -= bidAmount - oldBidAmount;
+						return [`You updated your old bid (${oldBidAmount} coins) **to ${bidAmount} coins**. See who's capable of overtaking you, ha!`, userDb];
 					}
 				}
 				break;
