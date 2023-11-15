@@ -33,7 +33,7 @@ let cm = async (sentence, userDb) => {
 			case 'view':
 				if (!baseAcc._active) return [`There is no ongoing auction right now. Check it again in a day or two!`, userDb];
 
-				if (Date.now() >= baseAcc.endsAt + 82800000) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...`, userDb];
+				if (Date.now() >= baseAcc.endsAt + 82800000) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
 				let yourBidText = 'You have not bidden anything yet.';
 				if (userAccID != -1) {
@@ -44,7 +44,7 @@ let cm = async (sentence, userDb) => {
 				return [`### Status of current ongoing auction\n> \uD83D\uDD0D **Bidding subject**: ${undoCamelCase.cm(baseAcc.bidSubject.subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${stats.bidAmount} coins (by ${stats.username})\n> \u23F3 **Ends in**: ${formatCountdown.cm(baseAcc.endsAt + 82800000)}\n\n${yourBidText}`, userDb];
 				break;
 			case 'bid':
-				if (Date.now() >= baseAcc.endsAt + 82800000) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...`, userDb];
+				if (Date.now() >= baseAcc.endsAt + 82800000) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
 				if (sentence[2].toLowerCase() == 'reset') {
 					if (userAccID == -1) return [`Nothing to reset - you have not bidden anything yet!`, userDb];
