@@ -3,6 +3,7 @@ const dbAu = require('../dyna/dbAu.js').dbAu();
 const auctionHelp = require('../constants.js').cts().auctionHelp;
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
+const auctionFormatting = require('../scripts/auctionFormatting.js');
 
 let cm = async (sentence, userDb) => {
 	if (sentence[1] == undefined) return [`Valid subcommands for \`@FarmBot auction\`:\n- \`help\`: What's an auction, what's a bid? Everything you need to know before getting started;\n- \`view\`: view the current ongoing auction happening;\n- \`bid [amount]\`: bid an amount of coins on the ongoing auction.`, userDb];
@@ -12,6 +13,7 @@ let cm = async (sentence, userDb) => {
 		const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');
 		if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
 		let baseAcc = auction[baseAccID].bidSettings;
+		console.log(baseAcc)
 
 		let stats = { username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5 };
 		for (let i = 0; i < auction.length; i++) {
@@ -33,7 +35,7 @@ let cm = async (sentence, userDb) => {
 			case 'view':
 				if (!baseAcc._active) return [`There is no ongoing auction right now. Check it again in a day or two!`, userDb];
 
-				if (Date.now() >= baseAcc.endsAt + 82800000) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
+				if (Date.now() >= baseAcc.endsAt) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
 				let yourBidText = 'You have not bidden anything yet.';
 				if (userAccID != -1) {
@@ -41,10 +43,10 @@ let cm = async (sentence, userDb) => {
 					else yourBidText = `You have bidden ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
 				}
 
-				return [`### Status of current ongoing auction\n> \uD83D\uDD0D **Bidding subject**: ${undoCamelCase.cm(baseAcc.bidSubject.subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${stats.bidAmount} coins (by ${stats.username})\n> \u23F3 **Ends in**: ${formatCountdown.cm(baseAcc.endsAt + 82800000)}\n\n${yourBidText}`, userDb];
+				return [`### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`, userDb];
 				break;
 			case 'bid':
-				if (Date.now() >= baseAcc.endsAt + 82800000) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
+				if (Date.now() >= baseAcc.endsAt) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
 				if (sentence[2].toLowerCase() == 'reset') {
 					if (userAccID == -1) return [`Nothing to reset - you have not bidden anything yet!`, userDb];

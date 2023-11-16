@@ -127,6 +127,6 @@ async function main(req) {
 		dbFus.put(userDb._id, userDb);
 	} else {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
-		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number);
+		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999);
 	}
 }
