@@ -34,6 +34,9 @@ let cm = async (sentence, userDb, db) => {
 				return `Granted specified crops to @${sentence[2]}.`;
 			}
 			break;
+		case 'start_auction':
+			return `Auction started. Posting in the public topic now.`
+			break;
 
 		default:
 			return `Unrecognized mod command \`${sentence[1]}\`.`;

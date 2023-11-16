@@ -63,7 +63,7 @@ let cm = async (sentence, userDb) => {
 					if (bidAmount - userAcc.bidAmount > userDb.coins) {
 						return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins}.`, userDb];
 					} else if (userAccID == -1) {
-						await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now() });
+						await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
 						userDb.coins -= bidAmount;
 						return [`You have bidden **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!`, userDb];
 					} else {
