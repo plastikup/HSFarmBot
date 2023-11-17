@@ -37,10 +37,10 @@ let cm = async (sentence, userDb) => {
 
 				if (Date.now() >= baseAcc.endsAt) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
-				let yourBidText = 'You have not bidden anything yet.';
+				let yourBidText = 'You have not bid anything yet.';
 				if (userAccID != -1) {
 					if (stats.username == userDb.username) yourBidText = 'You are in the lead!';
-					else yourBidText = `You have bidden ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
+					else yourBidText = `You have bid ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
 				}
 
 				return [`### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`, userDb];
@@ -49,7 +49,7 @@ let cm = async (sentence, userDb) => {
 				if (Date.now() >= baseAcc.endsAt) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
 				if (sentence[2].toLowerCase() == 'reset') {
-					if (userAccID == -1) return [`Nothing to reset - you have not bidden anything yet!`, userDb];
+					if (userAccID == -1) return [`Nothing to reset - you have not bid anything yet!`, userDb];
 
 					userDb.coins += userAcc.bidAmount;
 					await dbAu.delete(userAcc._id);
@@ -67,7 +67,7 @@ let cm = async (sentence, userDb) => {
 					} else if (userAccID == -1) {
 						await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
 						userDb.coins -= bidAmount;
-						return [`You have bidden **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!`, userDb];
+						return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!`, userDb];
 					} else {
 						if (userAcc.lastBidTS + 82800000 > Date.now()) {
 							return [`You cannot bid twice within **23 hours**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 82800000)}**!`, userDb];
