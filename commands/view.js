@@ -35,10 +35,10 @@ let cm = async (sentence, userDb) => {
 	else
 		switch (sentence[1].toLowerCase()) {
 			case 'farm':
-				return `@${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
+				return `@/${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 				break;
 			case 'inventory':
-				return `@${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
+				return `@/${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
 				break;
 			case 'coins':
 				return `You have **${userDb.coins} coins**.`;

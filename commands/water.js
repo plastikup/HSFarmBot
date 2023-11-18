@@ -19,7 +19,7 @@ let cm = async (userDb, devforced) => {
 			return [`No crops to water!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 		} else {
 			userDb.lastWater = Date.now();
-			return [`@${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`, userDb];
+			return [`@/${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`, userDb];
 		}
 	} else {
 		if (nextWaterTS - Date.now() < 60000) {
