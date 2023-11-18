@@ -1,3 +1,29 @@
 module.exports.cm = function () {
-	return `Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can do. Type \`@FarmBot\` before any of these to get my attention! Words in brackets mean that they need to be changed based on what you want to put there.\r\n[quote=General]\r\n\`@FarmBot help\` — brings up introduction and list of commands\r\n\`@FarmBot begin\` — registers you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!\r\n[/quote]\r\n[quote="Farming"]\r\n\`@FarmBot view farm\` — shows your farm\r\n\`@FarmBot view inventory\` — check items\r\n\`@FarmBot plant [item] spot [number]\` — plant seeds at select location\r\n\`@FarmBot water\` — water your crops (every 8 hours)\r\n\`@FarmBot harvest spot [number]\` — harvests crop at select location\r\n\`@FarmBot fertilize spot [number] with [item]\` — fertilizes desired crop\r\n[/quote]\r\n[details=some other stuff coming soon ;)]\r\n[quote="Gardening"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Gifting"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Moosefarms Shop"]\r\n*coming soon!*\r\n[/quote]\r\n[quote="Market"]\r\n*coming soon!*\r\n[/quote]\r\n---\r\n[/details]\r\nHave a bug report? Tag @/Tri-Angle! Have a concern or suggestion regarding the game itself? Tag @/StarlightStudios!\r\n\r\nHave fun, and don’t forget to water your crops!`;
+	return `
+Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can do. **Type \`@FarmBot\` before any of these** to get my attention! **Words in bracket**s mean that they **need to be changed based on what you want to put there**.
+[quote=General]
+\`@FarmBot begin\` — register you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!
+\`@FarmBot help\` — bring up introduction and list of commands (this post!)
+\`@FarmBot view coins\` — display your inventory's coins
+\`@FarmBot daily\` — claim your daily coins
+[/quote]
+[quote="Farming"]
+\`@FarmBot view farm\` — display your farm
+\`@FarmBot view inventory\` — display your items
+\`@FarmBot water\` — water your crops (every 8 hours)
+\`@FarmBot plant [item] spot [number]\` — plant seeds at select location (1, top left, to 9, bottom right)
+\`@FarmBot harvest spot [number]\` — harvest crop at select location
+[/quote]
+[quote="Moosefarms Shop"]
+\`@FarmBot shop list\` — display MooseFarms Co.'s products
+\`@FarmBot shop buy [product]\` — buy a product from MooseFarms
+[/quote]
+[quote="Auction"]
+\`@FarmBot auction help\` — display detailed docs related to auction and its rules. **it is in your responsibility to consult those beforehand**
+\`@FarmBot auction view\` — display the information about the current ongoing auction
+\`@FarmBot auction bid [amount]\` — bid a certain amount on the ongoing auction
+\`@FarmBot auction bid reset\` — reset your bid
+\n*hsFB's auction is [u]not a gamble[/u]; never in any case you will lose coins, money, or any currency if you have not obtained the product you're bidding on.*
+[/quote]
+Have a bug report? Tag @/Tri-Angle! Have a concern or suggestion regarding the game itself? Tag @/StarlightStudios!\n\nHave fun, and don’t forget to water your crops!`;
 };
