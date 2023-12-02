@@ -51,7 +51,7 @@ let cm = async (userDb) => {
 				table += `[***dead** ${cell.seedType}*]|`;
 			} else {
 				let seedInfo = cropTypes[cell.seedType];
-				table += `**${cell.seedType}**<br><small>growth level: **${((cell.growthLevel - 1) * seedInfo.watersRequired) / 3}/${seedInfo.watersRequired}**</small>|`;
+				table += `**${cell.seedType}**<br><small>growth level: **${Math.round(((cell.growthLevel - 1) * seedInfo.watersRequired) / 3)}/${seedInfo.watersRequired}**</small>|`;
 			}
 		}
 		table += `\n`;
