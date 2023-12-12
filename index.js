@@ -65,13 +65,18 @@ async function main(req) {
 		.trim()
 		.split('\n')
 		.filter((i) => i);
-	for (let i = 0; i < commandList.length; i++) {
-		commandList[i] = commandList[i]
-			.replace(/@FarmBot ?/, '')
-			.split(' ')
-			.filter((i) => i);
-		if (commandList[i][0] == 'begin') authenticate = true;
-		else if (!commandList[i][0].match(VALID_HEAD_COMMAND_REGEXP)) invalidCommand = commandList[i][0];
+	for (let i = commandList.length - 1; i >= 0; i--) {
+		if (commandList[i].toLowerCase().includes('@farmbot')) {
+			commandList[i] = commandList[i]
+				.replace(/@FarmBot ?/, '')
+				.split(' ')
+				.filter((i) => i);
+			if (commandList[i][0] == 'begin') authenticate = true;
+			else if (!commandList[i][0].match(VALID_HEAD_COMMAND_REGEXP)) invalidCommand = commandList[i][0];
+		} else {
+			console.log(commandList[i]);
+			commandList.splice(i, 1);
+		}
 	}
 	if (invalidCommand != null) {
 		await newForumPost(`Unknown command \`${invalidCommand}\`.`, post_number);
@@ -121,10 +126,13 @@ async function main(req) {
 	if (commandList[0][0].toLowerCase() != '::mod') {
 		let answer = '';
 		[answer, userDb] = await require('./scripts/interpretCommand.js').cm(commandList, userDb, devforced);
-		await newForumPost(answer, post_number);
 
 		// update database
 		dbFus.put(userDb._id, userDb);
+
+		// post message
+		if (answer.length <= 21000) await newForumPost(answer, post_number);
+		else await newForumPost(`You made me reach the forum character limit, smh!\n<small>usually means your commands have made it through`, post_number);
 	} else {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
 		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999);
