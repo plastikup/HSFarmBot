@@ -10,7 +10,7 @@ let cm = async (userDb, devforced) => {
 
 			return [`Granted... \u2757\u2757 **1 Lily Valley seed** to your account!! This drop has a 2% drop chance.\n\nCome back in **23 hours** to request another \`@FarmBot daily\`!`, userDb];
 		} else {
-			const randomGrant = Math.round(Math.random() * 25 + 15);
+			const randomGrant = Math.round(Math.random() * 10 + 5);
 			userDb.coins += randomGrant;
 	
 			return [`Granted... \uD83E\uDD41\uD83E\uDD41 **${randomGrant} coins** to your account! Come back in **23 hours** to request another \`@FarmBot daily\`!`, userDb];
