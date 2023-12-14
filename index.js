@@ -19,12 +19,12 @@ app.post('/post-action', async (req, res) => {
 	try {
 		await main(req.body);
 	} catch (error) {
-		await newForumPost(`An error has occured: \`${error}\`.`, null);
+		await newForumPost(`An error has occured: \`${error}\`.`, null, topic_id);
 	}
 	res.status(200).send('OK');
 });
 app.post('/daily', async (req, res) => {
-	await newForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999);
+	await newForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
 	res.status(200).send('OK');
 });
 
@@ -32,7 +32,7 @@ app.post('/daily', async (req, res) => {
 
 const dbFus = require('./dyna/dbFus.js').dbFus();
 
-const newForumPost = (raw = 'default text', post_number) => require('./dyna/newForumPost').newForumPost(raw, post_number);
+const newForumPost = (raw = 'default text', post_number, topic_id) => require('./dyna/newForumPost').newForumPost(raw, post_number, topic_id);
 
 const cts = require('./constants.js').cts();
 const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
@@ -46,6 +46,7 @@ async function main(req) {
 	let username = req.post.username;
 	const cooked = req.post.cooked;
 	const post_number = req.post.post_number;
+	const topic_id = req.post.topic_id;
 
 	// exit if is self
 	if (username == 'FarmBot') return undefined;
@@ -77,13 +78,13 @@ async function main(req) {
 		}
 	}
 	if (invalidCommand != null) {
-		await newForumPost(`Unknown command \`${invalidCommand}\`.`, post_number);
+		await newForumPost(`Unknown command \`${invalidCommand}\`.`, post_number, topic_id);
 		return undefined;
 	}
 
 	// avoid spam
 	if (commandList.length > 5) {
-		await newForumPost(`I don't accept to execute more than 5 commands at once. #minimumwage /j`, post_number);
+		await newForumPost(`I don't accept to execute more than 5 commands at once. #minimumwage /j`, post_number, topic_id);
 		return;
 	}
 
@@ -107,13 +108,13 @@ async function main(req) {
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
-			await newForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number);
+			await newForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number, topic_id);
 		} else {
-			await newForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number);
+			await newForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number, topic_id);
 		}
 		return undefined;
 	} else if (userDb == null) {
-		await newForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number);
+		await newForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number, topic_id);
 		return undefined;
 	}
 
@@ -129,10 +130,10 @@ async function main(req) {
 		dbFus.put(userDb._id, userDb);
 
 		// post message
-		if (answer.length <= 21000) await newForumPost(answer, post_number);
-		else await newForumPost(`You made me reach the forum character limit, smh!\n<small>usually means your commands have made it through`, post_number);
+		if (answer.length <= 21000) await newForumPost(answer, post_number, topic_id);
+		else await newForumPost(`You made me reach the forum character limit, smh!\n<small>usually means your commands have made it through`, post_number, topic_id);
 	} else {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
-		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999);
+		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999, topic_id);
 	}
 }
