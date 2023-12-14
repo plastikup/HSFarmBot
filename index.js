@@ -16,7 +16,6 @@ app.listen(PORT, () => {
 });
 app.use(bodyParser.json());
 app.post('/post-action', async (req, res) => {
-	console.log('received webhook');
 	try {
 		await main(req.body);
 	} catch (error) {
@@ -74,7 +73,6 @@ async function main(req) {
 			if (commandList[i][0] == 'begin') authenticate = true;
 			else if (!commandList[i][0].match(VALID_HEAD_COMMAND_REGEXP)) invalidCommand = commandList[i][0];
 		} else {
-			console.log(commandList[i]);
 			commandList.splice(i, 1);
 		}
 	}

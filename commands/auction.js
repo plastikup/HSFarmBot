@@ -12,7 +12,6 @@ let cm = async (sentence, userDb) => {
 		const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');
 		if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
 		let baseAcc = auction[baseAccID].bidSettings;
-		console.log(baseAcc)
 
 		let stats = { username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5 };
 		for (let i = 0; i < auction.length; i++) {

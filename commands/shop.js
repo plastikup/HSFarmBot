@@ -10,7 +10,6 @@ let cm = async (sentence, userDb) => {
 			case 'list':
 				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
 				for (const item of mooseFarms) {
-					console.log(item);
 					table += `${undoCamelCase.cm(item.packName)}|`;
 					for (const seed of item.packContent) {
 						table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
