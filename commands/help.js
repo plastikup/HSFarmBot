@@ -5,6 +5,7 @@ Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can d
 \`@FarmBot begin\` — register you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!
 \`@FarmBot help\` — bring up introduction and list of commands (this post!)
 \`@FarmBot view coins\` — display your inventory's coins
+\`@FarmBot view shop\` — display MooseFarms Co.'s products
 \`@FarmBot daily\` — claim your daily coins
 [/quote]
 [quote="Farming"]
@@ -14,12 +15,8 @@ Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can d
 \`@FarmBot plant [item] spot [number]\` — plant seeds at select location (1, top left, to 9, bottom right)
 \`@FarmBot harvest spot [number]\` — harvest crop at select location
 [/quote]
-[quote="Moosefarms Shop"]
-Buy:
-\`@FarmBot shop list\` — display MooseFarms Co.'s products
-\`@FarmBot shop buy [product]\` — buy a product from MooseFarms
-
-Sell:
+[quote="MooseFarms Co."]
+\`@FarmBot shop [product]\` — buy a product from MooseFarms
 \`@FarmBot sell [number] [crop]\` — sell your harvested crops to make money
 [/quote]
 [quote="Auction"]

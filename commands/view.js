@@ -1,5 +1,6 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
+const dbMs = require('../dyna/dbMs.js').dbMs();
 
 function inventoryContent(userDb) {
 	let seedInventoryContent = userDb.seedsInventory;
@@ -42,6 +43,18 @@ let cm = async (sentence, userDb) => {
 				break;
 			case 'coins':
 				return `You have **${userDb.coins} coins**.`;
+				break;
+			case 'shop':
+				let mooseFarms = await dbMs.get();
+				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
+				for (const item of mooseFarms) {
+					table += `${undoCamelCase.cm(item.packName)}|`;
+					for (const seed of item.packContent) {
+						table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
+					}
+					table += `|${item.packPrice}\n`;
+				}
+				return `### MooseFarms Co.'s products\n\n${table}`;
 				break;
 			default:
 				return `Unrecognized subcommand \`${sentence[1]}\`.`;
