@@ -1,5 +1,5 @@
 const undoCamelCase = require('../scripts/undoCamelCase.js');
-const cropTypes = require('../constants.js').cts().cropTypes;
+const cropTypes = require('../constants.js').cropTypes;
 
 let cm = async (sentence, userDb) => {
     const tgcrop = sentence[2].substring(0, sentence[2].search(/(crops?|seeds?|)$/i));

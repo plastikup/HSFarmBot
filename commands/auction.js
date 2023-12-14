@@ -1,5 +1,5 @@
-//const cropTypes = require('../constants.js').cts().cropTypes;
-const dbAu = require('../dyna/dbAu.js').dbAu();
+//const cropTypes = require('../constants.js').cropTypes;
+const dbAu = require('../dyna/dbAu.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
 const auctionFormatting = require('../scripts/auctionFormatting.js');

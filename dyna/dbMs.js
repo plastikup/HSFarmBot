@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-let dbMs = {
+module.exports = {
 	get: async function () {
 		const response = await axios('https://hsfarmbot-40ef.restdb.io/rest/moosefarms', {
 			method: 'GET',
@@ -11,8 +11,4 @@ let dbMs = {
 		}).then((x) => x.data);
 		return response;
 	},
-};
-
-module.exports.dbMs = function () {
-	return dbMs;
 };

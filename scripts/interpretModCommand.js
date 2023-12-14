@@ -1,7 +1,7 @@
 const searchForAccount = (username, db) => require('./searchForAccount').searchForAccount(username, db);
 const dbFus = require('../dyna/dbFus.js').dbFus();
-const dbAu = require('../dyna/dbAu.js').dbAu();
-const test = require('../constants.js').cts().test;
+const dbAu = require('../dyna/dbAu.js');
+const test = require('../constants.js').test;
 const auctionFormatting = require('../scripts/auctionFormatting.js');
 
 let cm = async (sentence, userDb, db) => {

@@ -1,5 +1,5 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
-const cropTypes = require('../constants.js').cts().cropTypes;
+const cropTypes = require('../constants.js').cropTypes;
 
 let killDeadCrops = async (userDb) => {
 	for (let i = 0; i < 9; i++) {

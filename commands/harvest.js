@@ -1,5 +1,5 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
-const cts = require('../constants.js').cts();
+const cts = require('../constants.js');
 const cropTypes = cts.cropTypes;
 const newFarmDefault = cts.newFarmDefault;
 

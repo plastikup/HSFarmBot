@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-let dbAu = {
+module.exports = {
 	get: async function () {
 		const response = await axios('https://hsfarmbot-40ef.restdb.io/rest/auction', {
 			method: 'GET',
@@ -43,8 +43,4 @@ let dbAu = {
 			},
 		});
 	},
-};
-
-module.exports.dbAu = function () {
-	return dbAu;
 };

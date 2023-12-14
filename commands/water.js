@@ -1,5 +1,5 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
-const cropTypes = require('../constants.js').cts().cropTypes;
+const cropTypes = require('../constants.js').cropTypes;
 
 let cm = async (userDb, devforced) => {
 	let nextWaterTS = userDb.lastWater + 28800000;

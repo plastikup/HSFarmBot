@@ -1,6 +1,6 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
-const dbMs = require('../dyna/dbMs.js').dbMs();
+const dbMs = require('../dyna/dbMs.js');
 
 function inventoryContent(userDb) {
 	let seedInventoryContent = userDb.seedsInventory;

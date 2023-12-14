@@ -1,4 +1,4 @@
-const dbMs = require('../dyna/dbMs.js').dbMs();
+const dbMs = require('../dyna/dbMs.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 let cm = async (sentence, userDb) => {

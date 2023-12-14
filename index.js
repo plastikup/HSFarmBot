@@ -28,21 +28,20 @@ app.post('/daily', async (req, res) => {
 	res.status(200).send('OK');
 });
 
-/* --- MODULES --- */
-
-const dbFus = require('./dyna/dbFus.js').dbFus();
-
-const newForumPost = (raw = 'default text', post_number, topic_id) => require('./dyna/newForumPost').newForumPost(raw, post_number, topic_id);
-
-const cts = require('./constants.js').cts();
-const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
-const NEW_USER_JSON = cts.NEW_USER_JSON;
-
 let devforced = false;
 
 /* --- START OF WH --- */
 
 async function main(req) {
+	/* modules declarations */
+	const dbFus = await require('./dyna/dbFus.js');
+	const newForumPost = await require('./dyna/newForumPost');
+
+	const cts = require('./constants.js');
+	const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
+	const NEW_USER_JSON = cts.NEW_USER_JSON;
+
+	/* script start */
 	let username = req.post.username;
 	const cooked = req.post.cooked;
 	const post_number = req.post.post_number;

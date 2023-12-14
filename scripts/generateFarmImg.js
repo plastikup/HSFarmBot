@@ -1,5 +1,5 @@
 const sharp = require('sharp');
-const cropTypes = require('../constants.js').cts().cropTypes;
+const cropTypes = require('../constants.js').cropTypes;
 
 let cm = async (userDb) => {
 	// GRID
