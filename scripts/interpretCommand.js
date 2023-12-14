@@ -28,7 +28,7 @@ const cml = {
 	},
 };
 
-let cm = async (commandList, userDb, devforced = false) => {
+module.exports = async (commandList, userDb, devforced = false) => {
 	// interpret commands
 	let arrayedAnswers = [];
 	for (let i = 0; i < commandList.length; i++) {
@@ -75,8 +75,4 @@ let cm = async (commandList, userDb, devforced = false) => {
 	}
 
 	return [arrayedAnswers.join('\n___\n'), userDb];
-};
-
-module.exports.cm = async function (commandList, userDb, devforced) {
-	return await cm(commandList, userDb, devforced);
 };

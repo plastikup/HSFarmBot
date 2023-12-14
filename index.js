@@ -48,10 +48,10 @@ async function main(req) {
 	const topic_id = req.post.topic_id;
 
 	// exit if is self
-	if (username == 'FarmBot') return undefined;
+	if (username == 'FarmBot') return;
 
 	// exit if not talking to fb
-	if (!cooked.match('<a class="mention" href="/u/farmbot">@FarmBot</a>')) return undefined;
+	if (!cooked.match('<a class="mention" href="/u/farmbot">@FarmBot</a>')) return;
 
 	// recreate post content (raw)
 	let raw = cooked.substring(3, cooked.length - 4);
@@ -78,7 +78,7 @@ async function main(req) {
 	}
 	if (invalidCommand != null) {
 		await newForumPost(`Unknown command \`${invalidCommand}\`.`, post_number, topic_id);
-		return undefined;
+		return;
 	}
 
 	// avoid spam
@@ -89,13 +89,13 @@ async function main(req) {
 
 	// devforced (only applies to water & daily)
 	if (commandList[0][commandList[0].length - 1].toLowerCase() == 'devforced') {
-		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
+		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return;
 		devforced = true;
 	} else devforced = false;
 
 	// [mod only] takeover
 	if (commandList[0][0].toLowerCase() == 'takeover') {
-		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
+		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return;
 		username = commandList[0][1];
 		commandList[0].splice(0, 1);
 		commandList[0].splice(0, 1);
@@ -103,7 +103,7 @@ async function main(req) {
 
 	// check if authenticated
 	let db = await dbFus.get();
-	let userDb = require('./scripts/searchForAccount').searchForAccount(username, db);
+	let userDb = require('./scripts/searchForAccount')(username, db);
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
@@ -111,19 +111,19 @@ async function main(req) {
 		} else {
 			await newForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number, topic_id);
 		}
-		return undefined;
+		return;
 	} else if (userDb == null) {
 		await newForumPost(`You are unauthenticated. Get your journey started with \`@FarmBot begin\`!`, post_number, topic_id);
-		return undefined;
+		return;
 	}
 
 	// kill dead crops
-	userDb = await require('./scripts/killDeadCrops').killDeadCrops(userDb);
+	userDb = await require('./scripts/killDeadCrops')(userDb);
 
 	// mod or player?
 	if (commandList[0][0].toLowerCase() != '::mod') {
 		let answer = '';
-		[answer, userDb] = await require('./scripts/interpretCommand.js').cm(commandList, userDb, devforced);
+		[answer, userDb] = await require('./scripts/interpretCommand.js')(commandList, userDb, devforced);
 
 		// update database
 		dbFus.put(userDb._id, userDb);
@@ -132,7 +132,7 @@ async function main(req) {
 		if (answer.length <= 21000) await newForumPost(answer, post_number, topic_id);
 		else await newForumPost(`You made me reach the forum character limit, smh!\n<small>usually means your commands have made it through`, post_number, topic_id);
 	} else {
-		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return undefined;
-		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js').cm(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999, topic_id);
+		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return;
+		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js')(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999, topic_id);
 	}
 }
