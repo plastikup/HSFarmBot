@@ -12,23 +12,23 @@ const cts = {
 		},
 		poppy: {
 			watersRequired: 3,
-			earnings: 40,
+			earnings: 60,
 		},
 		blueberry: {
 			watersRequired: 4,
-			earnings: 50,
+			earnings: 90,
 		},
 		purpleTulip: {
 			watersRequired: 4,
-			earnings: 50,
+			earnings: 65,
 		},
 		sunflower: {
 			watersRequired: 5,
-			earnings: 70,
+			earnings: 90,
 		},
 		goldenSunflower: {
-			watersRequired: 5,
-			earnings: 90,
+			watersRequired: 6,
+			earnings: 120,
 		},
 		pinkTulip: {
 			watersRequired: 6,
@@ -36,7 +36,7 @@ const cts = {
 		},
 		goldenWheat: {
 			watersRequired: 8,
-			earnings: 120,
+			earnings: 150,
 		},
 		lilyValley: {
 			watersRequired: 12,
