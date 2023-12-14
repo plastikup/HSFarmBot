@@ -48,7 +48,7 @@ let cm = async (sentence, userDb) => {
 				let mooseFarms = await dbMs.get();
 				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
 				for (const item of mooseFarms) {
-					table += `${undoCamelCase.cm(item.packName)}|`;
+					table += `\`${item.packName}\`|`;
 					for (const seed of item.packContent) {
 						table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
 					}
