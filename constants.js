@@ -1,5 +1,5 @@
 const cts = {
-	VALID_HEAD_COMMAND_REGEXP: /(::mod|takeover|begin|help|view|plant|water|harvest|daily|shop|sell|auction)/i,
+	VALID_HEAD_COMMAND_REGEXP: /(::mod|takeover|begin|help|view|plant|water|harvest|daily|buy|sell|auction)/i,
 	cropTypes: {
 		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley)$/i,
 		wheat: {
@@ -148,7 +148,7 @@ const cts = {
 		username: 'ZZZ-DU',
 	},
 	newFarmDefault: `{"growthLevel":0,"plantedAt":null,"seedType":null,"secret":false,"lastWater":0,"fertilizerCount":0}`,
-	test: [['help'], ['view', 'farm'], ['view', 'inventory'], ['view', 'coins'], ['plant', 'wheat', 'spot', '1'], ['water'], ['harvest', 'spot', '1'], ['daily'], ['shop']],
+	test: [['help'], ['view', 'farm'], ['view', 'inventory'], ['view', 'coins'], ['plant', 'wheat', 'spot', '1'], ['water'], ['harvest', 'spot', '1'], ['daily'], ['buy']],
 	auctionHelp: `insert auction docs`,
 };
 

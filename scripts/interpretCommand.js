@@ -17,8 +17,8 @@ const cml = {
 	daily: async (userDb, devforced) => {
 		return await require('../commands/daily.js').cm(userDb, devforced);
 	},
-	shop: async (sentence, userDb) => {
-		return await require('../commands/shop.js').cm(sentence, userDb);
+	buy: async (sentence, userDb) => {
+		return await require('../commands/buy.js').cm(sentence, userDb);
 	},
 	sell: async (sentence, userDb) => {
 		return await require('../commands/sell.js').cm(sentence, userDb);
@@ -57,8 +57,8 @@ let cm = async (commandList, userDb, devforced = false) => {
 			case 'daily':
 				[answer, userDb] = await cml.daily(userDb, devforced);
 				break;
-			case 'shop':
-				[answer, userDb] = await cml.shop(sentence, userDb);
+			case 'buy':
+				[answer, userDb] = await cml.buy(sentence, userDb);
 				break;
 			case 'sell':
 				[answer, userDb] = await cml.sell(sentence, userDb);

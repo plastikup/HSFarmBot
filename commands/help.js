@@ -16,7 +16,7 @@ Hey, I’m FarmBot, the cutest bot ever! Here are the following commands I can d
 \`@FarmBot harvest spot [number]\` — harvest crop at select location
 [/quote]
 [quote="MooseFarms Co."]
-\`@FarmBot shop [product]\` — buy a product from MooseFarms
+\`@FarmBot buy [product]\` — buy a product from MooseFarms
 \`@FarmBot sell [number] [crop]\` — sell your harvested crops to make money
 [/quote]
 [quote="Auction"]
