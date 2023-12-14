@@ -1,12 +1,11 @@
 //const cropTypes = require('../constants.js').cts().cropTypes;
 const dbAu = require('../dyna/dbAu.js').dbAu();
-const auctionHelp = require('../constants.js').cts().auctionHelp;
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
 const auctionFormatting = require('../scripts/auctionFormatting.js');
 
 let cm = async (sentence, userDb) => {
-	if (sentence[1] == undefined) return [`Valid subcommands for \`@FarmBot auction\`:\n- \`help\`: What's an auction, what's a bid? Everything you need to know before getting started;\n- \`view\`: view the current ongoing auction happening;\n- \`bid [amount]\`: bid an amount of coins on the ongoing auction.`, userDb];
+	if (sentence[1] == undefined) return [`Valid subcommands for \`@FarmBot auction\`:\n- \`view\`: view the current ongoing auction happening;\n- \`bid [amount]\`: bid an amount of coins on the ongoing auction.`, userDb];
 	else {
 		let auction = await dbAu.get();
 
@@ -29,9 +28,6 @@ let cm = async (sentence, userDb) => {
 		let userAcc = auction[userAccID] || { username: 'ZZZ-DU', bidAmount: 0, lastBidTS: Infinity };
 
 		switch (sentence[1].toLowerCase()) {
-			case 'help':
-				return [auctionHelp, userDb];
-				break;
 			case 'view':
 				if (!baseAcc._active) return [`There is no ongoing auction right now. Check it again in a day or two!`, userDb];
 
