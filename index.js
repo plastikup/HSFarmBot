@@ -54,8 +54,7 @@ async function main(req) {
 	if (!cooked.match('<a class="mention" href="/u/farmbot">@FarmBot</a>')) return;
 
 	// recreate post content (raw)
-	let raw = cooked.substring(3, cooked.length - 4);
-	raw = raw.replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gm, '@FarmBot ');
+	let raw = cooked.replace(/<\/?p>/gm, '').replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gm, '@FarmBot ');
 
 	// commandList + check if invalidCommand (save on monthly api calls)
 	let invalidCommand = null;
