@@ -16,15 +16,15 @@ app.listen(PORT, () => {
 });
 app.use(bodyParser.json());
 app.post('/post-action', async (req, res) => {
-	try {
-		await main(req.body);
-	} catch (error) {
-		await newForumPost(`An error has occured: \`${error}\`.`, null, topic_id);
-	}
+	//try {
+	await main(req.body);
+	//} catch (error) {
+	//	await require('./dyna/newForumPost')(`An error has occured: \`${error}\`.`, null, topic_id);
+	//}
 	res.status(200).send('OK');
 });
 app.post('/daily', async (req, res) => {
-	await newForumPost(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
+	await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
 	res.status(200).send('OK');
 });
 
@@ -132,6 +132,6 @@ async function main(req) {
 		else await newForumPost(`You made me reach the forum character limit, smh!\n<small>usually means your commands have made it through`, post_number, topic_id);
 	} else {
 		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return;
-		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js')(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 9999, topic_id);
+		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js')(commandList[0], userDb, db)), post_number + commandList[0][1] == 'start_auction' * 99999, topic_id);
 	}
 }

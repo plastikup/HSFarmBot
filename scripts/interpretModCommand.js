@@ -3,7 +3,7 @@ const dbAu = require('../dyna/dbAu.js');
 const test = require('../constants.js').test;
 const auctionFormatting = require('../scripts/auctionFormatting.js');
 
-let cm = async (sentence, userDb, db) => {
+module.exports = async (sentence, userDb, db) => {
 	let tgUserDb = null;
 	switch (sentence[1]) {
 		case 'test':
@@ -54,8 +54,4 @@ let cm = async (sentence, userDb, db) => {
 			return `Unrecognized mod command \`${sentence[1]}\`.`;
 			break;
 	}
-};
-
-module.exports.cm = async function (sentence, userDb, db) {
-	return await cm(sentence, userDb, db);
 };
