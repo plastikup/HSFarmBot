@@ -38,7 +38,7 @@ let cm = async (sentence, userDb) => {
 					else yourBidText = `You have bid ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
 				}
 
-				return [`### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`, userDb];
+				return [`### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, baseAcc.bidSubject.amount, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`, userDb];
 				break;
 			case 'bid':
 				if (Date.now() >= baseAcc.endsAt) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
