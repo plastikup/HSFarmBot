@@ -8,7 +8,7 @@ let cm = async (sentence, userDb) => {
 		existingPacks.push(item.packName);
 	}
 	if (!existingPacks.includes(sentence[1])) {
-		return [`Invalid pack name \`${sentence[1]}\`. Reply with \`@FarmBot shop list\` for a detailed list of available products.`, userDb];
+		return [`Invalid pack name \`${sentence[1]}\`. Reply with \`@FarmBot view shop\` for a detailed list of available products.`, userDb];
 	} else {
 		const targetPack = mooseFarms[existingPacks.indexOf(sentence[1])];
 		if (userDb.coins >= targetPack.packPrice) {
