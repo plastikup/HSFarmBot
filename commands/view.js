@@ -1,6 +1,8 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 const dbMs = require('../dyna/dbMs.js');
+const dbAu = require('../dyna/dbAu.js');
+const auctionFormatting = require('../scripts/auctionFormatting.js');
 
 function inventoryContent(userDb) {
 	let seedInventoryContent = userDb.seedsInventory;
@@ -32,7 +34,7 @@ function inventoryContent(userDb) {
 }
 
 let cm = async (sentence, userDb) => {
-	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have.`;
+	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have;\n- \`shop\`: display the items available in your dream shop, MooseFarms Co.!;\n- \`auction\`: display the infos about the current ongoing auction`;
 	else
 		switch (sentence[1].toLowerCase()) {
 			case 'farm':
@@ -55,6 +57,36 @@ let cm = async (sentence, userDb) => {
 					table += `|${item.packPrice}\n`;
 				}
 				return `### MooseFarms Co.'s products\n\n${table}`;
+				break;
+			case 'auction':
+				let auction = await dbAu.get();
+
+				const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');
+				if (baseAccID == -1) return `**critical: baseAcc not found.**\n\n@Tri-Angle`;
+				let baseAcc = auction[baseAccID].bidSettings;
+
+				let stats = { username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5 };
+				for (let i = 0; i < auction.length; i++) {
+					if (i == baseAccID) continue;
+					const raw = auction[i];
+					if (raw.bidAmount > stats.bidAmount) {
+						stats.username = raw.username;
+						stats.bidAmount = raw.bidAmount;
+					}
+				}
+				let userAccID = auction.findIndex((e) => e.username == userDb.username);
+				let userAcc = auction[userAccID] || { username: 'ZZZ-DU', bidAmount: 0, lastBidTS: Infinity };
+
+				if (!baseAcc._active) return `There is no ongoing auction right now. Check it again in a day or two!`;
+				if (Date.now() >= baseAcc.endsAt) return `The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`;
+
+				let yourBidText = 'You have not bid anything yet.';
+				if (userAccID != -1) {
+					if (stats.username == userDb.username) yourBidText = 'You are in the lead!';
+					else yourBidText = `You have bid ${userAcc.bidAmount} coins. It's not enough to win the auction!`;
+				}
+
+				return `### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, baseAcc.bidSubject.amount, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`;
 				break;
 			default:
 				return `Unrecognized subcommand \`${sentence[1]}\`.`;

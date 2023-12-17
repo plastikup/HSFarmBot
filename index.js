@@ -16,11 +16,11 @@ app.listen(PORT, () => {
 });
 app.use(bodyParser.json());
 app.post('/post-action', async (req, res) => {
-	//try {
-	await main(req.body);
-	//} catch (error) {
-	//	await require('./dyna/newForumPost')(`An error has occured: \`${error}\`.`, null, topic_id);
-	//}
+	try {
+		await main(req.body);
+	} catch (error) {
+		await require('./dyna/newForumPost')(`An error has occured: \`${error}\`.`, null, topic_id);
+	}
 	res.status(200).send('OK');
 });
 app.post('/daily', async (req, res) => {

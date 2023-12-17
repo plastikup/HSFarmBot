@@ -63,7 +63,7 @@ module.exports = async (commandList, userDb, devforced = false) => {
 			case 'sell':
 				[answer, userDb] = await cml.sell(sentence, userDb);
 				break;
-			case 'auction':
+			case 'bid':
 				[answer, userDb] = await cml.auction(sentence, userDb);
 				break;
 
