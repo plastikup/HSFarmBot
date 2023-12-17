@@ -22,16 +22,20 @@ let cm = async (sentence, userDb) => {
 
 	let userAccID = auction.findIndex((e) => e.username == userDb.username);
 	let userAcc = auction[userAccID] || { username: 'ZZZ-DU', bidAmount: 0, lastBidTS: Infinity };
+	let highestBidderID = auction.findIndex((e) => e.username == stats.username);
+	let highestBidder = auction[highestBidderID] || { username: 'ZZZ-DU', bidAmount: 0, lastBidTS: Infinity };
 
 	if (Date.now() >= baseAcc.endsAt) return [`The auction has **ended**! May the winner be announced somewhere soon in the future...\n\n<small>For some reasons, unfortunately the granting must be done manually by Tri-Angle. Thank you for your patience :<text>)`, userDb];
 
 	if (sentence[1].toLowerCase() == 'reset') {
 		if (userAccID == -1) return [`Nothing to reset - you have not bid anything yet!`, userDb];
 
-		userDb.coins += userAcc.bidAmount;
-		await dbAu.delete(userAcc._id);
+		const returnedCoins = userAcc.bidAmount;
+		userDb.coins += returnedCoins;
+		userAcc.bidAmount = 0;
+		await dbAu.put(userAcc._id, userAcc);
 
-		return [`You have **reset your bids** and **${userAcc.bidAmount} coins** has been returned to your account.`, userDb];
+		return [`You have **reset your bids** and **${returnedCoins} coins** has been returned to your account.`, userDb];
 	}
 
 	const bidAmount = Number(sentence[1]);
@@ -41,10 +45,21 @@ let cm = async (sentence, userDb) => {
 	else {
 		if (bidAmount - userAcc.bidAmount > userDb.coins) {
 			return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins}.`, userDb];
-		} else if (userAccID == -1) {
-			await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
+		} else if (userAccID == -1 || userAcc.bidAmount == 0) {
+			if (userAccID == -1) {
+				await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
+			} else {
+				await dbAu.put(userAcc._id, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
+			}
 			userDb.coins -= bidAmount;
-			return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!`, userDb];
+
+			if (highestBidder.username !== 'ZZZ-DU') {
+				highestBidder.bidAmount = 0;
+				await dbAu.put(highestBidder._id, highestBidder);
+				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, your coins have returned to your account.`, userDb];
+			} else {
+				return [`You have bid **${bidAmount} coins**, and you are in the lead!`, userDb];
+			}
 		} else {
 			if (userAcc.lastBidTS + 82800000 > Date.now()) {
 				return [`You cannot bid twice within **23 hours**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 82800000)}**!`, userDb];
