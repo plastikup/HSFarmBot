@@ -7,7 +7,7 @@ module.exports = async function (raw, post_number, topic_id) {
 			headers: {
 				'Content-Type': 'application/json',
 				'Api-Username': 'FarmBot',
-				'Api-Key': process.env.FBK,
+				'Api-Key': (topic_id == 66773) ? process.env.FORUM_KEY : process.env.FBK,
 			},
 			data: {
 				raw: `<!--${Date.now()}-->\n${raw}`,
