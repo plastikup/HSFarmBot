@@ -24,7 +24,7 @@ let cm = async (sentence, userDb) => {
 	} else if (spot >= 0 && spot < 9) {
 		return [`**You do not own any ${seed} seeds**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
 	} else {
-		return [`Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`, userDb];
+		return [`Invalid spot ID (\`${sentence[3]}\`). **Top left starts at 1** and goes from left to right **until 9**.\nThe correct formatting of this command is: \`@FarmBot plant [camelCaseSeedName] spot [number]\`.`, userDb];
 	}
 };
 

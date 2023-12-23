@@ -16,11 +16,7 @@ app.listen(PORT, () => {
 });
 app.use(bodyParser.json());
 app.post('/post-action', async (req, res) => {
-	try {
 		await main(req.body);
-	} catch (error) {
-		await require('./dyna/newForumPost')(`An error has occured: \`${error}\`.`, null, req.body.post.topic_id);
-	}
 	res.status(200).send('OK');
 });
 app.post('/daily', async (req, res) => {
@@ -51,10 +47,10 @@ async function main(req) {
 	if (username == 'FarmBot') return;
 
 	// exit if not talking to fb
-	if (!cooked.match('<a class="mention" href="/u/farmbot">@FarmBot</a>')) return;
+	if (!cooked.match(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a>/i)) return;
 
 	// recreate post content (raw)
-	let raw = cooked.replace(/(<\/?p>|<(\/ ?)?br>)/gm, '').replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gm, '@FarmBot ');
+	let raw = cooked.replace(/(<\/?p>|<(\/ ?)?br>)/gm, '').replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gmi, '@FarmBot ');
 
 	// commandList + check if invalidCommand (save on monthly api calls)
 	let invalidCommand = null;
@@ -106,7 +102,7 @@ async function main(req) {
 	if (authenticate) {
 		if (userDb == null) {
 			dbFus.post(username);
-			await newForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!`, post_number, topic_id);
+			await newForumPost(`You have a farming account now! You can enter \`@FarmBot help\` for a list of command. Happy forum gaming, and thanks for joining!\n\n*psst*, did you know you have 5 free wheat seeds? Go plant your first crop now! :))`, post_number, topic_id);
 		} else {
 			await newForumPost(`You already have an account. You can start playing now! Enter \`@FarmBot help\` for a list of command to get started.`, post_number, topic_id);
 		}

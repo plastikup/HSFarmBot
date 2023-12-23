@@ -3,8 +3,12 @@ const cts = require('../constants.js');
 const newFarmDefault = cts.newFarmDefault;
 
 let cm = async (sentence, userDb) => {
-	if ((sentence[2] < 1 || sentence[2] > 9) && typeof sentence[2] == typeof 9) {
-		return [`Invalid spot ID. **Top left starts at 1** and goes from left to right **until 9**.`, userDb];
+	console.log(sentence[2]);
+	console.log(sentence[2] < 1 || sentence[2] > 9);
+	console.log(typeof sentence[2] == undefined);
+	console.log(typeof sentence[2]);
+	if (sentence[2] < 1 || sentence[2] > 9 || sentence[2] === undefined) {
+		return [`Invalid spot ID (\`${sentence[2]}\`). **Top left starts at 1** and goes from left to right **until 9**.\nThe correct formatting of this command is: \`@FarmBot harvest spot [number]\`.`, userDb];
 	} else if (userDb.farm[sentence[2] - 1].seedType == null) {
 		return [`There is **no crop at spot ${sentence[2]}**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	} else if (userDb.farm[sentence[2] - 1].growthLevel == -1) {
