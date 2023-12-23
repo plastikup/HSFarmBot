@@ -15,6 +15,12 @@ let cm = async (userDb) => {
 		else if (cropTypes._seed_types_regexp.test(listRaw.seedType)) grid.push(listRaw.seedType);
 		else grid.push('base');
 	}
+	const snowMask = [
+		await sharp('./imgs/snowMask.png').rotate(0).toBuffer(),
+		await sharp('./imgs/snowMask.png').rotate(90).toBuffer(),
+		await sharp('./imgs/snowMask.png').rotate(180).toBuffer(),
+		await sharp('./imgs/snowMask.png').rotate(270).toBuffer(),
+	];
 	const newPicture = await sharp({
 		create: {
 			width: 308,
@@ -25,14 +31,23 @@ let cm = async (userDb) => {
 	})
 		.composite([
 			{ input: `./imgs/${grid[0]}.png`, gravity: 'northwest' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'northwest' },
 			{ input: `./imgs/${grid[1]}.png`, gravity: 'north' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'north' },
 			{ input: `./imgs/${grid[2]}.png`, gravity: 'northeast' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'northeast' },
 			{ input: `./imgs/${grid[3]}.png`, gravity: 'west' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'west' },
 			{ input: `./imgs/${grid[4]}.png`, gravity: 'centre' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'centre' },
 			{ input: `./imgs/${grid[5]}.png`, gravity: 'east' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'east' },
 			{ input: `./imgs/${grid[6]}.png`, gravity: 'southwest' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'southwest' },
 			{ input: `./imgs/${grid[7]}.png`, gravity: 'south' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'south' },
 			{ input: `./imgs/${grid[8]}.png`, gravity: 'southeast' },
+			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'southeast' },
 		])
 		.png()
 		.toBuffer();
