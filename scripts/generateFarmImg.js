@@ -49,7 +49,7 @@ let cm = async (userDb) => {
 			{ input: `./imgs/${grid[8]}.png`, gravity: 'southeast' },
 			{ input: snowMask[Math.floor(Math.random() * 4)], gravity: 'southeast' },
 		])
-		.png()
+		.webp()
 		.toBuffer();
 
 	// TABLE
