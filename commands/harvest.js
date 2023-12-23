@@ -1,6 +1,5 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
 const cts = require('../constants.js');
-const cropTypes = cts.cropTypes;
 const newFarmDefault = cts.newFarmDefault;
 
 let cm = async (sentence, userDb) => {
@@ -17,9 +16,8 @@ let cm = async (sentence, userDb) => {
 
 		userDb.farm[sentence[2] - 1] = JSON.parse(newFarmDefault);
 		userDb.cropsInventory[targetCrop + 'Crops']++;
-		userDb.coins += cropTypes[targetCrop].earnings;
 
-		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]} - you won **${cropTypes[targetCrop].earnings} coins**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
+		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}! Earn coins by running \`@FarmBot sell ${targetCrop}\`, or keep it safe in your inventory as a sourvenir!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	}
 };
 
