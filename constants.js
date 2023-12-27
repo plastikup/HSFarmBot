@@ -18,7 +18,7 @@ module.exports = {
 			watersRequired: 4,
 			earnings: 90,
 		},
-		purpleTulip: {
+		purpletulip: {
 			watersRequired: 4,
 			earnings: 65,
 		},
@@ -26,19 +26,19 @@ module.exports = {
 			watersRequired: 5,
 			earnings: 90,
 		},
-		goldenSunflower: {
+		goldensunflower: {
 			watersRequired: 6,
 			earnings: 120,
 		},
-		pinkTulip: {
+		pinktulip: {
 			watersRequired: 6,
 			earnings: 100,
 		},
-		goldenWheat: {
+		goldenwheat: {
 			watersRequired: 8,
 			earnings: 150,
 		},
-		lilyValley: {
+		lilyvalley: {
 			watersRequired: 12,
 			earnings: 90,
 		},
@@ -145,9 +145,9 @@ module.exports = {
 			goldenWheatCrops: 0,
 			lilyValleyCrops: 0,
 		},
+		level: 0,
 		username: 'ZZZ-DU',
 	},
 	newFarmDefault: `{"growthLevel":0,"plantedAt":null,"seedType":null,"secret":false,"lastWater":0,"fertilizerCount":0}`,
 	test: [['help'], ['view', 'farm'], ['view', 'inventory'], ['view', 'coins'], ['plant', 'wheat', 'spot', '1'], ['water'], ['harvest', 'spot', '1'], ['daily'], ['buy']],
-	auctionHelp: `insert auction docs`,
 };
