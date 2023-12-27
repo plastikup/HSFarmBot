@@ -13,16 +13,39 @@ app.get('/', (req, res) => {
 });
 app.listen(PORT, () => {
 	console.log(`Example app listening at http://localhost:${PORT}`);
+	console.log(process.env.NODE_ENV);
 });
 app.use(bodyParser.json());
 app.post('/post-action', async (req, res) => {
+	try {
 		await main(req.body);
+	} catch (error) {
+		if (process.env.NODE_ENV === 'development') {
+			throw error;
+		} else {
+			await require('./dyna/newForumPost')(`An error has occured: \`${error}\`.`, null, req.body.post.topic_id);
+		}
+	}
 	res.status(200).send('OK');
 });
 app.post('/daily', async (req, res) => {
 	await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
 	res.status(200).send('OK');
 });
+/*
+app.post('/__space/v0/actions', async (req, res) => {
+	const event = req.body.event;
+
+	if (event.id === 'dailyGarden') {
+		await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
+		res.status(200).send('OK');
+	} else if (event.id === 'endAuction') {
+		res.status(200).send('OK');
+	}
+
+	res.sendStatus(200);
+});
+*/
 
 let devforced = false;
 
@@ -50,7 +73,7 @@ async function main(req) {
 	if (!cooked.match(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a>/i)) return;
 
 	// recreate post content (raw)
-	let raw = cooked.replace(/(<\/?p>|<(\/ ?)?br>)/gm, '').replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gmi, '@FarmBot ');
+	let raw = cooked.replace(/(<\/?p>|<(\/ ?)?br>)/gm, '').replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gim, '@FarmBot ');
 
 	// commandList + check if invalidCommand (save on monthly api calls)
 	let invalidCommand = null;
