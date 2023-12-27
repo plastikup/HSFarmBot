@@ -3,7 +3,7 @@ const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 let cm = async (sentence, userDb) => {
 	let mooseFarms = await dbMs.get();
-	const inputPack = sentence[1].toLowerCase().substring(0, sentence[1].search(/(packs?|)$/i));
+	const inputPack = sentence[1].toLowerCase().substring(0, sentence[1].search(/s?$/i));
 	let existingPacks = [];
 	for (const item of mooseFarms) {
 		existingPacks.push(item.packName);
