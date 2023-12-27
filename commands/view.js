@@ -34,17 +34,17 @@ function inventoryContent(userDb) {
 }
 
 let cm = async (sentence, userDb) => {
-	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`coins\`: view how many coins you have;\n- \`shop\`: display the items available in your dream shop, MooseFarms Co.!;\n- \`auction\`: display the infos about the current ongoing auction`;
+	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`shop\`: display the items available in your dream shop, MooseFarms Co.!;\n- \`auction\`: display the infos about the current ongoing auction`;
 	else
 		switch (sentence[1].toLowerCase()) {
 			case 'farm':
 				return `@/${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 				break;
 			case 'inventory':
-				return `@/${userDb.username}'s **inventory**.\n\n${inventoryContent(userDb)}`;
+				return `@/${userDb.username}'s **inventory** - you have **${userDb.coins} coins**.\n\n${inventoryContent(userDb)}`;
 				break;
 			case 'coins':
-				return `You have **${userDb.coins} coins**.`;
+				return `This is a **deprecated command** - it has been merged with \`@FarmBot view inventory\`.`;
 				break;
 			case 'shop':
 				let mooseFarms = await dbMs.get();
@@ -56,7 +56,7 @@ let cm = async (sentence, userDb) => {
 					}
 					table += `|${item.packPrice}\n`;
 				}
-				return `### MooseFarms Co.'s products\n\n${table}`;
+				return `### MooseFarms Co.'s products\n\n${table}\n\nYou have **${userDb.coins} coins**.`;
 				break;
 			case 'auction':
 				let auction = await dbAu.get();
