@@ -1,4 +1,3 @@
-//const cropTypes = require('../constants.js').cropTypes;
 const dbAu = require('../dyna/dbAu.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
@@ -44,7 +43,7 @@ let cm = async (sentence, userDb) => {
 	else if (bidAmount < stats.bidAmount + 5) return [`You must bid **at least 5 coins higher than the leading bid** (which is currently **${stats.bidAmount} coins** - you will have to bid *at least* 5 more than that amount).`, userDb];
 	else {
 		if (bidAmount - userAcc.bidAmount > userDb.coins) {
-			return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins}.`, userDb];
+			return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins} (+ ${userAcc.bidAmount} coins that are in the auction bank).`, userDb];
 		} else if (userAccID == -1 || userAcc.bidAmount == 0) {
 			if (userAccID == -1) {
 				await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
@@ -54,9 +53,7 @@ let cm = async (sentence, userDb) => {
 			userDb.coins -= bidAmount;
 
 			if (highestBidder.username !== 'ZZZ-DU') {
-				highestBidder.bidAmount = 0;
-				await dbAu.put(highestBidder._id, highestBidder);
-				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, your coins have returned to your account.`, userDb];
+				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, execute \`@FarmBot bid reset\` to get your coins back, or \`@FarmBot bid [amount]\` to add up to your previous bid!`, userDb];
 			} else {
 				return [`You have bid **${bidAmount} coins**, and you are in the lead!`, userDb];
 			}
@@ -71,7 +68,13 @@ let cm = async (sentence, userDb) => {
 			await dbAu.put(userAcc._id, userAcc);
 
 			userDb.coins -= bidAmount - oldBidAmount;
-			return [`You updated your old bid (${oldBidAmount} coins) **to ${bidAmount} coins**. See who's capable of overtaking you, ha!`, userDb];
+			if (highestBidder.username === userAcc.username) {
+				return [`You updated your old bid (${oldBidAmount} coins) **to ${bidAmount} coins**. See who's capable of overtaking you, ha!`, userDb];
+			} else if (highestBidder.username !== 'ZZZ-DU') {
+				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, execute \`@FarmBot bid reset\` to get your coins back, or \`@FarmBot bid [amount]\` to add up to your previous bid!`, userDb];
+			} else {
+				return [`You have bid **${bidAmount} coins**, and you are in the lead!`, userDb];
+			}
 		}
 	}
 };
