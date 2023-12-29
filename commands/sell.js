@@ -8,12 +8,14 @@ let cm = async (sentence, userDb) => {
 		nbToSell = 1;
 	} else {
 		tgcrop = sentence[2].toLowerCase().substring(0, sentence[2].search(/(crops?|seeds?|)$/i));
+
+		if (Math.round(Number(sentence[1])) <= 0 && sentence[1] !== 'all' && !isNaN(Math.round(Number(sentence[1])))) return [`Please enter a digit bigger than 1, or the command 'all'. You entered: \`${sentence[1]}\`.`, userDb];
+
 		if (sentence[1] === 'all') nbToSell = Math.min(userDb.cropsInventory[tgcrop + 'crops'], 1000);
 		else nbToSell = Math.min(userDb.cropsInventory[tgcrop + 'crops'], Math.round(Number(sentence[1])));
 	}
 
-	if (!cropTypes._seed_types_regexp.test(tgcrop)) return [`Unknown type of crop.`, userDb];
-	else if (Math.round(Number(sentence[1])) <= 0 && sentence[1] !== 'all') return [`Please enter a digit bigger than 1.`, userDb];
+	if (!cropTypes._seed_types_regexp.test(tgcrop)) return [`Unknown type of crop. Remember, do not put spaces in between crop names (if that applies) :))`, userDb];
 	else if (nbToSell == 0) return [`You do not own any ${tgcrop} crop. Reply with \`@FarmBot view inventory\` to display your items!`, userDb];
 
 	userDb.cropsInventory[tgcrop + 'crops'] -= nbToSell;
