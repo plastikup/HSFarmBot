@@ -17,7 +17,9 @@ let cm = async (sentence, userDb) => {
 		userDb.farm[sentence[2] - 1] = JSON.parse(newFarmDefault);
 		userDb.cropsInventory[targetCrop + 'crops']++;
 
-		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}! Earn coins by running \`@FarmBot sell 1 ${targetCrop}\`, or keep it safe in your inventory as a sourvenir!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
+		if (userDb.farm.every((e) => e.seedType === null || e.growthLevel == -1)) userDb.lastWater = 0;
+
+		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}! Earn coins by running \`@FarmBot sell ${targetCrop}\`, or keep it safe in your inventory as a sourvenir!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	}
 };
 
