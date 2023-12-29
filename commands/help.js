@@ -15,8 +15,8 @@ module.exports.cm = function () {
 [/quote]
 [quote="MooseFarms Co."]
 \`@FarmBot view shop\` — display MooseFarms Co.'s products
-\`@FarmBot buy [product]\` — buy a product from MooseFarms
-\`@FarmBot sell [number] [crop]\` — sell your harvested crops to make money
+\`@FarmBot buy [number](OPTIONAL) [product]\` — buy a product from MooseFarms
+\`@FarmBot sell [number || 'all'](OPTIONAL) [crop]\` — sell your harvested crops to make money
 [/quote]
 [quote="Auction"]
 \`@FarmBot view auction\` — display the information about the current ongoing auction
