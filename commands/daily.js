@@ -6,7 +6,7 @@ let cm = async (userDb, devforced) => {
 		userDb.lastDaily = Date.now();
 		if (Math.random() >= 0.98){
 			// 2% chance of getting a lilyValley drop
-			userDb.seedsInventory.lilyValleySeeds += 1;
+			userDb.seedsInventory.lilyvalleyseeds++;
 
 			return [`Granted... \u2757\u2757 **1 Lily Valley seed** to your account!! This drop has a 2% drop chance.\n\nCome back in **23 hours** to request another \`@FarmBot daily\`!`, userDb];
 		} else {

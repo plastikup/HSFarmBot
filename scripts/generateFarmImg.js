@@ -16,10 +16,10 @@ let cm = async (userDb) => {
 		else grid.push('base');
 	}
 	const snowMask = [
-		await sharp('./imgs/snowMask.png').rotate(0).toBuffer(),
-		await sharp('./imgs/snowMask.png').rotate(90).toBuffer(),
-		await sharp('./imgs/snowMask.png').rotate(180).toBuffer(),
-		await sharp('./imgs/snowMask.png').rotate(270).toBuffer(),
+		await sharp('./imgs/snowmask.png').rotate(0).toBuffer(),
+		await sharp('./imgs/snowmask.png').rotate(90).toBuffer(),
+		await sharp('./imgs/snowmask.png').rotate(180).toBuffer(),
+		await sharp('./imgs/snowmask.png').rotate(270).toBuffer(),
 	];
 	const newPicture = await sharp({
 		create: {

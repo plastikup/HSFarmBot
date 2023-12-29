@@ -2,5 +2,5 @@ const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
 
 module.exports.cm = function (subject, bidSubjectAmount, bidAmount, username, endsAt) {
-	return `> \uD83D\uDD0D **Bidding subject**: ${bidSubjectAmount} ${undoCamelCase.cm(subject)}\n> \uD83D\uDCB0 **Highest bid so far**: ${bidAmount} coins ${username != 'DEFAULT_MIN_BID_AMOUNT' ? `(by ${username})` : ''}\n> \u23F3 **Ends in**: ${formatCountdown.cm(endsAt)}`;
+	return `> \uD83D\uDD0D **Bidding subject**: ${bidSubjectAmount} ${subject}\n> \uD83D\uDCB0 **Highest bid so far**: ${bidAmount} coins ${username != 'DEFAULT_MIN_BID_AMOUNT' ? `(by ${username})` : ''}\n> \u23F3 **Ends in**: ${formatCountdown.cm(endsAt)}`;
 };

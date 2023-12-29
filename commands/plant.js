@@ -4,8 +4,8 @@ const cropTypes = require('../constants.js').cropTypes;
 let cm = async (sentence, userDb) => {
 	let farm = userDb.farm;
 	let spot = sentence[3] - 1;
-	let seed = sentence[1].substring(0, sentence[1].search(/(seeds?|)$/i));
-	if (cropTypes._seed_types_regexp.test(seed) && userDb.seedsInventory[seed + 'Seeds'] > 0 && spot >= 0 && spot < 9) {
+	let seed = sentence[1].toLowerCase().substring(0, sentence[1].search(/(seeds?|)$/i));
+	if (cropTypes._seed_types_regexp.test(seed) && userDb.seedsInventory[seed + 'seeds'] > 0 && spot >= 0 && spot < 9) {
 		if (Math.floor(farm[spot].growthLevel) == 0 || Math.floor(farm[spot].growthLevel) == -1) {
 			farm[spot].growthLevel = 1;
 			farm[spot].plantedAt = Date.now();
@@ -13,9 +13,9 @@ let cm = async (sentence, userDb) => {
 			farm[spot].secret = false;
 			farm[spot].lastWater = Date.now();
 
-			userDb.seedsInventory[seed + 'Seeds']--;
+			userDb.seedsInventory[seed + 'seeds']--;
 
-			return [`Planted one cute **${seed.toLowerCase()} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`, userDb];
+			return [`Planted one cute **${seed} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`, userDb];
 		} else {
 			return [`It looks like you have **already something planted there**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 		}

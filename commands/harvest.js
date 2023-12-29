@@ -3,10 +3,6 @@ const cts = require('../constants.js');
 const newFarmDefault = cts.newFarmDefault;
 
 let cm = async (sentence, userDb) => {
-	console.log(sentence[2]);
-	console.log(sentence[2] < 1 || sentence[2] > 9);
-	console.log(typeof sentence[2] == undefined);
-	console.log(typeof sentence[2]);
 	if (sentence[2] < 1 || sentence[2] > 9 || sentence[2] === undefined) {
 		return [`Invalid spot ID (\`${sentence[2]}\`). **Top left starts at 1** and goes from left to right **until 9**.\nThe correct formatting of this command is: \`@FarmBot harvest spot [number]\`.`, userDb];
 	} else if (userDb.farm[sentence[2] - 1].seedType == null) {
@@ -19,7 +15,7 @@ let cm = async (sentence, userDb) => {
 		const targetCrop = userDb.farm[sentence[2] - 1].seedType;
 
 		userDb.farm[sentence[2] - 1] = JSON.parse(newFarmDefault);
-		userDb.cropsInventory[targetCrop + 'Crops']++;
+		userDb.cropsInventory[targetCrop + 'crops']++;
 
 		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}! Earn coins by running \`@FarmBot sell 1 ${targetCrop}\`, or keep it safe in your inventory as a sourvenir!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	}
