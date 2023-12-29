@@ -3,14 +3,15 @@ const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 let cm = async (sentence, userDb) => {
 	let mooseFarms = await dbMs.get();
+	const inputPack = sentence[1].toLowerCase().substring(0, sentence[1].search(/s?$/i));
 	let existingPacks = [];
 	for (const item of mooseFarms) {
 		existingPacks.push(item.packName);
 	}
-	if (!existingPacks.includes(sentence[1])) {
+	if (!existingPacks.includes(inputPack)) {
 		return [`Invalid pack name \`${sentence[1]}\`. Reply with \`@FarmBot view shop\` for a detailed list of available products.`, userDb];
 	} else {
-		const targetPack = mooseFarms[existingPacks.indexOf(sentence[1])];
+		const targetPack = mooseFarms[existingPacks.indexOf(inputPack)];
 		if (userDb.coins >= targetPack.packPrice) {
 			const randomNumb = Math.floor(Math.random() * 100);
 			let luckCount = 0;
@@ -25,7 +26,7 @@ let cm = async (sentence, userDb) => {
 			const isDouble = Math.floor(Math.random() * 10) == 0 && randomSeed.luck >= 15;
 
 			userDb.coins -= targetPack.packPrice;
-			userDb.seedsInventory[randomSeed.seedName + 'Seeds'] += isDouble + 1;
+			userDb.seedsInventory[randomSeed.seedName + 'seeds'] += isDouble + 1;
 
 			if (isDouble) {
 				return [`You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomSeed.seedName} seeds[/spoiler]**, both with a **${randomSeed.luck}% drop chance**!! The duplicate has a **10% chance** of happening. Wow, congrats!`, userDb];

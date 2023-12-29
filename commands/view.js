@@ -15,9 +15,9 @@ function inventoryContent(userDb) {
 		const seed = Object.keys(seedInventoryContent)[i] || '-';
 		const crop = Object.keys(cropInventoryContent)[i] || '-';
 		let seedKey = undoCamelCase.cm(seed);
-		if (seed != '-') seedKey = '**' + seedKey.slice(0, seedKey.length - 6) + '** seeds';
+		if (seed != '-') seedKey = '**' + seedKey.slice(0, seedKey.length - 5) + '** seeds';
 		let cropKey = undoCamelCase.cm(crop);
-		if (crop != '-') cropKey = '**' + cropKey.slice(0, cropKey.length - 6) + '** crops';
+		if (crop != '-') cropKey = '**' + cropKey.slice(0, cropKey.length - 5) + '** crops';
 		table = table + `${seedKey}|${seedInventoryContent[seed] || '-'}||${cropKey}|${cropInventoryContent[crop] || '-'}\n`;
 	}
 
@@ -52,7 +52,7 @@ let cm = async (sentence, userDb) => {
 				for (const item of mooseFarms) {
 					table += `\`${item.packName}\`|`;
 					for (const seed of item.packContent) {
-						table += `${undoCamelCase.cm(seed.seedName)}: **${seed.luck}%**<br>`;
+						table += `${seed.seedName}: **${seed.luck}%**<br>`;
 					}
 					table += `|${item.packPrice}\n`;
 				}
