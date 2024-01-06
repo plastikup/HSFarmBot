@@ -2,7 +2,7 @@ const dbAu = require('../dyna/dbAu.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
 
-let cm = async (sentence, userDb) => {
+let cm = async (sentence, userDb, devforced) => {
 	let auction = await dbAu.get();
 
 	const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');
@@ -46,9 +46,17 @@ let cm = async (sentence, userDb) => {
 			return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins} (+ ${userAcc.bidAmount} coins that are in the auction bank).`, userDb];
 		}
 		if (userAcc.lastBidTS + 900000 > Date.now() && userAcc.lastBidTS !== Infinity) {
-			return [`You cannot bid twice within **15 minutes**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 900000)}**!`, userDb];
+			if (!devforced) return [`You cannot bid twice within **15 minutes**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 900000)}**!`, userDb];
 		}
 
+		// extend by 12h everytime somebody bids when theres 24h left
+		let endInMsg = 'The auction will **end in ' + formatCountdown.cm(baseAcc.endsAt) + '**!';
+		if (baseAcc.endsAt - Date.now() < 86400000 && highestBidder.username !== userAcc.username && highestBidder.username !== 'ZZZ-DU') {
+			baseAcc.endsAt += 43200000;
+			endInMsg = 'Less than 24 hours left; therefore, **12 extra hours has been added** to the auction, making it **end in only ' + formatCountdown.cm(baseAcc.endsAt) + '**!! Quick, make sure to gather all your coins before it ends!';
+			await dbAu.put(auction[baseAccID]._id, auction[baseAccID]);
+		}
+		// success; you have bid wtv amount
 		if (userAccID == -1 || userAcc.bidAmount == 0) {
 			if (userAccID == -1) {
 				await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
@@ -58,9 +66,9 @@ let cm = async (sentence, userDb) => {
 			userDb.coins -= bidAmount;
 
 			if (highestBidder.username !== 'ZZZ-DU') {
-				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, execute \`@FarmBot bid reset\` to get your coins back, or \`@FarmBot bid [amount]\` to add up to your previous bid!`, userDb];
+				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, execute \`@FarmBot bid reset\` to get your coins back, or \`@FarmBot bid [amount]\` to add up to your previous bid!\n\n${endInMsg}`, userDb];
 			} else {
-				return [`You have bid **${bidAmount} coins**, and you are in the lead!`, userDb];
+				return [`You have bid **${bidAmount} coins**, and you are in the lead!\n\n${endInMsg}`, userDb];
 			}
 		} else {
 			const oldBidAmount = userAcc.bidAmount;
@@ -72,7 +80,7 @@ let cm = async (sentence, userDb) => {
 			if (highestBidder.username === userAcc.username) {
 				return [`You updated your old bid (${oldBidAmount} coins) **to ${bidAmount} coins**. See who's capable of overtaking you, ha!`, userDb];
 			} else if (highestBidder.username !== 'ZZZ-DU') {
-				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, execute \`@FarmBot bid reset\` to get your coins back, or \`@FarmBot bid [amount]\` to add up to your previous bid!`, userDb];
+				return [`You have bid **${bidAmount} coins**, and have **overtaken** @${stats.username}'s lead!\n\n@/${stats.username}, execute \`@FarmBot bid reset\` to get your coins back, or \`@FarmBot bid [amount]\` to add up to your previous bid!\n\n${endInMsg}`, userDb];
 			} else {
 				return [`You have bid **${bidAmount} coins**, and you are in the lead!`, userDb];
 			}
@@ -80,6 +88,6 @@ let cm = async (sentence, userDb) => {
 	}
 };
 
-module.exports.cm = async function (sentence, userDb) {
-	return await cm(sentence, userDb);
+module.exports.cm = async function (sentence, userDb, devforced) {
+	return await cm(sentence, userDb, devforced);
 };

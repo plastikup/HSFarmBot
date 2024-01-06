@@ -23,8 +23,8 @@ const cml = {
 	sell: async (sentence, userDb) => {
 		return await require('../commands/sell.js').cm(sentence, userDb);
 	},
-	auction: async (sentence, userDb) => {
-		return await require('../commands/auction.js').cm(sentence, userDb);
+	auction: async (sentence, userDb, devforced) => {
+		return await require('../commands/auction.js').cm(sentence, userDb, devforced);
 	},
 };
 
@@ -64,7 +64,7 @@ module.exports = async (commandList, userDb, devforced = false) => {
 				[answer, userDb] = await cml.sell(sentence, userDb);
 				break;
 			case 'bid':
-				[answer, userDb] = await cml.auction(sentence, userDb);
+				[answer, userDb] = await cml.auction(sentence, userDb, devforced);
 				break;
 
 			default:
