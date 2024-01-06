@@ -5,7 +5,7 @@ let cm = async (sentence, userDb) => {
 	let tgcrop, nbToSell;
 	if (sentence.length == 2) {
 		tgcrop = sentence[1].toLowerCase().substring(0, sentence[1].search(/(crops?|seeds?|)$/i));
-		nbToSell = 1;
+		nbToSell = Math.max(Math.min(userDb.cropsInventory[tgcrop + 'crops'], 1), 0);
 	} else {
 		tgcrop = sentence[2].toLowerCase().substring(0, sentence[2].search(/(crops?|seeds?|)$/i));
 
@@ -16,7 +16,7 @@ let cm = async (sentence, userDb) => {
 	}
 
 	if (!cropTypes._seed_types_regexp.test(tgcrop)) return [`Unknown type of crop. Remember, do not put spaces in between crop names (if that applies) :))`, userDb];
-	else if (nbToSell == 0) return [`You do not own any ${tgcrop} crop. Reply with \`@FarmBot view inventory\` to display your items!`, userDb];
+	else if (+nbToSell <= 0) return [`You do not own any ${tgcrop} crop. Reply with \`@FarmBot view inventory\` to display your items!`, userDb];
 
 	userDb.cropsInventory[tgcrop + 'crops'] -= nbToSell;
 	const earnings = nbToSell * cropTypes[tgcrop].earnings;
