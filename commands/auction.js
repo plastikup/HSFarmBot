@@ -44,7 +44,12 @@ let cm = async (sentence, userDb) => {
 	else {
 		if (bidAmount - userAcc.bidAmount > userDb.coins) {
 			return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins} (+ ${userAcc.bidAmount} coins that are in the auction bank).`, userDb];
-		} else if (userAccID == -1 || userAcc.bidAmount == 0) {
+		}
+		if (userAcc.lastBidTS + 900000 > Date.now() && userAcc.lastBidTS !== Infinity) {
+			return [`You cannot bid twice within **15 minutes**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 900000)}**!`, userDb];
+		}
+
+		if (userAccID == -1 || userAcc.bidAmount == 0) {
 			if (userAccID == -1) {
 				await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
 			} else {
@@ -58,10 +63,6 @@ let cm = async (sentence, userDb) => {
 				return [`You have bid **${bidAmount} coins**, and you are in the lead!`, userDb];
 			}
 		} else {
-			if (userAcc.lastBidTS + 82800000 > Date.now()) {
-				return [`You cannot bid twice within **23 hours**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 82800000)}**!`, userDb];
-			}
-
 			const oldBidAmount = userAcc.bidAmount;
 			userAcc.bidAmount = bidAmount;
 			userAcc.lastBidTS = Date.now();
