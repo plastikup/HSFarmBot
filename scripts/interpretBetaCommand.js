@@ -1,6 +1,6 @@
 const cml = {
-	help: () => {
-		return require('../commands/help.js').cm();
+	level: (userDb) => {
+		return require('../commands/level.js')(userDb);
 	},
 };
 
@@ -15,10 +15,12 @@ module.exports = async (commandList, userDb, devforced = false) => {
 	async function interpret(sentence) {
 		let answer = null;
 		if (sentence.length == 0) {
-            return 'Currently no `::beta` command to test.'
+			return 'Currently no `::beta` command to test.';
 		} else {
 			switch (sentence[0].toLowerCase()) {
-
+				case 'level':
+					answer = cml.level(userDb);
+					break;
 				default:
 					answer = `Unrecognized beta **sub**command \`${sentence[0]}\`.`;
 					break;
