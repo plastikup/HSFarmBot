@@ -67,9 +67,10 @@ async function main(req) {
 
 	// exit if is self
 	if (username == 'FarmBot') return;
-
 	// exit if not talking to fb
 	if (!cooked.match(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a>/i)) return;
+	// exit if edit window longer than 60 seconds
+	if (Date.now() - Date.parse(req.post.created_at) > 60000 && process.env.NODE_ENV !== 'AAAdevelopment') return;
 
 	// recreate post content (raw)
 	let raw = cooked.replace(/(<\/?p>|<(\/ ?)?br>)/gm, '').replace(/<a class="mention" href="\/u\/farmbot">@FarmBot<\/a> ?/gim, '@FarmBot ');
