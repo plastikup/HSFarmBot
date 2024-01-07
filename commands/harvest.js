@@ -19,6 +19,9 @@ let cm = async (sentence, userDb) => {
 
 		if (userDb.farm.every((e) => e.seedType === null || e.growthLevel == -1)) userDb.lastWater = 0;
 
+		// cropping anything gives you exps
+		userDb.experiences += 3;
+
 		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}! Earn coins by running \`@FarmBot sell ${targetCrop}\`, or keep it safe in your inventory as a sourvenir!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	}
 };

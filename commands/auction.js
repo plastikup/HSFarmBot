@@ -3,6 +3,9 @@ const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
 
 let cm = async (sentence, userDb, devforced) => {
+	// running any bidding related commands (not the view auction command) gives you exps
+	userDb.experiences++;
+
 	let auction = await dbAu.get();
 
 	const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');

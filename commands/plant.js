@@ -15,6 +15,9 @@ let cm = async (sentence, userDb) => {
 
 			userDb.seedsInventory[seed + 'seeds']--;
 
+			// planting anything succesfully gives you exps
+			userDb.experiences++;
+
 			return [`Planted one cute **${seed} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`, userDb];
 		} else {
 			return [`It looks like you have **already something planted there**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];

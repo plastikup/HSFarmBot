@@ -18,6 +18,9 @@ let cm = async (userDb, devforced) => {
 		if (!somethingToWater) {
 			return [`No crops to water!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 		} else {
+			// watering gives you exps
+			userDb.experiences++;
+
 			userDb.lastWater = Date.now();
 			return [`@/${userDb.username}, you have watered your thirsty plants!\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nMake sure to water them again **in 8 hours!**`, userDb];
 		}
