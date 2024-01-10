@@ -136,6 +136,9 @@ async function main(req) {
 		return;
 	}
 
+	// update db if applies
+	if (userDb.dbVersion !== cts.botVersion) userDb = await require('./scripts/databaseVersionPatch.js')(userDb);
+
 	// kill dead crops
 	userDb = await require('./scripts/killDeadCrops')(userDb);
 

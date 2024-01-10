@@ -1,13 +1,13 @@
 const dbFus = require('../dyna/dbFus.js');
 const dbAu = require('../dyna/dbAu.js');
-const test = require('../constants.js').test;
+const cts = require('../constants.js');
 const auctionFormatting = require('../scripts/auctionFormatting.js');
 
 module.exports = async (sentence, userDb, db) => {
 	let tgUserDb = null;
 	switch (sentence[1]) {
 		case 'version':
-			return 'The active version of the bot is currently **v2024.1**.';
+			return `The active version of the bot is currently **${cts.botVersion}**.`;
 			break;
 		case 'allfarmers':
 			const allFarmersRaw = db

@@ -1,7 +1,7 @@
 module.exports = {
 	VALID_HEAD_COMMAND_REGEXP: /(::mod|::beta|takeover|begin|help|view|plant|water|harvest|daily|buy|sell|bid)/i,
 	cropTypes: {
-		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley)$/i,
+		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley|snowdrops|witchhazel|winterberry|camellias|paradisebird)$/i,
 		wheat: {
 			watersRequired: 3,
 			earnings: 35,
@@ -41,6 +41,26 @@ module.exports = {
 		lilyvalley: {
 			watersRequired: 12,
 			earnings: 90,
+		},
+		snowdrops: {
+			watersRequired: 4,
+			earnings: 140,
+		},
+		witchhazel: {
+			watersRequired: 5,
+			earnings: 150,
+		},
+		winterberry: {
+			watersRequired: 6,
+			earnings: 175,
+		},
+		camellias: {
+			watersRequired: 10,
+			earnings: 225,
+		},
+		paradisebird: {
+			watersRequired: 10,
+			earnings: 200,
 		},
 	},
 	NEW_USER_JSON: {
@@ -148,7 +168,8 @@ module.exports = {
 		level: 0,
 		username: 'ZZZ-DU',
 		experiences: 0,
+		dbVersion: 'v2024.1',
 	},
 	newFarmDefault: `{"growthLevel":0,"plantedAt":null,"seedType":null,"secret":false,"lastWater":0,"fertilizerCount":0}`,
-	test: [['help'], ['view', 'farm'], ['view', 'inventory'], ['view', 'coins'], ['plant', 'wheat', 'spot', '1'], ['water'], ['harvest', 'spot', '1'], ['daily'], ['buy']],
+	botVersion: 'v2024.1',
 };
