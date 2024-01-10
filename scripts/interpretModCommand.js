@@ -7,9 +7,22 @@ module.exports = async (sentence, userDb, db) => {
 	let tgUserDb = null;
 	switch (sentence[1]) {
 		case 'version':
-			return 'The active version of the bot is currently v2024.0b.';
+			return 'The active version of the bot is currently **v2024.1**.';
 			break;
-		case 'start_auction':
+		case 'allfarmers':
+			const allFarmersRaw = db
+				.map((user) => user.username)
+				.filter((username) => !/(ZZZ-DU|TriAngleHSFBTester)/.test(username))
+				.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+				.map((username) => '@' + username);
+
+			const allFarmers = JSON.stringify(allFarmersRaw)
+				.replace(/["\[\]]/g, '')
+				.replace(/,/g, ' ');
+
+			return `\n\n\`${allFarmers}\``;
+			break;
+		case 'startauction':
 			await dbAu.put(process.env.baseID, {
 				bidSettings: {
 					_active: true,
@@ -21,7 +34,7 @@ module.exports = async (sentence, userDb, db) => {
 				},
 			});
 			await dbAu.delete('*?q={"isBase": false}');
-			return `\n# A NEW AUCTION HAS SPAWNED\n\n${auctionFormatting.cm(sentence[3], Number(sentence[2]), 5,'DEFAULT_MIN_BID_AMOUNT', Date.now() + Number(sentence[4]) * 86400000)}`;
+			return `\n# A NEW AUCTION HAS SPAWNED\n\n${auctionFormatting.cm(sentence[3], Number(sentence[2]), 5, 'DEFAULT_MIN_BID_AMOUNT', Date.now() + Number(sentence[4]) * 86400000)}`;
 			break;
 
 		default:
