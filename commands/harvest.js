@@ -9,7 +9,7 @@ let cm = async (sentence, userDb) => {
 		return [`There is **no crop at spot ${sentence[2]}**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	} else if (userDb.farm[sentence[2] - 1].growthLevel == -1) {
 		return [`Your crop at spot ${sentence[2]} is **dead**.\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to **water your farm** frequently.`, userDb];
-	} else if (Math.floor(userDb.farm[sentence[2] - 1].growthLevel) < 4) {
+	} else if (Math.floor(Math.round(+userDb.farm[sentence[2] - 1].growthLevel * 10000) / 10000) < 4) {
 		return [`Your crop at spot ${sentence[2]} is **not ready to be harvested yet**!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 	} else {
 		const targetCrop = userDb.farm[sentence[2] - 1].seedType;

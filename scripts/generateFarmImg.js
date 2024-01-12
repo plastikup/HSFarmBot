@@ -6,7 +6,7 @@ let cm = async (userDb) => {
 	let grid = [];
 	for (let i = 0; i < 9; i++) {
 		const listRaw = userDb.farm[i];
-		const growthLevelFloored = Math.floor(listRaw.growthLevel);
+		const growthLevelFloored = Math.floor(Math.round(+listRaw.growthLevel * 10000) / 10000);
 		if (growthLevelFloored == -1) grid.push('seeddead');
 		else if (growthLevelFloored == 0) grid.push('base');
 		else if (growthLevelFloored == 1) grid.push('seed1');
