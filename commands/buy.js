@@ -24,9 +24,9 @@ let cm = async (sentence, userDb) => {
 				userDb.seedsInventory[randomSeed.seedName + 'seeds'] += isDouble + 1;
 
 				if (isDouble) {
-					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomSeed.seedName} seeds[/spoiler]**, both with a **${randomSeed.luck}% drop chance**!! The duplicate has a **10% chance** of happening. Wow, congrats!`;
+					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomSeed.seedName} seeds[/spoiler]**, both with a **${randomSeed.hidden ? randomSeed.messageForHidden : randomSeed.luck + '%'} drop chance**!! The duplicate has a **10% chance** of happening. Wow, congrats!`;
 				} else {
-					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.luck}% drop chance**!!`;
+					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.hidden ? randomSeed.messageForHidden : randomSeed.luck + '%'} drop chance**!!`;
 				}
 			} else {
 				return `You **don't have enough coins** to buy this pack (**${targetPack.packPrice} coins**). You currently have **${userDb.coins} coins** in your account.`;

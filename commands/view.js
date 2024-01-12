@@ -52,7 +52,7 @@ let cm = async (sentence, userDb) => {
 				for (const item of mooseFarms) {
 					table += `\`${item.packName}\`|`;
 					for (const seed of item.packContent) {
-						table += `${seed.seedName}: **${seed.luck}%**<br>`;
+						table += `${seed.seedName}: **${seed.hidden ? seed.messageForHidden : seed.luck + '%'}**<br>`;
 					}
 					table += `|${item.packPrice}\n`;
 				}
