@@ -23,7 +23,7 @@ let cm = async (sentence, userDb) => {
 			return [`It looks like you have **already something planted there**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 		}
 	} else if (!cropTypes._seed_types_regexp.test(seed)) {
-		return `Unknown type of seed.`;
+		return [`Unknown type of seed.`, userDb];
 	} else if (spot >= 0 && spot < 9) {
 		return [`**You do not own any ${seed} seeds**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
 	} else {
