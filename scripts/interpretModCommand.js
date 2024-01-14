@@ -38,7 +38,7 @@ module.exports = async (sentence, userDb, db) => {
 			break;
 
 		default:
-			return `Unrecognized mod command \`${sentence[1]}\`.`;
+			return `Unrecognized mod command \`${sentence[1]}\`.\n\nValid **sub**commands for \`@FarmBot ::mod\`:\n- \`version\`: get the version of the bot;\n- \`allfarmers\`: get a list of every farmers;\n- \`startauction [amount] [seed/crop/decorativeelement] [ending timestamp]\`: start a new auction! `;
 			break;
 	}
 };
