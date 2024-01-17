@@ -1,6 +1,18 @@
 const dbMs = require('../dyna/dbMs.js');
 const undoCamelCase = require('../scripts/undoCamelCase.js');
 
+let randomGrant = (targetPack) => {
+	const randomNumb = Math.floor(Math.random() * 100);
+	let luckCount = 0;
+	let i = 0;
+	for (const seed of targetPack.packContent) {
+		if (seed.luck + luckCount > randomNumb) break;
+		luckCount += seed.luck;
+		i++;
+	}
+	return targetPack.packContent[i];
+};
+
 let cm = async (sentence, userDb) => {
 	async function formatPackAnswer() {
 		if (!existingPacks.includes(inputPack)) {
@@ -8,16 +20,7 @@ let cm = async (sentence, userDb) => {
 		} else {
 			const targetPack = mooseFarms[existingPacks.indexOf(inputPack)];
 			if (userDb.coins >= targetPack.packPrice) {
-				const randomNumb = Math.floor(Math.random() * 100);
-				let luckCount = 0;
-				let i = 0;
-				for (const seed of targetPack.packContent) {
-					if (seed.luck + luckCount > randomNumb) break;
-					luckCount += seed.luck;
-					i++;
-				}
-				const randomSeed = targetPack.packContent[i];
-
+				const randomSeed = randomGrant(targetPack);
 				const isDouble = Math.floor(Math.random() * 10) == 0 && randomSeed.luck >= 15;
 
 				userDb.coins -= targetPack.packPrice;
@@ -63,3 +66,5 @@ let cm = async (sentence, userDb) => {
 module.exports.cm = async function (sentence, userDb) {
 	return await cm(sentence, userDb);
 };
+
+module.exports.randomGrant = randomGrant;

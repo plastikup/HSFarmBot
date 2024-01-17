@@ -49,5 +49,18 @@ module.exports = async (userDb) => {
 		userDb.dbVersion = 'v2024.1';
 	}
 
+	if (userDb.dbVersion === 'v2024.1') {
+		let newMiscellaneousInventory = {
+			'basicfertilizer': 0,
+			'stonemoosestatue': 0,
+			'coppermoosestatue': 0,
+			'silvermoosestatue': 0,
+		};
+
+		userDb.miscellaneousInventory = newMiscellaneousInventory;
+
+		userDb.dbVersion = 'v2024.2';
+	}
+
 	return userDb;
 };

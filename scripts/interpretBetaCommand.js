@@ -1,6 +1,6 @@
 const cml = {
 	level: (userDb) => {
-		return require('../commands/level.js')(userDb);
+		return require('../commands/level.js').cm(userDb);
 	},
 };
 

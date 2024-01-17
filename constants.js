@@ -171,5 +171,105 @@ module.exports = {
 		dbVersion: 'v2024.1',
 	},
 	newFarmDefault: `{"growthLevel":0,"plantedAt":null,"seedType":null,"secret":false,"lastWater":0,"fertilizerCount":0}`,
-	botVersion: 'v2024.1',
+	rewardsList: {
+		'1': [
+			{
+				category: 'moosefarmpacks',
+				name: 'farmpack',
+				quantity: 2,
+			},
+			{
+				category: 'moosefarmpacks',
+				name: 'flowerpack',
+				quantity: 1,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 65,
+			},
+		],
+		'2': [
+			{
+				category: 'miscellaneous',
+				name: 'basicfertilizer',
+				quantity: 3,
+			},
+			{
+				category: 'moosefarmpacks',
+				name: 'farmpack',
+				quantity: 2,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 100,
+			},
+		],
+		'3': [
+			{
+				category: 'message',
+				message: 'YOU HAVE UNLOCKED... THE ***GARDEN***! (coming very soon)',
+			},
+			{
+				category: 'miscellaneous',
+				name: 'stonemoosestatue',
+				quantity: 1,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 100,
+			},
+		],
+		'4': [
+			{
+				category: 'moosefarmpacks',
+				name: 'farmpack',
+				quantity: 2,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 200,
+			},
+		],
+		'5': [
+			{
+				category: 'miscellaneous',
+				name: 'coppermoosestatue',
+				quantity: 1,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 250,
+			},
+		],
+		'6': [
+			{
+				category: 'decorpacks',
+				name: 'decorpack',
+				quantity: 2,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 275,
+			},
+		],
+		'7': [
+			{
+				category: 'miscellaneous',
+				name: 'silvermoosestatue',
+				quantity: 1,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 300,
+			},
+		],
+	},
+	botVersion: 'v2024.2',
 };
