@@ -3,7 +3,7 @@ const dbAu = require('../dyna/dbAu.js');
 const cts = require('../constants.js');
 const auctionFormatting = require('../scripts/auctionFormatting.js');
 
-module.exports = async (sentence, userDb, db) => {
+module.exports = async (sentence, userDb, db, cooked) => {
 	let tgUserDb = null;
 	switch (sentence[1]) {
 		case 'version':
@@ -22,6 +22,9 @@ module.exports = async (sentence, userDb, db) => {
 
 			return `\n\n\`${allFarmers}\``;
 			break;
+		case 'repostRaw':
+			return `\n\n\`${cooked}\``;
+			break;
 		case 'startauction':
 			await dbAu.put(process.env.baseID, {
 				bidSettings: {
@@ -38,7 +41,7 @@ module.exports = async (sentence, userDb, db) => {
 			break;
 
 		default:
-			return `Unrecognized mod command \`${sentence[1]}\`.\n\nValid **sub**commands for \`@FarmBot ::mod\`:\n- \`version\`: get the version of the bot;\n- \`allfarmers\`: get a list of every farmers;\n- \`startauction [amount] [seed/crop/decorativeelement] [ending timestamp]\`: start a new auction! `;
+			return `Unrecognized mod command \`${sentence[1]}\`.\n\nValid **sub**commands for \`@FarmBot ::mod\`:\n- \`version\`: get the version of the bot;\n- \`allfarmers\`: get a list of every farmers;\n- \`reportRaw\`: post the HTML raw version of the post; \n- \`startauction [amount] [seed/crop/decorativeelement] [ending timestamp]\`: start a new auction! `;
 			break;
 	}
 };
