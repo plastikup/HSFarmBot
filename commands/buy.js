@@ -16,7 +16,7 @@ let randomGrant = (targetPack) => {
 let cm = async (sentence, userDb) => {
 	async function formatPackAnswer() {
 		if (!existingPacks.includes(inputPack)) {
-			return `Invalid pack name \`${sentence[1]}\`. Reply with \`@FarmBot view shop\` for a detailed list of available products.`;
+			return `Invalid pack name \`${sentence.length === 2 ? sentence[1] : sentence[2]}\`. Reply with \`@FarmBot view shop\` for a detailed list of available products.`;
 		} else {
 			const targetPack = mooseFarms[existingPacks.indexOf(inputPack)];
 			if (userDb.coins >= targetPack.packPrice) {
