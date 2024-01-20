@@ -3,8 +3,8 @@ module.exports.cm = function () {
 [quote=General]
 \`@FarmBot begin\` — register you as a farmer with an account linked to your forum username. **this step is required to start playing the farming game**!
 \`@FarmBot help\` — bring up introduction and list of commands (this post!)
-<s>\`@FarmBot view coins\`</s> — **DEPRECATED** - use \`@FarmBot view inventory\`.
 \`@FarmBot daily\` — claim your daily coins
+\`@FarmBot view level\` — view your experience level
 [/quote]
 [quote="Farming"]
 \`@FarmBot view farm\` — display your farm
