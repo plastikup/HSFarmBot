@@ -34,7 +34,7 @@ function inventoryContent(userDb) {
 }
 
 let cm = async (sentence, userDb) => {
-	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`shop\`: display the items available in your dream shop, MooseFarms Co.!;\n- \`auction\`: display the infos about the current ongoing auction`;
+	if (sentence[1] == undefined) return `Valid **sub**commands for \`@FarmBot view\`:\n- \`farm\`: view your farm;\n- \`inventory\`: view your inventory content;\n- \`level\`: view your experience level; \n- \`shop\`: display the items available in your dream shop, MooseFarms Co.!;\n- \`auction\`: display the infos about the current ongoing auction`;
 	else
 		switch (sentence[1].toLowerCase()) {
 			case 'farm':
@@ -43,8 +43,8 @@ let cm = async (sentence, userDb) => {
 			case 'inventory':
 				return `@/${userDb.username}'s **inventory** - you have **${userDb.coins} coins**.\n\n${inventoryContent(userDb)}`;
 				break;
-			case 'coins':
-				return `This is a **deprecated command** - it has been merged with \`@FarmBot view inventory\`.`;
+			case 'level':
+				return require('./level.js').cm(userDb);
 				break;
 			case 'shop':
 				let mooseFarms = await dbMs.get();

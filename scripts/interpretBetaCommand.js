@@ -14,7 +14,8 @@ module.exports = async (commandList, userDb, devforced = false) => {
 
 	async function interpret(sentence) {
 		let answer = null;
-		if (sentence.length == 0) {
+		if (true) {
+			// * There is no beta command yet for now
 			return 'Currently no `::beta` command to test.';
 		} else {
 			switch (sentence[0].toLowerCase()) {

@@ -145,14 +145,14 @@ async function main(req) {
 	// mod or player?
 	if (commandList[0][0].toLowerCase() != '::mod' && commandList[0][0].toLowerCase() != '::beta') {
 		// get original level of the farmer
-		const originalLevel = await require('./commands/level').userLevel(+userDb.experiences);
+		const originalLevel = await require('./commands/level').calcUserLevel(+userDb.experiences);
 
 		// exe
 		let answer = '';
 		[answer, userDb] = await require('./scripts/interpretCommand.js')(commandList, userDb, devforced);
 
 		// get new level of the farmer
-		const newLevel = await require('./commands/level').userLevel(+userDb.experiences);
+		const newLevel = await require('./commands/level').calcUserLevel(+userDb.experiences);
 		// if new level is higher than old level, add congrats message and grant stuff
 		if (originalLevel < newLevel) {
 			[answer, userDb] = await require('./scripts/levelRewards.js')(answer, userDb, newLevel);
