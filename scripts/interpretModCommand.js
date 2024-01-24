@@ -22,7 +22,7 @@ module.exports = async (sentence, userDb, db, cooked) => {
 
 			return `\n\n\`${allFarmers}\``;
 			break;
-		case 'repostRaw':
+		case 'viewRaw':
 			return `\n\n\`${cooked}\``;
 			break;
 		case 'startauction':
@@ -41,7 +41,7 @@ module.exports = async (sentence, userDb, db, cooked) => {
 			break;
 
 		default:
-			return `Unrecognized mod command \`${sentence[1]}\`.\n\nValid **sub**commands for \`@FarmBot ::mod\`:\n- \`version\`: get the version of the bot;\n- \`allfarmers\`: get a list of every farmers;\n- \`reportRaw\`: post the HTML raw version of the post; \n- \`startauction [amount] [seed/crop/decorativeelement] [ending timestamp]\`: start a new auction! `;
+			return `Unrecognized mod command \`${sentence[1]}\`.\n\nValid **sub**commands for \`@FarmBot ::mod\`:\n- \`version\`: get the version of the bot;\n- \`allfarmers\`: get a list of every farmers;\n- \`viewRaw\`: post the HTML raw version of the post; \n- \`startauction [amount] [seed/crop/decorativeelement] [ending timestamp]\`: start a new auction! `;
 			break;
 	}
 };
