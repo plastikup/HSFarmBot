@@ -12,7 +12,7 @@ let cm = async (sentence, userDb, devforced) => {
 	if (baseAccID == -1) return [`**critical: baseAcc not found.**\n\n@Tri-Angle`, userDb];
 	let baseAcc = auction[baseAccID].bidSettings;
 
-	let stats = { username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 5 };
+	let stats = { username: 'DEFAULT_MIN_BID_AMOUNT', bidAmount: 50, bidNbOfTimes: 1 };
 	for (let i = 0; i < auction.length; i++) {
 		if (i == baseAccID) continue;
 		const raw = auction[i];
@@ -32,6 +32,10 @@ let cm = async (sentence, userDb, devforced) => {
 	if (sentence[1].toLowerCase() == 'reset') {
 		if (userAccID == -1) return [`Nothing to reset - you have not bid anything yet!`, userDb];
 
+		if (highestBidder.username === userAcc.username) {
+			return [`You **cannot reset** your bid because you are first place in the auction.`, userDb];
+		}
+
 		const returnedCoins = userAcc.bidAmount;
 		userDb.coins += returnedCoins;
 		userAcc.bidAmount = 0;
@@ -41,9 +45,10 @@ let cm = async (sentence, userDb, devforced) => {
 	}
 
 	const bidAmount = Number(sentence[1]);
+	const bidThreshold = +baseAcc.bidNbOfTimes * 10;
 
 	if (isNaN(bidAmount)) return ['Please enter a **digit** to bid.', userDb];
-	else if (bidAmount < stats.bidAmount + 5) return [`You must bid **at least 5 coins higher than the leading bid** (which is currently **${stats.bidAmount} coins** - you will have to bid *at least* 5 more than that amount).`, userDb];
+	else if (bidAmount < stats.bidAmount + bidThreshold) return [`You must bid **at least ${bidThreshold} coins higher than the leading bid** (which is currently **${stats.bidAmount} coins** - you will have to bid *at least* ${bidThreshold} more than that amount).`, userDb];
 	else {
 		if (bidAmount - userAcc.bidAmount > userDb.coins) {
 			return [`You **do not have enough coins**. You need **${bidAmount - userAcc.bidAmount - userDb.coins} more** coins - you currently only have ${userDb.coins} (+ ${userAcc.bidAmount} coins that are in the auction bank).`, userDb];
@@ -59,7 +64,11 @@ let cm = async (sentence, userDb, devforced) => {
 			endInMsg = 'Less than 24 hours left; therefore, **12 extra hours has been added** to the auction, making it **end in only ' + formatCountdown.cm(baseAcc.endsAt) + '**!! Quick, make sure to gather all your coins before it ends!';
 			await dbAu.put(auction[baseAccID]._id, auction[baseAccID]);
 		}
+
 		// success; you have bid wtv amount
+		const newBaseAcc = auction[baseAccID];
+		newBaseAcc.bidSettings.bidNbOfTimes++;
+		await dbAu.put(newBaseAcc._id, newBaseAcc);
 		if (userAccID == -1 || userAcc.bidAmount == 0) {
 			if (userAccID == -1) {
 				await dbAu.post(userDb.username, { username: userDb.username, bidAmount: bidAmount, lastBidTS: Date.now(), isBase: false });
