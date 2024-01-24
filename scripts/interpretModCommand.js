@@ -23,7 +23,7 @@ module.exports = async (sentence, userDb, db, cooked) => {
 			return `\n\n\`${allFarmers}\``;
 			break;
 		case 'viewRaw':
-			return `\n\n\`${cooked}\``;
+			return `\n\n\`\`\`\n${cooked}\`\`\``;
 			break;
 		case 'startauction':
 			await dbAu.put(process.env.baseID, {
