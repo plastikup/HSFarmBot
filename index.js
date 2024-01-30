@@ -22,7 +22,7 @@ app.post('/post-action', async (req, res) => {
 		if (process.env.NODE_ENV === 'development') {
 			throw error;
 		} else {
-			await require('./dyna/newForumPost')(`An error has occured: \`${error}\`.`, null, req.body.post.topic_id);
+			await require('./dyna/newForumPost')(`An error has occurred: \`${error}\`.`, null, req.body.post.topic_id);
 		}
 	}
 	res.status(200).send('OK');
@@ -57,7 +57,6 @@ async function main(req) {
 
 	const cts = require('./constants.js');
 	const VALID_HEAD_COMMAND_REGEXP = cts.VALID_HEAD_COMMAND_REGEXP;
-	const NEW_USER_JSON = cts.NEW_USER_JSON;
 
 	/* script start */
 	let username = req.post.username;
