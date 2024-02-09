@@ -1,48 +1,35 @@
 const sharp = require('sharp');
 const cropTypes = require('../constants.js').cropTypes;
 
-let cm = async (userDb) => {
+let cm = async (userDb, isGarden = false) => {
 	// GRID
-	let grid = [];
-	for (let i = 0; i < 9; i++) {
-		const listRaw = userDb.farm[i];
+	let composite = [];
+	let farm = isGarden ? userDb.garden : userDb.farm;
+	for (let i = 0; i < farm.length; i++) {
+		const listRaw = farm[i];
 		const growthLevelFloored = Math.floor(Math.round(+listRaw.growthLevel * 10000) / 10000);
-		if (growthLevelFloored == -1) grid.push('seeddead');
-		else if (growthLevelFloored == 0) grid.push('base');
-		else if (growthLevelFloored == 1) grid.push('seed1');
-		else if (growthLevelFloored == 2) grid.push('seed2');
-		else if (growthLevelFloored == 3) grid.push('seed3');
-		else if (cropTypes._seed_types_regexp.test(listRaw.seedType)) grid.push(listRaw.seedType);
-		else grid.push('base');
+		let input;
+		if (growthLevelFloored == -1) input = 'seeddead';
+		else if (growthLevelFloored == 0) input = 'base';
+		else if (growthLevelFloored == 1) input = 'seed1';
+		else if (growthLevelFloored == 2) input = 'seed2';
+		else if (growthLevelFloored == 3) input = 'seed3';
+		else if (cropTypes._seed_types_regexp.test(listRaw.seedType)) input = listRaw.seedType;
+
+		const top = Math.floor(i / (isGarden ? 4 : 3)) * 104;
+		const left = (i % (isGarden ? 4 : 3)) * 104;
+		if (input === undefined) composite.push({ input: `./imgs/base.png`, top: top, left: left });
+		else composite.push({ input: `./imgs/base.png`, top: top, left: left }, { input: `./imgs/${input}.png`, top: top, left: left });
 	}
 	const newPicture = await sharp({
 		create: {
-			width: 308,
-			height: 308,
+			width: isGarden ? 412 : 308,
+			height: isGarden ? 412 : 308,
 			channels: 4,
 			background: { r: 0, g: 0, b: 0, alpha: 0 },
 		},
 	})
-		.composite([
-			{ input: `./imgs/base.png`, gravity: 'northwest' },
-			{ input: `./imgs/base.png`, gravity: 'north' },
-			{ input: `./imgs/base.png`, gravity: 'northeast' },
-			{ input: `./imgs/base.png`, gravity: 'west' },
-			{ input: `./imgs/base.png`, gravity: 'centre' },
-			{ input: `./imgs/base.png`, gravity: 'east' },
-			{ input: `./imgs/base.png`, gravity: 'southwest' },
-			{ input: `./imgs/base.png`, gravity: 'south' },
-			{ input: `./imgs/base.png`, gravity: 'southeast' },
-			{ input: `./imgs/${grid[0]}.png`, gravity: 'northwest' },
-			{ input: `./imgs/${grid[1]}.png`, gravity: 'north' },
-			{ input: `./imgs/${grid[2]}.png`, gravity: 'northeast' },
-			{ input: `./imgs/${grid[3]}.png`, gravity: 'west' },
-			{ input: `./imgs/${grid[4]}.png`, gravity: 'centre' },
-			{ input: `./imgs/${grid[5]}.png`, gravity: 'east' },
-			{ input: `./imgs/${grid[6]}.png`, gravity: 'southwest' },
-			{ input: `./imgs/${grid[7]}.png`, gravity: 'south' },
-			{ input: `./imgs/${grid[8]}.png`, gravity: 'southeast' },
-		])
+		.composite(composite)
 		.webp({ nearLossless: true })
 		.toBuffer();
 
