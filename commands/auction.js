@@ -1,5 +1,4 @@
 const dbAu = require('../dyna/dbAu.js');
-const undoCamelCase = require('../scripts/undoCamelCase.js');
 const formatCountdown = require('../scripts/formatCountdown.js');
 
 let cm = async (sentence, userDb, devforced) => {
@@ -57,7 +56,7 @@ let cm = async (sentence, userDb, devforced) => {
 			if (!devforced) return [`You cannot bid twice within **15 minutes**. Try again in **${formatCountdown.cm(userAcc.lastBidTS + 900000)}**!`, userDb];
 		}
 
-		// extend by 12h everytime somebody bids when theres 24h left
+		// extend by 12h every time somebody bids when theres 24h left
 		let endInMsg = 'The auction will **end in ' + formatCountdown.cm(baseAcc.endsAt) + '**!';
 		if (baseAcc.endsAt - Date.now() < 86400000 && highestBidder.username !== userAcc.username && highestBidder.username !== 'ZZZ-DU') {
 			baseAcc.endsAt += 43200000;
