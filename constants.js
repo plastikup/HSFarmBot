@@ -1,7 +1,7 @@
 module.exports = {
 	VALID_HEAD_COMMAND_REGEXP: /(::mod|::beta|takeover|begin|help|view|plant|water|harvest|daily|buy|sell|bid)/i,
 	cropTypes: {
-		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley|snowdrops|witchhazel|winterberry|camellias|paradisebird)$/i,
+		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley|snowdrops|witchhazel|winterberry|camellias|paradisebird|garden)$/i,
 		wheat: {
 			watersRequired: 3,
 			earnings: 35,

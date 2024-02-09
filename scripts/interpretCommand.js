@@ -26,6 +26,9 @@ const cml = {
 	auction: async (sentence, userDb, devforced) => {
 		return await require('../commands/auction.js').cm(sentence, userDb, devforced);
 	},
+	garden: async (sentence, userDb) => {
+		return await require('../commands/garden.js')(sentence, userDb);
+	},
 };
 
 module.exports = async (commandList, userDb, devforced = false) => {
@@ -65,6 +68,9 @@ module.exports = async (commandList, userDb, devforced = false) => {
 				break;
 			case 'bid':
 				[answer, userDb] = await cml.auction(sentence, userDb, devforced);
+				break;
+			case 'garden':
+				[answer, userDb] = await cml.garden(sentence, userDb);
 				break;
 
 			default:

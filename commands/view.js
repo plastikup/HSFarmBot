@@ -21,7 +21,7 @@ function inventoryContent(userDb) {
 		table = table + `${seedKey}|${seedInventoryContent[seed] || '-'}||${cropKey}|${cropInventoryContent[crop] || '-'}\n`;
 	}
 
-	/* not devlp yet
+	/* not developed yet
         inventoryContent = userDb.specialItems;
         inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
         table = table + '\nSpecial Items|Quantity\n-|-\n';
@@ -39,14 +39,11 @@ let cm = async (sentence, userDb) => {
 		switch (sentence[1].toLowerCase()) {
 			case 'farm':
 				return `@/${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
-				break;
 			case 'inventory':
 				return `@/${userDb.username}'s **inventory** - you have **${userDb.coins} coins**.\n\n${inventoryContent(userDb)}`;
-				break;
 			case 'level':
 				return require('./level.js').cm(userDb);
-				break;
-			case 'shop':
+			case 'shop': {
 				let mooseFarms = await dbMs.get();
 				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
 				for (const item of mooseFarms) {
@@ -57,8 +54,8 @@ let cm = async (sentence, userDb) => {
 					table += `|${item.packPrice}\n`;
 				}
 				return `### MooseFarms Co.'s products\n\n${table}\n\nYou have **${userDb.coins} coins**.`;
-				break;
-			case 'auction':
+			}
+			case 'auction': {
 				let auction = await dbAu.get();
 
 				const baseAccID = auction.findIndex((e) => e.username === 'ZZZ-DU');
@@ -87,10 +84,9 @@ let cm = async (sentence, userDb) => {
 				}
 
 				return `### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, baseAcc.bidSubject.amount, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`;
-				break;
+			}
 			default:
 				return `Unrecognized subcommand \`${sentence[1]}\`.`;
-				break;
 		}
 };
 
