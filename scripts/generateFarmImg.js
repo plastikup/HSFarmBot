@@ -1,7 +1,7 @@
 const sharp = require('sharp');
 const cropTypes = require('../constants.js').cropTypes;
 
-let cm = async (userDb, isGarden = true) => {
+let cm = async (userDb, isGarden = false) => {
 	// GRID
 	let composite = [];
 	let farm = isGarden ? userDb.garden : userDb.farm;
