@@ -24,6 +24,15 @@ let cm = async (userDb) => {
 		},
 	})
 		.composite([
+			{ input: `./imgs/base.png`, gravity: 'northwest' },
+			{ input: `./imgs/base.png`, gravity: 'north' },
+			{ input: `./imgs/base.png`, gravity: 'northeast' },
+			{ input: `./imgs/base.png`, gravity: 'west' },
+			{ input: `./imgs/base.png`, gravity: 'centre' },
+			{ input: `./imgs/base.png`, gravity: 'east' },
+			{ input: `./imgs/base.png`, gravity: 'southwest' },
+			{ input: `./imgs/base.png`, gravity: 'south' },
+			{ input: `./imgs/base.png`, gravity: 'southeast' },
 			{ input: `./imgs/${grid[0]}.png`, gravity: 'northwest' },
 			{ input: `./imgs/${grid[1]}.png`, gravity: 'north' },
 			{ input: `./imgs/${grid[2]}.png`, gravity: 'northeast' },
