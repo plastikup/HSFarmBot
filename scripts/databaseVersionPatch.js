@@ -1,5 +1,3 @@
-const cts = require('../constants.js');
-
 module.exports = async (userDb) => {
 	if (userDb.dbVersion === 'v2024.0') {
 		let newSeedsInventory = {
@@ -60,6 +58,92 @@ module.exports = async (userDb) => {
 		userDb.miscellaneousInventory = newMiscellaneousInventory;
 
 		userDb.dbVersion = 'v2024.2';
+	}
+
+	if (userDb.dbVersion === 'v2024.2') {
+		userDb.garden = [
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": false
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			},
+			{
+				"plantedAt": null,
+				"seedType": null,
+				"locked": true
+			}
+		]
+		userDb.dbVersion = 'v2024.3beta'
 	}
 
 	return userDb;
