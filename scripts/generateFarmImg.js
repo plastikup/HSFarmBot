@@ -1,7 +1,7 @@
 const sharp = require('sharp');
 const cropTypes = require('../constants.js').cropTypes;
 
-let cm = async (userDb, isGarden = false) => {
+let cm = async (userDb, isGarden = true) => {
 	// GRID
 	let composite = [];
 	let farm = isGarden ? userDb.garden : userDb.farm;
@@ -39,18 +39,21 @@ let cm = async (userDb, isGarden = false) => {
 
 	// TABLE
 
-	let table = `[details=Table view]\n&ic;|&ic;|&ic;\n:-:|:-:|:-:\n`;
+	let table = `[details=Table view]\n&ic;|&ic;|&ic;|&ic;\n:-:|:-:|:-:|:-:\n`;
 
-	for (let i = 0; i < 3; i++) {
-		const row = [userDb.farm[i * 3], userDb.farm[i * 3 + 1], userDb.farm[i * 3 + 2]];
-		for (let j = 0; j < row.length; j++) {
-			const cell = row[j];
+	for (let i = 0; i < Math.sqrt(farm.length); i++) {
+		for (let j = 0; j < Math.sqrt(farm.length); j++) {
+			const cell = farm[i * (isGarden ? 4 : 3) + j];
 			if (cell.seedType == null) table += '[*empty*]|';
 			else if (cell.growthLevel == -1) {
 				table += `[***dead** ${cell.seedType}*]|`;
 			} else {
-				let seedInfo = cropTypes[cell.seedType];
-				table += `**${cell.seedType}**<br><small>growth level: **${Math.round(((cell.growthLevel - 1) * seedInfo.watersRequired) / 3)}/${seedInfo.watersRequired}**</small>|`;
+				if (isGarden) {
+					table += `**${cell.seedType}**|`;
+				} else {
+					let seedInfo = cropTypes[cell.seedType];
+					table += `**${cell.seedType}**<br><small>growth level: **${Math.round(((cell.growthLevel - 1) * seedInfo.watersRequired) / 3)}/${seedInfo.watersRequired}**</small>|`;
+				}
 			}
 		}
 		table += `\n`;

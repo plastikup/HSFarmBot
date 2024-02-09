@@ -271,5 +271,5 @@ module.exports = {
 			},
 		],
 	},
-	botVersion: 'v2024.2',
+	botVersion: 'v2024.3beta',
 };
