@@ -5,6 +5,8 @@ let cm = async (userDb, isGarden = false) => {
 	// GRID
 	let composite = [];
 	let farm = isGarden ? userDb.garden : userDb.farm;
+	let maxTop = 0;
+	let maxLeft = 0;
 	for (let i = 0; i < farm.length; i++) {
 		const listRaw = farm[i];
 		const growthLevelFloored = Math.floor(Math.round(+listRaw.growthLevel * 10000) / 10000);
@@ -18,13 +20,15 @@ let cm = async (userDb, isGarden = false) => {
 
 		const top = Math.floor(i / (isGarden ? 4 : 3)) * 104;
 		const left = (i % (isGarden ? 4 : 3)) * 104;
+		maxTop = Math.max(maxTop, top);
+		maxLeft = Math.max(maxLeft, left);
 		if (input === undefined) composite.push({ input: `./imgs/base.png`, top: top, left: left });
 		else composite.push({ input: `./imgs/base.png`, top: top, left: left }, { input: `./imgs/${input}.png`, top: top, left: left });
 	}
 	const newPicture = await sharp({
 		create: {
-			width: isGarden ? 412 : 308,
-			height: isGarden ? 412 : 308,
+			width: maxTop - 4,
+			height: maxLeft - 4,
 			channels: 4,
 			background: { r: 0, g: 0, b: 0, alpha: 0 },
 		},
