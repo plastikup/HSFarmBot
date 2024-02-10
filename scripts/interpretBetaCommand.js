@@ -1,6 +1,10 @@
+const generateFarmImg = require('../scripts/generateFarmImg.js');
 const cml = {
 	level: (userDb) => {
 		return require('../commands/level.js').cm(userDb);
+	},
+	garden: async (sentence, userDb) => {
+		return await require('../commands/garden.js')(sentence, userDb);
 	},
 };
 
@@ -14,13 +18,16 @@ module.exports = async (commandList, userDb, devforced = false) => {
 
 	async function interpret(sentence) {
 		let answer = null;
-		if (true) {
-			// * There is no beta command yet for now
+		// eslint-disable-next-line no-constant-condition
+		if (false) {
 			return 'Currently no `::beta` command to test.';
 		} else {
 			switch (sentence[0].toLowerCase()) {
-				case 'level':
-					answer = cml.level(userDb);
+				case 'view_garden':
+					answer = `@/${userDb.username}'s **garden**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`;
+					break;
+				case 'garden':
+					[answer, userDb] = await cml.garden(sentence, userDb);
 					break;
 				default:
 					answer = `Unrecognized beta **sub**command \`${sentence[0]}\`.`;

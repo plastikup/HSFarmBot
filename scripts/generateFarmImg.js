@@ -10,6 +10,7 @@ let cm = async (userDb, isGarden = false) => {
 	for (let i = 0; i < farm.length; i++) {
 		const listRaw = farm[i];
 		const growthLevelFloored = Math.floor(Math.round(+listRaw.growthLevel * 10000) / 10000);
+
 		let input;
 		if (growthLevelFloored == -1) input = 'seeddead';
 		else if (growthLevelFloored == 0) input = 'base';
@@ -44,6 +45,9 @@ let cm = async (userDb, isGarden = false) => {
 	for (let i = 0; i < Math.sqrt(farm.length); i++) {
 		for (let j = 0; j < Math.sqrt(farm.length); j++) {
 			const cell = farm[i * (isGarden ? 4 : 3) + j];
+
+			if (cell.locked === true) continue;
+
 			if (cell.seedType == null) table += '[*empty*]|';
 			else if (cell.growthLevel == -1) {
 				table += `[***dead** ${cell.seedType}*]|`;
@@ -63,6 +67,6 @@ let cm = async (userDb, isGarden = false) => {
 	return `<img src="data:image/png;base64,${newPicture.toString('base64')}">\n\n${table}`;
 };
 
-module.exports.generateFarmImg = async function (userDb) {
-	return await cm(userDb);
+module.exports.generateFarmImg = async function (userDb, isGarden) {
+	return await cm(userDb, isGarden);
 };
