@@ -11,6 +11,8 @@ let cm = async (userDb, isGarden = false) => {
 		const listRaw = farm[i];
 		const growthLevelFloored = Math.floor(Math.round(+listRaw.growthLevel * 10000) / 10000);
 
+		if (listRaw.locked === true) continue;
+
 		let input;
 		if (growthLevelFloored == -1) input = 'seeddead';
 		else if (growthLevelFloored == 0) input = 'base';
@@ -28,8 +30,8 @@ let cm = async (userDb, isGarden = false) => {
 	}
 	const newPicture = await sharp({
 		create: {
-			width: maxTop - 4,
-			height: maxLeft - 4,
+			width: maxLeft + 100,
+			height: maxTop + 100,
 			channels: 4,
 			background: { r: 0, g: 0, b: 0, alpha: 0 },
 		},
