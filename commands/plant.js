@@ -15,7 +15,7 @@ let cm = async (sentence, userDb) => {
 
 			userDb.seedsInventory[seed + 'seeds']--;
 
-			// planting anything succesfully gives you exps
+			// planting anything successfully gives you exps
 			userDb.experiences++;
 
 			return [`Planted one cute **${seed} seed** to spot ${spot + 1}. Here's how your farm looks like now:\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nRemember to frequently water your farm (**every 8 hours**)!`, userDb];
@@ -23,11 +23,11 @@ let cm = async (sentence, userDb) => {
 			return [`It looks like you have **already something planted there**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
 		}
 	} else if (!cropTypes._seed_types_regexp.test(seed)) {
-		return [`Unknown type of seed.`, userDb];
+		return [`Unknown type of seed (\`${sentence[1]}\`).`, userDb];
 	} else if (spot >= 0 && spot < 9) {
 		return [`**You do not own any ${seed} seeds**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
 	} else {
-		return [`Invalid spot ID (\`${sentence[3]}\`). **Top left starts at 1** and goes from left to right **until 9**.\nThe correct formatting of this command is: \`@FarmBot plant [camelCaseSeedName] spot [number]\`.`, userDb];
+		return [`Invalid spot ID (\`${sentence[3]}\`). **Top left starts at 1** and goes from left to right **until 9**.\nThe correct formatting of this command is: \`@FarmBot plant [seedname] spot [number]\`.`, userDb];
 	}
 };
 
