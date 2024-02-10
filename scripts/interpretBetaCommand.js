@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const generateFarmImg = require('../scripts/generateFarmImg.js');
 const cml = {
 	level: (userDb) => {
