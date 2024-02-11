@@ -24,8 +24,9 @@ module.exports = async (commandList, userDb, devforced = false) => {
 			return 'Currently no `::beta` command to test.';
 		} else {
 			switch (sentence[0].toLowerCase()) {
-				case 'view_garden':
-					answer = `@/${userDb.username}'s **garden**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`;
+				case 'view':
+					if (sentence[1].toLowerCase() === 'garden') answer = `@/${userDb.username}'s **garden**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`;
+					else answer = `Unrecognized beta **sub**command \`${sentence[0]} ${sentence[1]}\`.`;
 					break;
 				case 'garden':
 					[answer, userDb] = await cml.garden(sentence, userDb);
