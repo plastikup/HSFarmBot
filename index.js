@@ -31,20 +31,15 @@ app.post('/daily', async (req, res) => {
 	await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
 	res.status(200).send('OK');
 });
-/*
 app.post('/__space/v0/actions', async (req, res) => {
 	const event = req.body.event;
 
 	if (event.id === 'dailyGarden') {
 		await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
-		res.status(200).send('OK');
-	} else if (event.id === 'endAuction') {
-		res.status(200).send('OK');
 	}
 
-	res.sendStatus(200);
+	res.sendStatus(200).send('OK');
 });
-*/
 
 let devforced = false;
 
