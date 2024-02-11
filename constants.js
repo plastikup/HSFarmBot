@@ -64,7 +64,7 @@ module.exports = {
 		},
 	},
 	decoTypes: {
-		_deco_types_regexp: /^(Stonemoosestatue|Coppermoosestatue|Silvermoosestatue)$/i,
+		_deco_types_regexp: /^(stonemoosestatue|coppermoosestatue|silvermoosestatue)$/i,
 	},
 	NEW_USER_JSON: {
 		farm: [
