@@ -11,4 +11,4 @@ micros:
         name: "Daily Garden"
         description: "A random garden featured daily automatically"
         trigger: "schedule"
-        default_interval: "* * * * *"
+        default_interval: "0 0 * * *"
