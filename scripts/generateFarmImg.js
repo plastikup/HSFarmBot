@@ -36,6 +36,7 @@ let cm = async (userDb, isGarden = false) => {
 		maxLeft = Math.max(maxLeft, left);
 		if (input === undefined) composite.push({ input: `./imgs/${grassType}.png`, top: top, left: left });
 		else composite.push({ input: `./imgs/${grassType}.png`, top: top, left: left }, { input: `./imgs/${input}.png`, top: top, left: left });
+
 	}
 	const newPicture = await sharp({
 		create: {
@@ -66,6 +67,7 @@ let cm = async (userDb, isGarden = false) => {
 					table += `**${cell.seedType}**|`;
 				} else {
 					let seedInfo = cts.cropTypes[cell.seedType];
+
 					table += `**${cell.seedType}**<br><small>growth level: **${Math.round(((cell.growthLevel - 1) * seedInfo.watersRequired) / 3)}/${seedInfo.watersRequired}**</small>|`;
 				}
 			}
