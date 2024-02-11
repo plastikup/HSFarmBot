@@ -63,6 +63,9 @@ module.exports = {
 			earnings: 200,
 		},
 	},
+	decoTypes: {
+		_deco_types_regexp: /^(Stonemoosestatue|Coppermoosestatue|Silvermoosestatue)$/i,
+	},
 	NEW_USER_JSON: {
 		farm: [
 			{

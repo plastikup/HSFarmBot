@@ -13,7 +13,7 @@ let cm = async (userDb, isGarden = false) => {
 
 		if (listRaw.locked === true) continue;
 
-		let input;
+		let input = 'base';
 		if (growthLevelFloored == -1) input = 'seeddead';
 		else if (growthLevelFloored == 0) input = 'base';
 		else if (growthLevelFloored == 1) input = 'seed1';

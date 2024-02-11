@@ -1,8 +1,8 @@
 const generateFarmImg = require('../scripts/generateFarmImg.js');
-const cropTypes = require('../constants.js').cropTypes;
+const cts = require('../constants.js');
 
 module.exports = async function (sentence, userDb) {
-	if (sentence[1] === undefined || (sentence[1] !== 'transplant' && sentence[1] !== 'remove')) return [`Valid **sub**commands for \`@FarmBot garden\`:\n- \`transplant [cropname] spot [number]\`: transplant a crop from your inventory;\n- \`remove spot [number]\`: remove a crop from your garden, to place it safely in your inventory;`, userDb];
+	if (sentence[1] === undefined || (sentence[1] !== 'place' && sentence[1] !== 'remove')) return [`Valid **sub**commands for \`@FarmBot garden\`:\n- \`place [cropname|decorationname] spot [number]\`: transplant a crop from your inventory;\n- \`remove spot [number]\`: remove a crop from your garden, to place it safely in your inventory;`, userDb];
 
 	const garden = userDb.garden;
 	// find the extremum and the target spot
@@ -13,43 +13,64 @@ module.exports = async function (sentence, userDb) {
 			maxSpotId++;
 			j++;
 		}
-		if (j <= (sentence[1] === 'transplant' ? +sentence[4] : +sentence[3]) - 1) {
+		if (j <= (sentence[1] === 'place' ? +sentence[4] : +sentence[3]) - 1) {
 			spot++;
 		}
 	}
 
-	if (sentence[1] === 'transplant') {
-		const crop = sentence[2].toLowerCase().substring(0, sentence[2].search(/(crops?|)$/i));
+	if (sentence[1] === 'place') {
+		const item = sentence[2].toLowerCase().substring(0, sentence[2].search(/(crops?|)$/i));
 
-		// reject if user attempts to plant a seed
-		if (/seeds?$/.test(crop)) return [`The garden is **to showcase your crops**. You cannot plant seeds there - **use your farm** instead!`, userDb];
-		// reject if unknown crop
-		if (!cropTypes._seed_types_regexp.test(crop)) return [`Unknown type of crop (\`${sentence[2]}\`).`, userDb];
-		// reject if no such crop in the inventory
-		if (userDb.cropsInventory[crop + 'crops'] <= 0) return [`**You do not own any ${crop} crops**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
+		// determine item type
+		let itemType;
+		if (cts.cropTypes._seed_types_regexp.test(item)) itemType = 'crop';
+		else if (cts.decoTypes._deco_types_regexp.test(item)) itemType = 'deco';
+		else return [`The garden is **to showcase your crops and your decorations**. The item name you gave is **unrecognized**. Moreover, you cannot plant seeds there - **use your farm** instead!`, userDb];
+		// reject if no such crop or item in the inventory
+		if (itemType === 'crop') {
+			if (userDb.cropsInventory[item + 'crops'] <= 0) return [`**You do not own any ${item} crops**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
+		} else {
+			if (userDb.miscellaneousInventory[item] <= 0) return [`**You do not own any ${item}**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
+		}
 		// reject if spot is outside garden range
-		if (spot >= maxSpotId) return [`Invalid spot ID (\`${sentence[4]}\`). **Top left starts at 1** and goes from left to right **until ${maxSpotId}**.\nThe correct formatting of this command is: \`@FarmBot garden transplant [cropname] spot [number]\`.`, userDb];
+		if (spot >= maxSpotId) return [`Invalid spot ID (\`${sentence[4]}\`). **Top left starts at 1** and goes from left to right **until ${maxSpotId}**.\nThe correct formatting of this command is: \`@FarmBot garden place [cropname|decorationname] spot [number]\`.`, userDb];
 		// reject if there is something there already
-		if (garden[spot].seedType !== null) return [`It looks like you have **already something planted there**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
+		if (garden[spot].seedType !== null) return [`It looks like you have **already something there**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
 		// process-error
-		if (garden[spot].locked === true) return ['process-error - locked\n@Tri-Angle', userDb];
+		if (garden[spot].locked === true) return ['process-error - undefined429\n@Tri-Angle', userDb];
 
 		// proceed!
-		userDb.cropsInventory[crop + 'crops']--;
-		garden[spot].seedType = crop;
+		if (itemType === 'crop') userDb.cropsInventory[item + 'crops']--;
+		else userDb.miscellaneousInventory[item]--;
+		garden[spot].seedType = item;
 		garden[spot].plantedAt = Date.now();
 
-		return [`Transplanted one gorgeous **${crop} plant** to spot ${sentence[4]}. Here's how your awesome garden looks like now 🪴\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
+		if (itemType === 'crop') {
+			return [`Placed one gorgeous **${item} plant** to spot ${sentence[4]}. Here's how your awesome garden looks like now 🪴\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
+		} else {
+			return [`Placed one imposing **${item}** to spot ${sentence[4]}. Here's how your awesome garden looks like now 🪴\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
+		}
 	} else {
 		// reject if nothing there
-		if (garden[spot].seedType === null) return [`There is **no plant at spot ${sentence[3]}**!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
+		if (garden[spot].seedType === null) return [`There is **no plant/deco at spot ${sentence[3]}**!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
 
 		// proceed!
-		const targetCrop = garden[spot].seedType;
-		userDb.cropsInventory[targetCrop + 'crops']++;
+		let itemType;
+		const item = garden[spot].seedType;
+		if (cts.cropTypes._seed_types_regexp.test(item)) {
+			itemType = 'crop';
+			userDb.cropsInventory[item + 'crops']++;
+		} else if (cts.decoTypes._deco_types_regexp.test(item)) {
+			itemType = 'deco';
+			userDb.miscellaneousInventory[item]++;
+		} else return ['process-error - undefined028\n@Tri-Angle', userDb];
 		garden[spot].seedType = null;
 		garden[spot].plantedAt = null;
 
-		return [`Removed a gorgeous **${targetCrop}** from spot ${sentence[3]}!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}\n\nEarn coins by running \`@FarmBot sell ${targetCrop}\`, transplant it back to your garden by running \`@FarmBot garden plant ${targetCrop} spot [number]\`, or keep it safe in your inventory as a souvenir!`, userDb];
+		if (itemType === 'crop') {
+			return [`Removed a gorgeous **${item} plant** from spot ${sentence[3]}!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}\n\nEarn coins by running \`@FarmBot sell ${item}\`, place it back in your garden by running \`@FarmBot garden place ${item} spot [number]\`, or keep it safe in your inventory as a souvenir!`, userDb];
+		} else {
+			return [`Removed a imposing **${item}** from spot ${sentence[3]}!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}\n\nPlace it back in your garden by running \`@FarmBot garden place ${item} spot [number]\`, or keep it safe in your inventory as a souvenir!`, userDb];
+		}
 	}
 };
