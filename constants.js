@@ -1,7 +1,7 @@
 module.exports = {
 	VALID_HEAD_COMMAND_REGEXP: /(::mod|::beta|takeover|begin|help|view|plant|water|harvest|daily|buy|sell|bid)/i,
 	cropTypes: {
-		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley|snowdrops|witchhazel|winterberry|camellias|paradisebird|garden)$/i,
+		_seed_types_regexp: /^(wheat|strawberry|poppy|blueberry|purpleTulip|sunflower|goldenSunflower|pinkTulip|goldenWheat|lilyValley|snowdrops|witchhazel|winterberry|camellias|paradisebird|lavender)$/i,
 		wheat: {
 			watersRequired: 3,
 			earnings: 35,
@@ -62,9 +62,13 @@ module.exports = {
 			watersRequired: 10,
 			earnings: 200,
 		},
+		lavender: {
+			watersRequired: 6,
+			earnings: 225,
+		}
 	},
 	decoTypes: {
-		_deco_types_regexp: /^(stonemoosestatue|coppermoosestatue|silvermoosestatue)$/i,
+		_deco_types_regexp: /^(stonemoosestatue|coppermoosestatue|silvermoosestatue|fountaindecor|lilyponddecor|minibarndecor|ponddecor)$/i,
 	},
 	NEW_USER_JSON: {
 		farm: [
@@ -274,5 +278,5 @@ module.exports = {
 			},
 		],
 	},
-	botVersion: 'v2024.3beta',
+	botVersion: 'v2024.3beta2',
 };

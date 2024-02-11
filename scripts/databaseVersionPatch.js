@@ -60,90 +60,115 @@ module.exports = async (userDb) => {
 		userDb.dbVersion = 'v2024.2';
 	}
 
-	if (userDb.dbVersion === 'v2024.2') {
+	if (userDb.dbVersion === 'v2024.2' || userDb.dbVersion === 'v2024.3beta') {
 		userDb.garden = [
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": false
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': false,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
 			},
 			{
-				"plantedAt": null,
-				"seedType": null,
-				"locked": true
-			}
-		]
-		userDb.dbVersion = 'v2024.3beta'
+				'plantedAt': null,
+				'seedType': null,
+				'grassType': 'default',
+				'locked': true,
+			},
+		];
+
+		userDb.miscellaneousInventory.fountaindecor = 0;
+		userDb.miscellaneousInventory.lilyponddecor = 0;
+		userDb.miscellaneousInventory.minibarndecor = 0;
+		userDb.miscellaneousInventory.ponddecor = 0;
+
+		userDb.seedsInventory.lavenderseeds = 0;
+		userDb.cropsInventory.lavendercrops = 0;
+
+		userDb.dbVersion = 'v2024.3beta2';
 	}
 
 	return userDb;
