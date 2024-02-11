@@ -22,7 +22,7 @@ let cm = async (sentence, userDb) => {
 		// cropping anything gives you exps
 		userDb.experiences += 3;
 
-		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}! Earn coins by running \`@FarmBot sell ${targetCrop}\`, or keep it safe in your inventory as a souvenir!\n\n${await generateFarmImg.generateFarmImg(userDb)}`, userDb];
+		return [`Harvested a gorgeous **${targetCrop}** from spot ${sentence[2]}!\n\n${await generateFarmImg.generateFarmImg(userDb)}\n\nEarn coins by running \`@FarmBot sell ${targetCrop}\`, transplant it to your garden by running \`@FarmBot garden plant ${targetCrop} spot [number]\`, or keep it safe in your inventory as a souvenir!`, userDb];
 	}
 };
 
