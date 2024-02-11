@@ -47,12 +47,12 @@ let cm = async (sentence, userDb) => {
 			case 'shop': {
 				let mooseFarms = await dbMs.get();
 				let table = `Pack name|Content & luck|Price\n-|-|-\n`;
-				for (const item of mooseFarms) {
-					table += `\`${item.packName}\`|`;
-					for (const seed of item.packContent) {
-						table += `${seed.seedName}: **${seed.hidden ? seed.messageForHidden : seed.luck + '%'}**<br>`;
+				for (const pack of mooseFarms) {
+					table += `\`${pack.packName}\`|`;
+					for (const item of pack.packContent) {
+						table += `${item.itemName}: **${item.hidden ? item.messageForHidden : item.luck + '%'}**<br>`;
 					}
-					table += `|${item.packPrice}\n`;
+					table += `|${pack.packPrice}\n`;
 				}
 				return `### MooseFarms Co.'s products\n\n${table}\n\nYou have **${userDb.coins} coins**.`;
 			}

@@ -1,13 +1,12 @@
 const dbMs = require('../dyna/dbMs.js');
-const undoCamelCase = require('../scripts/undoCamelCase.js');
 
 let randomGrant = (targetPack) => {
 	const randomNumb = Math.floor(Math.random() * 100);
 	let luckCount = 0;
 	let i = 0;
-	for (const seed of targetPack.packContent) {
-		if (seed.luck + luckCount > randomNumb) break;
-		luckCount += seed.luck;
+	for (const item of targetPack.packContent) {
+		if (item.luck + luckCount > randomNumb) break;
+		luckCount += item.luck;
 		i++;
 	}
 	return targetPack.packContent[i];
@@ -20,16 +19,20 @@ let cm = async (sentence, userDb) => {
 		} else {
 			const targetPack = mooseFarms[existingPacks.indexOf(inputPack)];
 			if (userDb.coins >= targetPack.packPrice) {
-				const randomSeed = randomGrant(targetPack);
-				const isDouble = Math.floor(Math.random() * 10) == 0 && randomSeed.luck >= 15;
+				const randomItem = randomGrant(targetPack);
+				const isDouble = Math.floor(Math.random() * 10) == 0 && randomItem.luck >= 15;
 
 				userDb.coins -= targetPack.packPrice;
-				userDb.seedsInventory[randomSeed.seedName + 'seeds'] += isDouble + 1;
+				if (targetPack.packType === 'seedpack') {
+					userDb.seedsInventory[randomItem.itemName + 'seeds'] += isDouble + 1;
+				} else {
+					userDb.miscellaneousInventory[randomItem.itemName] += isDouble + 1;
+				}
 
 				if (isDouble) {
-					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomSeed.seedName} seeds[/spoiler]**, both with a **${randomSeed.hidden ? randomSeed.messageForHidden : randomSeed.luck + '%'} drop chance**!! The duplicate has a **10% chance** of happening. Wow, congrats!`;
+					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\u2757\u2757\u2757 \n\nYou opened your package and found **[u]TWO[/u] [spoiler]${randomItem.itemName}[/spoiler]**, both with a **${randomItem.hidden ? randomItem.messageForHidden : randomItem.luck + '%'} drop chance**!! The duplicate has only a **10% chance** of happening. Wow, congrats!`;
 				} else {
-					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomSeed.seedName} seed[/spoiler]**, with a **${randomSeed.hidden ? randomSeed.messageForHidden : randomSeed.luck + '%'} drop chance**!!`;
+					return `You bought one \`${targetPack.packName}\`, and... drum roll please! \n\n\uD83E\uDD41\uD83E\uDD41 \n\nYou opened your package and found **one [spoiler]${randomItem.itemName}[/spoiler]**, with a **${randomItem.hidden ? randomItem.messageForHidden : randomItem.luck + '%'} drop chance**!!`;
 				}
 			} else {
 				return `You **don't have enough coins** to buy this pack (**${targetPack.packPrice} coins**). You currently have **${userDb.coins} coins** in your account.`;
@@ -51,8 +54,8 @@ let cm = async (sentence, userDb) => {
 		}
 	}
 	let existingPacks = [];
-	for (const item of mooseFarms) {
-		existingPacks.push(item.packName);
+	for (const pack of mooseFarms) {
+		existingPacks.push(pack.packName);
 	}
 
 	let answer = '';
