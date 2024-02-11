@@ -26,7 +26,7 @@ let cm = async (userDb, isGarden = false) => {
 		// grass type
 		let grassType = 'base';
 		if (isGarden) {
-			if (listRaw.grassType !== 'default') grassType = listRaw.grassType;
+			if (listRaw.grassType !== 'default' && listRaw.grassType !== undefined) grassType = listRaw.grassType;
 			else grassType = 'grass';
 		}
 
