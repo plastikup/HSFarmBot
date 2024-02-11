@@ -1,24 +1,15 @@
 const dbAu = require('../dyna/dbAu.js');
 const cts = require('../constants.js');
 const auctionFormatting = require('../scripts/auctionFormatting.js');
+const callAllFarmers = require('../scripts/callAllFarmers.js');
 
 module.exports = async (sentence, userDb, db, cooked) => {
 	switch (sentence[1]) {
 		case 'version':
 			return `The active version of the bot is currently **${cts.botVersion}**.`;
-		case 'allfarmers': {
-			const allFarmersRaw = db
-				.map((user) => user.username)
-				.filter((username) => !/(ZZZ-DU|TriAngleHSFBTester)/.test(username))
-				.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-				.map((username) => '@' + username);
+		case 'allfarmers':
+			return `\n\n\`${await callAllFarmers(db)}\``;
 
-			const allFarmers = JSON.stringify(allFarmersRaw)
-				.replace(/["[\]]/g, '')
-				.replace(/,/g, ' ');
-
-			return `\n\n\`${allFarmers}\``;
-		}
 		case 'viewRaw':
 			return `\n\n\`\`\`\n${cooked}\n\`\`\``;
 		case 'startauction':

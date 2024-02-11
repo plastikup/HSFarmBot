@@ -1,0 +1,14 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: HSFarmBot
+    src: ./
+    engine: nodejs16
+    primary: true
+    dev: npx nodemon index.js
+    actions:
+      - id: "dailyGarden"
+        name: "Daily Garden"
+        description: "A random garden featured daily automatically"
+        trigger: "schedule"
+        default_interval: "* * * * *"

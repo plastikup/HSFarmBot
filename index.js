@@ -27,18 +27,20 @@ app.post('/post-action', async (req, res) => {
 	}
 	res.status(200).send('OK');
 });
-app.post('/daily', async (req, res) => {
-	await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
-	res.status(200).send('OK');
-});
 app.post('/__space/v0/actions', async (req, res) => {
 	const event = req.body.event;
 
 	if (event.id === 'dailyGarden') {
-		await require('./dyna/newForumPost')(`# DAILY FEATURED GARDEN\n(in dev [this is mostly a test])`, 99999, 66178);
+		const db = await require('./dyna/dbFus.js').get();
+		const filteredDb = db.filter((user) => user.garden?.length > 0 && user.dbVersion === require('./constants.js').botVersion);
+
+		const randomlyFeaturedUser = filteredDb[Math.floor(Math.random() * filteredDb.length)];
+
+		//! on the public version, remove the [``] surrounding the tags
+		await require('./dyna/newForumPost')(`# Featured Garden of the Day\n\n@/${randomlyFeaturedUser.username}'s garden:\n\n${await require('./scripts/generateFarmImg.js').generateFarmImg(randomlyFeaturedUser, true)}\n\nCalling all farmers to wake up! \`${await require('./scripts/callAllFarmers.js')(db)}\``, 99999, 66178);
 	}
 
-	res.sendStatus(200).send('OK');
+	res.sendStatus(200);
 });
 
 let devforced = false;
