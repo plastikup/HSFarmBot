@@ -26,12 +26,12 @@ const cml = {
 	auction: async (sentence, userDb, devforced) => {
 		return await require('../commands/auction.js').cm(sentence, userDb, devforced);
 	},
-	garden: async (sentence, userDb) => {
-		return await require('../commands/garden.js')(sentence, userDb);
+	garden: async (sentence, userDb, db) => {
+		return await require('../commands/garden.js')(sentence, userDb, db);
 	},
 };
 
-module.exports = async (commandList, userDb, devforced = false) => {
+module.exports = async (commandList, userDb, db, devforced = false) => {
 	// interpret commands
 	let arrayedAnswers = [];
 	for (let i = 0; i < commandList.length; i++) {
@@ -71,7 +71,7 @@ module.exports = async (commandList, userDb, devforced = false) => {
 				break;
 			/*
 			case 'garden':
-				[answer, userDb] = await cml.garden(sentence, userDb);
+				[answer, userDb, db] = await cml.garden(sentence, userDb, db);
 				break;
 			*/
 

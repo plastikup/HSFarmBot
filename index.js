@@ -147,7 +147,7 @@ async function main(req) {
 
 		// exe
 		let answer = '';
-		[answer, userDb] = await require('./scripts/interpretCommand.js')(commandList, userDb, devforced);
+		[answer, userDb] = await require('./scripts/interpretCommand.js')(commandList, userDb, db, devforced);
 
 		// get new level of the farmer
 		const newLevel = await require('./commands/level.js').calcUserLevel(+userDb.experiences);
@@ -168,7 +168,7 @@ async function main(req) {
 	} else {
 		if (!req.post.username.match(/^(Tri-Angle|StarlightStudios|TriAngleHSFBTester)$/)) return;
 		let answer = '';
-		[answer, userDb] = await require('./scripts/interpretBetaCommand.js')(commandList, userDb, devforced);
+		[answer, userDb] = await require('./scripts/interpretBetaCommand.js')(commandList, userDb, db, devforced);
 
 		// update database
 		dbFus.put(userDb._id, userDb);

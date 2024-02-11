@@ -4,12 +4,12 @@ const cml = {
 	level: (userDb) => {
 		return require('../commands/level.js').cm(userDb);
 	},
-	garden: async (sentence, userDb) => {
-		return await require('../commands/garden.js')(sentence, userDb);
+	garden: async (sentence, userDb, db) => {
+		return await require('../commands/garden.js')(sentence, userDb, db);
 	},
 };
 
-module.exports = async (commandList, userDb, devforced = false) => {
+module.exports = async (commandList, userDb, db, devforced = false) => {
 	// interpret commands
 	let arrayedAnswers = [];
 	for (let i = 0; i < commandList.length; i++) {
@@ -29,7 +29,7 @@ module.exports = async (commandList, userDb, devforced = false) => {
 					else answer = `Unrecognized beta **sub**command \`${sentence[0]} ${sentence[1]}\`.`;
 					break;
 				case 'garden':
-					[answer, userDb] = await cml.garden(sentence, userDb);
+					[answer, userDb] = await cml.garden(sentence, userDb, db);
 					break;
 				default:
 					answer = `Unrecognized beta **sub**command \`${sentence[0]}\`.`;
