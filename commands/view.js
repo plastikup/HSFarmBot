@@ -4,11 +4,13 @@ const dbMs = require('../dyna/dbMs.js');
 const dbAu = require('../dyna/dbAu.js');
 const auctionFormatting = require('../scripts/auctionFormatting.js');
 
-function inventoryContent(userDb) {
+async function inventoryContent(userDb) {
 	let seedInventoryContent = userDb.seedsInventory;
 	seedInventoryContent = Object.fromEntries(Object.entries(seedInventoryContent).sort(([, a], [, b]) => b - a));
 	let cropInventoryContent = userDb.cropsInventory;
 	cropInventoryContent = Object.fromEntries(Object.entries(cropInventoryContent).sort(([, a], [, b]) => b - a));
+	let miscellaneousInventoryContent = userDb.miscellaneousInventory;
+	miscellaneousInventoryContent = Object.fromEntries(Object.entries(miscellaneousInventoryContent).sort(([, a], [, b]) => b - a));
 
 	let table = 'Seeds|Quantity|&ic; &ic; &ic; &ic; &ic; &ic; &ic;|Crops|Quantity\n-|-|-|-|-\n';
 	for (let i = 0; i < Math.max(Object.keys(seedInventoryContent).length, Object.keys(cropInventoryContent).length); i++) {
@@ -21,14 +23,13 @@ function inventoryContent(userDb) {
 		table = table + `${seedKey}|${seedInventoryContent[seed] || '-'}||${cropKey}|${cropInventoryContent[crop] || '-'}\n`;
 	}
 
-	/* not developed yet
-        inventoryContent = userDb.specialItems;
-        inventoryContent = Object.fromEntries(Object.entries(inventoryContent).sort(([, a], [, b]) => b - a));
-        table = table + '\nSpecial Items|Quantity\n-|-\n';
-        for (let item in inventoryContent) {
-            table = table + `${undoCamelCase.cm(item)}|${inventoryContent[item]}\n`;
-        }
-    */
+	//! remove the following line for public version
+	if (userDb.username.match(/^(Tri-Angle|StarlightStudios)$/)) {
+		table = table + '\n\nMiscellaneous Items|Quantity\n-|-\n';
+		for (let item in miscellaneousInventoryContent) {
+			table = table + `${undoCamelCase.cm(item)}|${miscellaneousInventoryContent[item]}\n`;
+		}
+	}
 
 	return table;
 }
@@ -40,7 +41,7 @@ let cm = async (sentence, userDb) => {
 			case 'farm':
 				return `@/${userDb.username}'s **farm**.\n\n${await generateFarmImg.generateFarmImg(userDb)}`;
 			case 'inventory':
-				return `@/${userDb.username}'s **inventory** - you have **${userDb.coins} coins**.\n\n${inventoryContent(userDb)}`;
+				return `@/${userDb.username}'s **inventory** - you have **${userDb.coins} coins**.\n\n${await inventoryContent(userDb)}`;
 			case 'level':
 				return require('./level.js').cm(userDb);
 			case 'shop': {
