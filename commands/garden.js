@@ -2,8 +2,7 @@ const generateFarmImg = require('../scripts/generateFarmImg.js');
 const cropTypes = require('../constants.js').cropTypes;
 
 module.exports = async function (sentence, userDb) {
-	if (sentence[1] == undefined) return [`Valid **sub**commands for \`@FarmBot garden\`:\n- \`transplant [cropname] spot [number]\`: transplant a crop from your inventory;\n- \`remove spot [number]\`: remove a crop from your garden, to place it safely in your inventory;`, userDb];
-	if (sentence.length < 5) return [`The correct formatting of this command is: \`@FarmBot garden transplant [cropname] spot [number]\``, userDb];
+	if (sentence[1] === undefined || (sentence[1] !== 'transplant' && sentence[1] !== 'remove')) return [`Valid **sub**commands for \`@FarmBot garden\`:\n- \`transplant [cropname] spot [number]\`: transplant a crop from your inventory;\n- \`remove spot [number]\`: remove a crop from your garden, to place it safely in your inventory;`, userDb];
 
 	const garden = userDb.garden;
 	// find the extremum and the target spot
@@ -14,7 +13,7 @@ module.exports = async function (sentence, userDb) {
 			maxSpotId++;
 			j++;
 		}
-		if (j <= +sentence[4] - 1) {
+		if (j <= (sentence[1] === 'transplant' ? +sentence[4] : +sentence[3]) - 1) {
 			spot++;
 		}
 	}
@@ -41,9 +40,16 @@ module.exports = async function (sentence, userDb) {
 		garden[spot].plantedAt = Date.now();
 
 		return [`Transplanted one gorgeous **${crop} plant** to spot ${sentence[4]}. Here's how your awesome garden looks like now 🪴\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
-	} else if (sentence[1] === 'remove') {
-		//
-	}
+	} else {
+		// reject if nothing there
+		if (garden[spot].seedType === null) return [`There is **no plant at spot ${sentence[3]}**!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
 
-	return ['default answer', userDb];
+		// proceed!
+		const targetCrop = garden[spot].seedType;
+		userDb.cropsInventory[targetCrop + 'crops']++;
+		garden[spot].seedType = null;
+		garden[spot].plantedAt = null;
+
+		return [`Removed a gorgeous **${targetCrop}** from spot ${sentence[3]}!\n\n${await generateFarmImg.generateFarmImg(userDb, true)}\n\nEarn coins by running \`@FarmBot sell ${targetCrop}\`, transplant it back to your garden by running \`@FarmBot garden plant ${targetCrop} spot [number]\`, or keep it safe in your inventory as a souvenir!`, userDb];
+	}
 };
