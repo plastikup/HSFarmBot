@@ -33,7 +33,7 @@ module.exports = async function (sentence, userDb) {
 			if (userDb.miscellaneousInventory[item] <= 0) return [`**You do not own any ${item}**. Reply with \`@FarmBot shop\` to buy some!`, userDb];
 		}
 		// reject if spot is outside garden range
-		if (spot >= maxSpotId) return [`Invalid spot ID (\`${sentence[4]}\`). **Top left starts at 1** and goes from left to right **until ${maxSpotId}**.\nThe correct formatting of this command is: \`@FarmBot garden place [cropname|decorationname] spot [number]\`.`, userDb];
+		if (spot > maxSpotId) return [`Invalid spot ID (\`${sentence[4]}\`). **Top left starts at 1** and goes from left to right **until ${maxSpotId}**.\nThe correct formatting of this command is: \`@FarmBot garden place [cropname|decorationname] spot [number]\`.`, userDb];
 		// reject if there is something there already
 		if (garden[spot].seedType !== null) return [`It looks like you have **already something there**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`, userDb];
 		// process-error

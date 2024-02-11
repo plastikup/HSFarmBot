@@ -161,10 +161,10 @@ async function main(req) {
 		if (answer.length <= 21000) await newForumPost(answer, post_number, topic_id);
 		else await newForumPost(`You made me reach the forum character limit, smh!\n<small>usually means your commands have made it through`, post_number, topic_id);
 	} else if (commandList[0][0].toLowerCase() == '::mod') {
-		if (!username.match(/^(Tri-Angle|StarlightStudios)$/)) return;
+		if (!req.post.username.match(/^(Tri-Angle|StarlightStudios)$/)) return;
 		await newForumPost('[MOD ACTION] ' + (await require('./scripts/interpretModCommand.js')(commandList[0], userDb, db, cooked)), post_number + commandList[0][1] == 'start_auction' * 99999, topic_id);
 	} else {
-		if (!username.match(/^(Tri-Angle|StarlightStudios|TriAngleHSFBTester)$/)) return;
+		if (!req.post.username.match(/^(Tri-Angle|StarlightStudios|TriAngleHSFBTester)$/)) return;
 		let answer = '';
 		[answer, userDb] = await require('./scripts/interpretBetaCommand.js')(commandList, userDb, devforced);
 

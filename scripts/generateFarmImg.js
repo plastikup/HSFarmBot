@@ -1,5 +1,5 @@
 const sharp = require('sharp');
-const cropTypes = require('../constants.js').cropTypes;
+const cts = require('../constants.js');
 
 let cm = async (userDb, isGarden = false) => {
 	// GRID
@@ -13,20 +13,30 @@ let cm = async (userDb, isGarden = false) => {
 
 		if (listRaw.locked === true) continue;
 
-		let input = 'base';
+		// item/seed on top of grass
+		let input;
 		if (growthLevelFloored == -1) input = 'seeddead';
 		else if (growthLevelFloored == 0) input = 'base';
 		else if (growthLevelFloored == 1) input = 'seed1';
 		else if (growthLevelFloored == 2) input = 'seed2';
 		else if (growthLevelFloored == 3) input = 'seed3';
-		else if (cropTypes._seed_types_regexp.test(listRaw.seedType)) input = listRaw.seedType;
+		else if (cts.cropTypes._seed_types_regexp.test(listRaw.seedType)) input = listRaw.seedType;
+		else if (cts.decoTypes._deco_types_regexp.test(listRaw.seedType)) input = listRaw.seedType;
+
+		// grass type
+		let grassType = 'base';
+		if (isGarden) {
+			if (listRaw.grassType !== 'default') grassType = listRaw.grassType;
+			else grassType = 'grass';
+		}
 
 		const top = Math.floor(i / (isGarden ? 4 : 3)) * 104;
 		const left = (i % (isGarden ? 4 : 3)) * 104;
 		maxTop = Math.max(maxTop, top);
 		maxLeft = Math.max(maxLeft, left);
-		if (input === undefined) composite.push({ input: `./imgs/base.png`, top: top, left: left });
-		else composite.push({ input: `./imgs/base.png`, top: top, left: left }, { input: `./imgs/${input}.png`, top: top, left: left });
+		if (input === undefined) composite.push({ input: `./imgs/${grassType}.png`, top: top, left: left });
+		else composite.push({ input: `./imgs/${grassType}.png`, top: top, left: left }, { input: `./imgs/${input}.png`, top: top, left: left });
+
 	}
 	const newPicture = await sharp({
 		create: {
@@ -41,7 +51,6 @@ let cm = async (userDb, isGarden = false) => {
 		.toBuffer();
 
 	// TABLE
-
 	let table = `[details=Table view]\n&ic;|&ic;|&ic;|&ic;\n:-:|:-:|:-:|:-:\n`;
 
 	for (let i = 0; i < Math.sqrt(farm.length); i++) {
@@ -57,7 +66,8 @@ let cm = async (userDb, isGarden = false) => {
 				if (isGarden) {
 					table += `**${cell.seedType}**|`;
 				} else {
-					let seedInfo = cropTypes[cell.seedType];
+					let seedInfo = cts.cropTypes[cell.seedType];
+
 					table += `**${cell.seedType}**<br><small>growth level: **${Math.round(((cell.growthLevel - 1) * seedInfo.watersRequired) / 3)}/${seedInfo.watersRequired}**</small>|`;
 				}
 			}
