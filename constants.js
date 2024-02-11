@@ -70,9 +70,6 @@ module.exports = {
 	decoTypes: {
 		_deco_types_regexp: /^(stonemoosestatue|coppermoosestatue|silvermoosestatue|fountaindecor|lilyponddecor|minibarndecor|ponddecor)$/i,
 	},
-	decoTypes: {
-		_deco_types_regexp: /^(stonemoosestatue|coppermoosestatue|silvermoosestatue)$/i,
-	},
 	NEW_USER_JSON: {
 		farm: [
 			{
