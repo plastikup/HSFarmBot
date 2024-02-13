@@ -23,10 +23,10 @@ let cm = async (sentence, userDb) => {
 				const isDouble = Math.floor(Math.random() * 10) == 0 && randomItem.luck >= 15;
 
 				userDb.coins -= targetPack.packPrice;
-				if (targetPack.packType === 'seedpack') {
-					userDb.seedsInventory[randomItem.itemName + 'seeds'] += isDouble + 1;
-				} else {
+				if (/decor$/.test(randomItem)) {
 					userDb.miscellaneousInventory[randomItem.itemName] += isDouble + 1;
+				} else {
+					userDb.seedsInventory[randomItem.itemName + 'seeds'] += isDouble + 1;
 				}
 
 				if (isDouble) {
