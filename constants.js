@@ -64,7 +64,7 @@ module.exports = {
 		},
 		lavender: {
 			watersRequired: 6,
-			earnings: 355,
+			earnings: 300,
 		}
 	},
 	decoTypes: {
