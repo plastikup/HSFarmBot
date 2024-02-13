@@ -23,7 +23,8 @@ let cm = async (sentence, userDb) => {
 				const isDouble = Math.floor(Math.random() * 10) == 0 && randomItem.luck >= 15;
 
 				userDb.coins -= targetPack.packPrice;
-				if (/decor$/.test(randomItem)) {
+
+				if (/decor$/.test(randomItem.itemName)) {
 					userDb.miscellaneousInventory[randomItem.itemName] += isDouble + 1;
 				} else {
 					userDb.seedsInventory[randomItem.itemName + 'seeds'] += isDouble + 1;
