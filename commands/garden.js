@@ -2,6 +2,10 @@ const generateFarmImg = require('../scripts/generateFarmImg.js');
 const cts = require('../constants.js');
 
 module.exports = async function (sentence, userDb, db) {
+	if (require('./level.js').calcUserLevel(userDb.experiences) < 3 && userDb.username !== 'Tri-Angle') {
+		return ['You have **not unlocked the garden yet**! You will unlock garden at level 3. Best of luck!', userDb];
+	}
+
 	if (sentence[1] === undefined || (sentence[1] !== 'place' && sentence[1] !== 'remove' && sentence[1] !== 'visit')) return [`Valid **sub**commands for \`@FarmBot garden\`:\n- \`place [cropname|decorationname] spot [number]\`: transplant a crop from your inventory;\n- \`remove spot [number]\`: remove a crop from your garden, to place it safely in your inventory;\n- \`visit [username]\`: go visit your friends!`, userDb];
 
 	const garden = userDb.garden;

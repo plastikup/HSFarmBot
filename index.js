@@ -36,8 +36,7 @@ app.post('/__space/v0/actions', async (req, res) => {
 
 		const randomlyFeaturedUser = filteredDb[Math.floor(Math.random() * filteredDb.length)];
 
-		//! on the public version, remove the [``] surrounding the tags
-		await require('./dyna/newForumPost')(`# Featured Garden of the Day\n\n@/${randomlyFeaturedUser.username}'s garden:\n\n${await require('./scripts/generateFarmImg.js').generateFarmImg(randomlyFeaturedUser, true)}\n\nCalling all farmers to wake up! \`${await require('./scripts/callAllFarmers.js')(db)}\``, 99999, 66178);
+		await require('./dyna/newForumPost')(`# Featured Garden of the Day\n\n@/${randomlyFeaturedUser.username}'s garden:\n\n${await require('./scripts/generateFarmImg.js').generateFarmImg(randomlyFeaturedUser, true)}\n\nCalling all farmers! ${await require('./scripts/callAllFarmers.js')(db)}`, 99999, 66773);
 	}
 
 	res.sendStatus(200);

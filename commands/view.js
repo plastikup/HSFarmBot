@@ -23,12 +23,9 @@ async function inventoryContent(userDb) {
 		table = table + `${seedKey}|${seedInventoryContent[seed] || '-'}||${cropKey}|${cropInventoryContent[crop] || '-'}\n`;
 	}
 
-	//! remove the following line for public version
-	if (userDb.username.match(/^(Tri-Angle|StarlightStudios)$/)) {
-		table = table + '\n\nMiscellaneous Items|Quantity\n-|-\n';
-		for (let item in miscellaneousInventoryContent) {
-			table = table + `${undoCamelCase.cm(item)}|${miscellaneousInventoryContent[item]}\n`;
-		}
+	table = table + '\n\nMiscellaneous Items|Quantity\n-|-\n';
+	for (let item in miscellaneousInventoryContent) {
+		table = table + `${undoCamelCase.cm(item)}|${miscellaneousInventoryContent[item]}\n`;
 	}
 
 	return table;
@@ -86,6 +83,13 @@ let cm = async (sentence, userDb) => {
 
 				return `### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, baseAcc.bidSubject.amount, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`;
 			}
+			case 'garden':
+				if (require('./level.js').calcUserLevel(userDb.experiences) >= 3 || userDb.username === 'Tri-Angle') {
+					return `@/${userDb.username}'s **garden**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`;
+				} else {
+					return 'You have **not unlocked the garden yet**! You will unlock garden at level 3. Best of luck!';
+				}
+
 			default:
 				return `Unrecognized subcommand \`${sentence[1]}\`.`;
 		}

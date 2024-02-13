@@ -69,11 +69,9 @@ module.exports = async (commandList, userDb, db, devforced = false) => {
 			case 'bid':
 				[answer, userDb] = await cml.auction(sentence, userDb, devforced);
 				break;
-			/*
 			case 'garden':
 				[answer, userDb, db] = await cml.garden(sentence, userDb, db);
 				break;
-			*/
 
 			default:
 				answer = `Unrecognized command \`${sentence[0]}\`.`;
