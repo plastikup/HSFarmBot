@@ -18,6 +18,11 @@ module.exports.cm = function () {
 \`@FarmBot buy [number](OPTIONAL) [product]\` — buy a product from MooseFarms
 \`@FarmBot sell [number || 'all'](OPTIONAL) [crop]\` — sell your harvested crops to make money
 [/quote]
+[quote="Garden"]
+\`@FarmBot garden place [cropname|decorationname] spot [number]\`: transplant a crop from your inventory;
+\`@FarmBot garden remove spot [number]\`: remove a crop from your garden, to place it safely in your inventory;
+\`@FarmBot garden visit [username]\`: go visit your friends!
+[/quote]
 [quote="Auction"]
 \`@FarmBot view auction\` — display the information about the current ongoing auction
 \`@FarmBot bid [amount]\` — bid a certain amount on the ongoing auction
