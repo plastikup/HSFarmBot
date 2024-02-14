@@ -256,7 +256,7 @@ module.exports = {
 		'6': [
 			{
 				category: 'decorpacks',
-				name: 'basicdecorpack',
+				name: 'decorpack',
 				quantity: 2,
 			},
 			{
