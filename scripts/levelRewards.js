@@ -15,9 +15,9 @@ module.exports = async (answer, userDb, newLevel) => {
 			userDb.coins += reward.quantity;
 		} else if (reward.category === 'moosefarmpacks') {
 			let randomSeed = randomGrant(mooseFarms.filter((el) => el.packName === reward.name)[0]);
-			rewardMsg += `\n-> :drum::drum: … granted **[spoiler]${reward.quantity} ${randomSeed.seedName}seed[/spoiler]**!`;
+			rewardMsg += `\n-> :drum::drum: … granted **[spoiler]${reward.quantity} ${randomSeed.itemName}seed[/spoiler]**!`;
 
-			userDb.seedsInventory[randomSeed.seedName + 'seeds'] += reward.quantity;
+			userDb.seedsInventory[randomSeed.itemName + 'seeds'] += reward.quantity;
 		} else if (reward.category === 'miscellaneous') {
 			rewardMsg += `\n-> **${reward.quantity} ${reward.name}**;`;
 
