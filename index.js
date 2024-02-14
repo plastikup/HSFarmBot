@@ -32,7 +32,7 @@ app.post('/__space/v0/actions', async (req, res) => {
 
 	if (event.id === 'dailyGarden') {
 		const db = await require('./dyna/dbFus.js').get();
-		const filteredDb = db.filter((user) => user.garden?.length > 0 && user.dbVersion === require('./constants.js').botVersion);
+		const filteredDb = db.filter((user) => user.garden?.length > 0 && user.dbVersion === require('./constants.js').botVersion && require('./commands/level.js').calcUserLevel(user.experiences) > 3);
 
 		const randomlyFeaturedUser = filteredDb[Math.floor(Math.random() * filteredDb.length)];
 

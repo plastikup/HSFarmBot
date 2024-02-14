@@ -84,7 +84,7 @@ let cm = async (sentence, userDb) => {
 				return `### Status of current ongoing auction\n${auctionFormatting.cm(baseAcc.bidSubject.subject, baseAcc.bidSubject.amount, stats.bidAmount, stats.username, baseAcc.endsAt)}\n\n${yourBidText}`;
 			}
 			case 'garden':
-				if (require('./level.js').calcUserLevel(userDb.experiences) >= 3 || userDb.username === 'Tri-Angle') {
+				if (require('./level.js').calcUserLevel(userDb.experiences) >= 3) {
 					return `@/${userDb.username}'s **garden**.\n\n${await generateFarmImg.generateFarmImg(userDb, true)}`;
 				} else {
 					return 'You have **not unlocked the garden yet**! You will unlock garden at level 3. Best of luck!';

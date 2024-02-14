@@ -2,7 +2,7 @@ const generateFarmImg = require('../scripts/generateFarmImg.js');
 const cts = require('../constants.js');
 
 module.exports = async function (sentence, userDb, db) {
-	if (require('./level.js').calcUserLevel(userDb.experiences) < 3 && userDb.username !== 'Tri-Angle') {
+	if (require('./level.js').calcUserLevel(userDb.experiences) < 3) {
 		return ['You have **not unlocked the garden yet**! You will unlock garden at level 3. Best of luck!', userDb];
 	}
 
