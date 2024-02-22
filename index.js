@@ -31,6 +31,8 @@ app.post('/__space/v0/actions', async (req, res) => {
 	const event = req.body.event;
 
 	if (event.id === 'dailyGarden') {
+		console.log('[TRI-ANGLE][DEBUG] DAILYGARDEN DETA CRON JOB EVENT HAS BEEN TRIGGERED');
+
 		const db = await require('./dyna/dbFus.js').get();
 		const filteredDb = db.filter((user) => user.garden?.length > 0 && user.dbVersion === require('./constants.js').botVersion && require('./commands/level.js').calcUserLevel(user.experiences) >= 3);
 
