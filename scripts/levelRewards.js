@@ -24,6 +24,11 @@ module.exports = async (answer, userDb, newLevel) => {
 			userDb.miscellaneousInventory[reward.name] += reward.quantity;
 		} else if (reward.category === 'message') {
 			rewardMsg += '\n-> ' + reward.message;
+		} else if (reward.category === 'decorpack') {
+			let randomElement = randomGrant(mooseFarms.filter((el) => el.packName === reward.name)[0]);
+			rewardMsg += `\n-> :drum::drum: … granted **[spoiler]${reward.quantity} ${randomElement.itemName}[/spoiler]**!`;
+
+			userDb.miscellaneousInventory[randomElement.itemName] += reward.quantity;
 		}
 	}
 

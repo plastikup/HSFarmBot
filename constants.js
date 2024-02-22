@@ -220,7 +220,7 @@ module.exports = {
 		'3': [
 			{
 				category: 'message',
-				message: 'YOU HAVE UNLOCKED... THE ***GARDEN***! (coming very soon)',
+				message: 'YOU HAVE UNLOCKED... THE ***GARDEN***!',
 			},
 			{
 				category: 'miscellaneous',
@@ -279,6 +279,56 @@ module.exports = {
 				category: 'coins',
 				name: 'coins',
 				quantity: 300,
+			},
+		],
+		'8': [
+			{
+				category: 'message',
+				message: 'YOU GOT A **GARDEN EXTENSION**!! @Tri-Angle will apply this to your garden soon!',
+			},
+			{
+				category: 'decorpacks',
+				name: 'decorpack',
+				quantity: 2,
+			},
+			{
+				category: 'moosefarmpacks',
+				name: 'farmpack',
+				quantity: 1,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 325,
+			},
+		],
+		'9': [
+			{
+				category: 'decorpacks',
+				name: 'decorpack',
+				quantity: 2,
+			},
+			{
+				category: 'moosefarmpacks',
+				name: 'flowerpack',
+				quantity: 2,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 450,
+			},
+		],
+		'10': [
+			{
+				category: 'miscellaneous',
+				name: 'goldmoosestatue',
+				quantity: 1,
+			},
+			{
+				category: 'coins',
+				name: 'coins',
+				quantity: 500,
 			},
 		],
 	},
