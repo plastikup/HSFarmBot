@@ -76,7 +76,23 @@ let cm = async (userDb, isGarden = false) => {
 	}
 	table += `[/details]`;
 
-	return `<img src="data:image/png;base64,${newPicture.toString('base64')}">\n\n${table}`;
+	// encode picture
+	const encodedPicture = newPicture
+		.toString('base64')
+		.replaceAll('A', '%41')
+		.replaceAll('E', '%45')
+		.replaceAll('I', '%49')
+		.replaceAll('O', '%4F')
+		.replaceAll('U', '%55')
+		.replaceAll('Y', '%59')
+		.replaceAll('a', '%61')
+		.replaceAll('e', '%65')
+		.replaceAll('i', '%69')
+		.replaceAll('o', '%6F')
+		.replaceAll('u', '%75')
+		.replaceAll('y', '%79');
+
+	return `<img src="data:image/png;base64,${encodedPicture}">\n\n${table}`;
 };
 
 module.exports.generateFarmImg = async function (userDb, isGarden) {
