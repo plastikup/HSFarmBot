@@ -171,5 +171,12 @@ module.exports = async (userDb) => {
 		userDb.dbVersion = 'v2024.3beta2';
 	}
 
+	if (userDb.dbVersion === 'v2024.3beta2') {
+		userDb.seedsInventory.undefinedseeds = +(userDb.seedsInventory.undefinedseeds === null);
+		userDb.cropsInventory.undefinedcrops = 0;
+
+		userDb.dbVersion = 'v2024.3';
+	}
+
 	return userDb;
 };
