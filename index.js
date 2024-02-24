@@ -38,7 +38,7 @@ app.post('/__space/v0/actions', async (req, res) => {
 
 		const randomlyFeaturedUser = filteredDb[Math.floor(Math.random() * filteredDb.length)];
 
-		await require('./dyna/newForumPost')(`# Featured Garden of the Day\n\n@/${randomlyFeaturedUser.username}'s garden:\n\n${await require('./scripts/generateFarmImg.js').generateFarmImg(randomlyFeaturedUser, true)}\n\nCalling all farmers! ${await require('./scripts/callAllFarmers.js')(db)}`, 99999, 66773);
+		await require('./dyna/newForumPost')(`# Featured Garden of the Day\n\n@/${randomlyFeaturedUser.username}'s garden:\n\n${await require('./scripts/generateFarmImg.js').generateFarmImg(randomlyFeaturedUser, true)}\n\n@TheFarmers`, 99999, 66773);
 	}
 
 	res.sendStatus(200);
