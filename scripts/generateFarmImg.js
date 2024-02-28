@@ -90,7 +90,9 @@ let cm = async (userDb, isGarden = false) => {
 		.replaceAll('i', '%69')
 		.replaceAll('o', '%6F')
 		.replaceAll('u', '%75')
-		.replaceAll('y', '%79');
+		.replaceAll('y', '%79')
+		.replaceAll('T', '%54')
+		.replaceAll('t', '%74');
 
 	return `<img src="data:image/png;base64,${encodedPicture}">\n\n${table}`;
 };
