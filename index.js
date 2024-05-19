@@ -149,6 +149,7 @@ async function main(req) {
 		// exe
 		let answer = '';
 		[answer, userDb] = await require('./scripts/interpretCommand.js')(commandList, userDb, db, devforced);
+		userDb.experiences = Math.min(userDb.experiences, 1935); // cap to level 10
 
 		// get new level of the farmer
 		const newLevel = await require('./commands/level.js').calcUserLevel(+userDb.experiences);
